@@ -1158,6 +1158,7 @@
 	icon_state = "L1"
 	},
 /obj/structure/cable,
+/obj/structure/closet/lasertag/red,
 /turf/open/floor/iron,
 /area/station/commons/storage/primary)
 "jk" = (
@@ -1371,6 +1372,7 @@
 /area/station/engineering/gravity_generator)
 "qv" = (
 /obj/structure/cable,
+/obj/structure/closet/lasertag/blue,
 /turf/open/floor/iron,
 /area/station/commons/storage/primary)
 "qw" = (
@@ -1986,6 +1988,8 @@
 /obj/item/screwdriver{
 	pixel_y = 10
 	},
+/obj/item/organ/cyberimp/chest/lasertag_core/bluetag,
+/obj/item/organ/cyberimp/chest/lasertag_core/redtag,
 /turf/open/floor/iron,
 /area/station/medical/chemistry)
 "Fd" = (

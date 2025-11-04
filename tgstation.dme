@@ -9436,6 +9436,8 @@
 #include "modular_zubbers\code\modules\languages\siikmaas.dm"
 #include "modular_zubbers\code\modules\languages\uncommon.dm"
 #include "modular_zubbers\code\modules\languages\vampiric.dm"
+#include "modular_zubbers\code\modules\lasertag\augments_lasertag.dm"
+#include "modular_zubbers\code\modules\lasertag\customization_augments_lasertag.dm"
 #include "modular_zubbers\code\modules\lewd_machinery\lustwish.dm"
 #include "modular_zubbers\code\modules\lewd_machinery\sex_barrier.dm"
 #include "modular_zubbers\code\modules\limbgrowncorpses\limbgrowerblanks.dm"
