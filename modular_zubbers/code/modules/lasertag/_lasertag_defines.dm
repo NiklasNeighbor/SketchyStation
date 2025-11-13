@@ -1,0 +1,1 @@
+#define COMSIG_TAG_ARMCANNON_TOGGLE "lasertag_armcannon_toggled"

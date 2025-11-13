@@ -21,3 +21,29 @@
 
 /obj/item/organ/cyberimp/brain/lasertag_core/bluetag
 	lasertag_team = LASERTAG_TEAM_BLUE
+
+/obj/item/organ/cyberimp/arm/toolkit/tag_armcannon
+	name = "Laser tag arm cannon"
+	desc = "A lasertag cannon implanted into a person's arm. For when you need to always be ready to fight the enemy!"
+	items_to_create = list(/obj/item/gun/energy/laser/tag_armcannon)
+	actions_types = list(/datum/action/item_action/organ_action/toggle/tag_armcannon)
+
+/obj/item/organ/cyberimp/arm/toolkit/tag_armcannon/left
+	name = "Left Laser tag arm cannon"
+	zone = BODY_ZONE_L_ARM
+	slot = ORGAN_SLOT_LEFT_ARM_AUG
+
+/obj/item/organ/cyberimp/arm/toolkit/tag_armcannon/right
+	name = "Right Laser tag arm cannon"
+	zone = BODY_ZONE_R_ARM
+	slot = ORGAN_SLOT_RIGHT_ARM_AUG
+
+/datum/action/item_action/organ_action/toggle/tag_armcannon
+	name = "Deploy Laser tag Arm cannon"
+	desc = "Deploy the laser tag cannon imbedded in your arm"
+	var/obj/item/organ/cyberimp/arm/toolkit/tag_armcannon/implant
+
+/datum/action/item_action/organ_action/toggle/tag_armcannon/Trigger(mob/clicker, trigger_flags)
+	. = ..()
+	to_chat(clicker, span_yellow("DEBUG: Action Triggered!"))
+	SEND_SIGNAL( owner, COMSIG_TAG_ARMCANNON_TOGGLE)
