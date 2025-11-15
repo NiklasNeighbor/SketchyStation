@@ -41,10 +41,9 @@
 	if(ishuman(loc))
 		var/mob/living/carbon/human/H = loc
 		RegisterSignal(H, COMSIG_TAG_ARMCANNON_TOGGLE, PROC_REF(debug_signalhandler)) //FIX: Fuck me, this still doesn't work
-		to_chat(H, span_yellow("DEBUG: Registered signal handler on [H]"))
+		to_chat(world, span_yellow("DEBUG: Registered signal handler on [H]"))
 
 
 /obj/item/gun/energy/laser/tag_armcannon/proc/debug_signalhandler()
 	SIGNAL_HANDLER
-	to_chat(loc, span_yellow("DEBUG: Signal received"))
-	visible_message("A message was received", "I've received a message")
+	to_chat(world, span_yellow("DEBUG: Signal received"))
