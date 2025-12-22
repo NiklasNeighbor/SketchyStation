@@ -84,8 +84,9 @@
 	button_icon_state = "telepathy"
 	panel = null
 	overlay_icon_state = null
-	check_flags = AB_CHECK_CONSCIOUS
+	check_flags = AB_CHECK_CONSCIOUS //BUBBER ADDITION
 
+//BUBBER ADDITION START
 /datum/action/cooldown/spell/list_target/telepathy/voidwalker/PreActivate(atom/caster)
 	var/list/list_targets
 	var/mob/living/basic/voidwalker/walker = caster
@@ -106,6 +107,7 @@
 		return FALSE
 
 	return Activate(chosen)
+//BUBBER ADDITION END
 
 /datum/action/cooldown/spell/list_target/telepathy/voidwalker/sunwalker
 	name = "Stellar Transmit"
