@@ -84,6 +84,28 @@
 	button_icon_state = "telepathy"
 	panel = null
 	overlay_icon_state = null
+	check_flags = AB_CHECK_CONSCIOUS
+
+/datum/action/cooldown/spell/list_target/telepathy/voidwalker/PreActivate(atom/caster)
+	var/list/list_targets
+	var/mob/living/basic/voidwalker/walker = caster
+	if(HAS_TRAIT(caster, TRAIT_MAGICALLY_PHASED) && walker)
+		list_targets = get_list_targets(walker.jaunt_dummy, target_radius)
+	else
+		list_targets = get_list_targets(caster, target_radius)
+	if(!length(list_targets))
+		caster.balloon_alert(caster, "no targets nearby!")
+		return FALSE
+
+	var/atom/chosen = tgui_input_list(caster, choose_target_message, name, sort_names(list_targets))
+	if(QDELETED(src) || QDELETED(caster) || QDELETED(chosen) || !can_cast_spell())
+		return FALSE
+
+	if(get_dist(chosen, caster) > target_radius)
+		caster.balloon_alert(caster, "they're too far!")
+		return FALSE
+
+	return Activate(chosen)
 
 /datum/action/cooldown/spell/list_target/telepathy/voidwalker/sunwalker
 	name = "Stellar Transmit"
