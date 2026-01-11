@@ -55,9 +55,6 @@
 	/// Our cool charge ability
 	var/datum/action/cooldown/mob_cooldown/charge/charge = /datum/action/cooldown/mob_cooldown/charge/voidwalker
 
-	///The dummy that we are using for the space dive. BUBBER ADDITION
-	var/jaunt_dummy
-
 	/// Alpha we have in space
 	var/space_alpha = 0
 	/// Alpha we have elsewhere

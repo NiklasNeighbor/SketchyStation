@@ -7,7 +7,7 @@
 	/// the time it takes to exit our space dive
 	var/surface_time = 1 SECONDS
 	/// Traits added during phasing (and removed after)
-	var/static/phase_traits = list(TRAIT_MAGICALLY_PHASED, TRAIT_WEATHER_IMMUNE)
+	var/static/phase_traits = list(TRAIT_MAGICALLY_PHASED, TRAIT_RUNECHAT_HIDDEN, TRAIT_WEATHER_IMMUNE)
 	/// Type of turf that is divable
 	var/diveable_turf = /turf/open/space
 	/// A decal we can dive from, and escape into (but only one enter)
@@ -49,12 +49,6 @@
 
 	var/mob/living/diver = parent
 	diver.drop_all_held_items()
-
-	//BUBBER ADDITION START
-	var/mob/living/basic/voidwalker/voiddiver = diver
-	if (voiddiver)
-		voiddiver.jaunt_dummy = jaunt
-	//BUBBER ADDITION END
 
 	RegisterSignal(jaunt, COMSIG_MOB_EJECTED_FROM_JAUNT, PROC_REF(surface))
 	RegisterSignal(jaunt, COMSIG_MOB_PHASED_CHECK, PROC_REF(move_check))
