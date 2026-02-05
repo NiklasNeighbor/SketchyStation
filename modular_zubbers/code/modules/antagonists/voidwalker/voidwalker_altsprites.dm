@@ -95,10 +95,15 @@
 /// Make yourself look like this
 /datum/void_sprite/proc/apply(mob/living/basic/void_target)
 	var/mob/living/basic/voidwalker/walker = void_target
+	var/datum/component/space_camo/comp
 	void_target.icon = icon
 	void_target.icon_living = icon_state_living
 	void_target.icon_state = icon_state_living
 	//TODO: Insert code to change the sprites used for space_dive and space_camo components
+	if(!isnull(walker))
+		comp = walker.GetComponent(/datum/component/space_camo)
+		comp.position_indicator = image(void_target.icon, void_target.icon_state + "_stealthed", ABOVE_LIGHTING_PLANE)
+
 	void_target.update_appearance(updates = UPDATE_ICON)
 
 /datum/void_sprite/femwalker
