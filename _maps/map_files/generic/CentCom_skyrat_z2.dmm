@@ -1294,6 +1294,15 @@
 /obj/structure/bed/pod,
 /turf/open/indestructible/cobble/corner,
 /area/centcom/holding/cafe/park)
+"aEX" = (
+/obj/effect/turf_decal/tile/blue{
+	dir = 8
+	},
+/obj/effect/landmark/dreamscape,
+/turf/open/indestructible/hoteltile{
+	icon_state = "floor"
+	},
+/area/centcom/holding/cafe)
 "aFc" = (
 /obj/machinery/light/floor,
 /turf/open/indestructible/stone,
@@ -69861,7 +69870,7 @@ bCX
 aOR
 aOp
 awD
-avS
+aEX
 alm
 asC
 awD

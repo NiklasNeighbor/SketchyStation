@@ -9372,6 +9372,7 @@
 #include "modular_zubbers\code\modules\customization\species\proteans\organs\protean_tongue.dm"
 #include "modular_zubbers\code\modules\customization\species\somnari\__DEFINES.dm"
 #include "modular_zubbers\code\modules\customization\species\Somnari\_somnari_species.dm"
+#include "modular_zubbers\code\modules\customization\species\somnari\somnari_dreamscape_terrain.dm"
 #include "modular_zubbers\code\modules\customization\species\synths\death_sound.dm"
 #include "modular_zubbers\code\modules\customization\species\synths\code\synth_prefab.dm"
 #include "modular_zubbers\code\modules\customization\sprite_accessories\64_wings.dm"
