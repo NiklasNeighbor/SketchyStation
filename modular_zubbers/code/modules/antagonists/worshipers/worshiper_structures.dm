@@ -2,4 +2,5 @@
 	name = "Divine Nexus"
 	desc = "The thing that gives a divine presence form. If it is destroyed, so is the god."
 	icon_state = "thingspike"
+	var/mob/eye/worshipers_god/overmind
 

@@ -18,5 +18,8 @@
 	lighting_cutoff_blue = 20
 	hud_type = /datum/hud/blob_overmind
 
-	var/obj/machinery/worshipers/worshiper_nexus/nexus
+	var/obj/structure/worshipers/worshiper_nexus/nexus
 	var/influence = 0
+
+/mob/eye/worshipers_god/proc/setup_deity()
+	//not implemented
