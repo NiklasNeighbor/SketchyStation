@@ -1,6 +1,6 @@
 /datum/antagonist/worshipers_god
 	name = "\improper God"
-	roundend_category = "gods"
+	roundend_category = "worshipers"
 	antagpanel_category = ANTAG_GROUP_ABOMINATIONS
 	show_to_ghosts = TRUE
 	show_in_antagpanel = FALSE

@@ -10,16 +10,21 @@
 	layer = FLY_LAYER
 	plane = ABOVE_GAME_PLANE
 	see_invisible = SEE_INVISIBLE_LIVING
-	pass_flags = PASSCLOSEDTURF
+	pass_flags = list(PASSCLOSEDTURF, PASSGLASS, PASSMOB, PASSSTRUCTURE, PASSDOORS,)
 	faction = list(ROLE_WORSHIPER)
 
 	lighting_cutoff_red = 0
 	lighting_cutoff_green = 35
 	lighting_cutoff_blue = 20
-	hud_type = /datum/hud/blob_overmind
+	hud_type = /datum/hud/worshipers_god
 
 	var/obj/structure/worshipers/worshiper_nexus/nexus
 	var/influence = 0
 
 /mob/eye/worshipers_god/proc/setup_deity()
 	//not implemented
+
+
+
+
+

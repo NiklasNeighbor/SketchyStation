@@ -23,6 +23,7 @@
 		return NOT_ENOUGH_PLAYERS
 	var/mob/dead/observer/new_god = chosen_one
 	var/mob/eye/worshipers_god/divinity = new_god.become_divine_presence()
+	divinity.mind.add_antag_datum(/datum/antagonist/worshipers_god)
 	spawned_mobs += divinity
 	message_admins("[ADMIN_LOOKUPFLW(divinity)] has been made into a divine presence by an event.")
 	divinity.log_message("was spawned as a divine presence by an event.", LOG_GAME)

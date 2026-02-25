@@ -9217,6 +9217,7 @@
 #include "modular_zubbers\code\modules\antagonists\wizard\events_rework.dm"
 #include "modular_zubbers\code\modules\antagonists\wizard\grand_finale_removal.dm"
 #include "modular_zubbers\code\modules\antagonists\wizard\soulstone.dm"
+#include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_god_hud.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
