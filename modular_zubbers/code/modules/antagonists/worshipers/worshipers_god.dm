@@ -23,9 +23,22 @@
 	var/influence = 0
 	var/list/mob/living/carbon/human/worshipers = list()
 
+	///The ability which lets us convert a target to our religion
+	var/datum/action/cooldown/spell/pointed/enlighten_worshiper/enlighten_ability = /datum/action/cooldown/spell/pointed/enlighten_worshiper
+
+	var/datum/action/cooldown/spell/list_target/telepathy/whisper_ability = /datum/action/cooldown/spell/list_target/telepathy
+
 /mob/eye/worshipers_god/proc/setup_deity()
 	//not implemented
+	add_traits(list(TRAIT_SPACEWALK, TRAIT_SIXTHSENSE, TRAIT_FREE_HYPERSPACE_MOVEMENT, TRAIT_SEE_BLESSED_TILES), INNATE_TRAIT)
 	adjust_influence(0) //to make sure the numbers render
+	enlighten_ability = new enlighten_ability(src)
+	enlighten_ability.Grant(src)
+	enlighten_ability.deity = src
+
+	whisper_ability = new whisper_ability(src)
+	whisper_ability.Grant(src)
+
 
 /mob/eye/worshipers_god/proc/place_nexus()
 	//TODO: add placement validity checks
@@ -44,3 +57,25 @@
 	var/increase = 1 + worshipers.len
 	adjust_influence(increase)
 	addtimer(CALLBACK(src, PROC_REF(passive_influence_gain)), 1 MINUTES)
+
+
+
+//lifted this code straight from the Revenant
+/mob/eye/worshipers_god/say(message, bubble_type, list/spans, sanitize, datum/language/language, ignore_spam, forced, filterproof, message_range, datum/saymode/saymode, list/message_mods)
+	if(!message)
+		return
+
+	if(client)
+		if(client.prefs.muted & MUTE_IC)
+			to_chat(src, span_boldwarning("You cannot send IC messages (muted)."))
+			return
+		if (!(ignore_spam || forced) && client.handle_spam_prevention(message, MUTE_IC))
+			return
+
+	if(sanitize)
+		message = trim(copytext_char(sanitize(message), 1, MAX_MESSAGE_LEN))
+
+	log_talk(message, LOG_SAY)
+	var/rendered = span_deadsay("<b>DIVINITY: [src]</b> says, \"[message]\"")
+	relay_to_list_and_observers(rendered, GLOB.revenant_relay_mobs, src)
+	to_chat(src, rendered)

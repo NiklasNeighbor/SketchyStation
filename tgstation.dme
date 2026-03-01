@@ -9223,6 +9223,7 @@
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshiper_structures.dm"
+#include "modular_zubbers\code\modules\antagonists\worshipers\worshipers_abilities.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshipers_god.dm"
 #include "modular_zubbers\code\modules\antagonists\worshipers\worshipers_antag.dm"
 #include "modular_zubbers\code\modules\arcades\assets\arcade.dm"
