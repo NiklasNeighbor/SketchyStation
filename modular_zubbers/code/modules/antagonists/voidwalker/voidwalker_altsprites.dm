@@ -103,6 +103,7 @@
 	if(!isnull(walker))
 		comp = walker.GetComponent(/datum/component/space_camo)
 		comp.position_indicator = image(void_target.icon, void_target.icon_state + "_stealthed", ABOVE_LIGHTING_PLANE)
+		to_chat(void_target, span_yellow("DEBUG: Camo Icon changed to [void_target.icon_state + "_stealthed"]"))
 
 	void_target.update_appearance(updates = UPDATE_ICON)
 
