@@ -72,6 +72,8 @@ GLOBAL_VAR(families_override_theme)
 	var/list/restricted_jobs
 	/// The current chosen gamemode theme. Decides the available Gangs, objectives, and equipment.
 	//var/datum/gang_theme/current_theme
+	///List of actual gang datums of the gangs involved. used to be accessible through themes, but that has been cut.
+	var/list/involved_gangs = list()
 	///The announcement used at the beginning to announce the presence of gangs
 	var/intro_message = "You're listening to the 108.9 Swing, all jazz, all night long, no advertising. We'd like to take this time to remind you to avoid smoky backrooms and \
 	suspicious individuals in suits and hats. Don't make a deal you can't pay back."
@@ -160,6 +162,7 @@ GLOBAL_VAR(families_override_theme)
 	for(var/i = 1, i <= amount_of_gangs, i++)
 		var/gang_to_add = pick_n_take(possible_gangs)
 		chosen_gangs += gang_to_add
+	involved_gangs = chosen_gangs.Copy()
 	gangs_to_use = chosen_gangs.Copy()
 	for(var/datum/antagonist/gang/single_gang in chosen_gangs)
 		message_admins("Using gang: [single_gang.name]")

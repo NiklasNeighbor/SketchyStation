@@ -33,6 +33,8 @@
 
 	/// A flavor text that is shown to new recruits and is supposed to convey the general vibes of a group.
 	var/gang_flavor = "Damn it feels good to be a gangsta!"
+	///Used for managing the gang representation huds. Assoc list (mob = mutable_appearance)
+	var/list/gang_rep_huds = list()
 
 /datum/outfit/gangster
 	name = "Gangster (Preview only)"
@@ -286,6 +288,43 @@
 			smallest = family
 			smallest_size = family.members.len
 	return smallest
+
+///The minimum amount of matching clothing pieces that one needs to wear to be identifiable as a member of a gang
+#define MINIMUM_GANG_UNIFORM 2
+
+/datum/antagonist/gang/proc/matches_uniform(mob/living/carbon/human/wearer)
+	if(!wearer)
+		return FALSE
+
+	var/matches = 0
+
+	// Check relevant slots
+	var/list/check_slots = list(
+		wearer.w_uniform,
+		wearer.wear_suit,
+		wearer.head,
+		wearer.wear_mask,
+		wearer.wear_neck,
+		wearer.gloves,
+		wearer.shoes,
+		wearer.glasses,
+		wearer.back,
+		wearer.ears,
+	)
+
+	for(var/obj/item/worn in check_slots)
+		if(!worn)
+			continue
+
+		if(worn.type in acceptable_clothes)
+			matches++
+
+		if(matches >= MINIMUM_GANG_UNIFORM)
+			return TRUE
+
+	return FALSE
+
+#undef MINIMUM_GANG_UNIFORM
 
 /datum/status_effect/offering/secret_handshake
 	id = "secret_handshake"

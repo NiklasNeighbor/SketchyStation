@@ -9308,6 +9308,7 @@
 #include "modular_zubbers\code\modules\antagonists\families\cellphone.dm"
 #include "modular_zubbers\code\modules\antagonists\families\clothing.dm"
 #include "modular_zubbers\code\modules\antagonists\families\gang.dm"
+#include "modular_zubbers\code\modules\antagonists\families\gang_rep_hud.dm"
 #include "modular_zubbers\code\modules\antagonists\families\handler.dm"
 #include "modular_zubbers\code\modules\antagonists\families\induction_package.dm"
 #include "modular_zubbers\code\modules\antagonists\families\outfits.dm"
