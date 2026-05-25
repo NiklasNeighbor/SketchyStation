@@ -102,8 +102,9 @@
 	//TODO: Insert code to change the sprites used for space_dive and space_camo components
 	if(!isnull(walker))
 		camo_comp = walker.GetComponent(/datum/component/space_camo)
-		camo_comp.position_indicator = image(void_target.icon, void_target.icon_state + "_stealthed", ABOVE_LIGHTING_PLANE)
-		to_chat(void_target, span_yellow("DEBUG: Camo Icon changed to [void_target.icon_state + "_stealthed"]"))
+		camo_comp.force_exit_camo()
+		qdel(camo_comp)
+		walker.AddComponent(/datum/component/space_camo, walker.space_alpha, walker.non_space_alpha, 255, 5 SECONDS, image(icon, icon_state_living + "_stealthed", ABOVE_LIGHTING_PLANE))
 
 	void_target.update_appearance(updates = UPDATE_ICON)
 
