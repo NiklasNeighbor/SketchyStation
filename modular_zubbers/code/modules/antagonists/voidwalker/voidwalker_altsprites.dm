@@ -96,6 +96,7 @@
 /datum/void_sprite/proc/apply(mob/living/basic/void_target)
 	var/mob/living/basic/voidwalker/walker = void_target
 	var/datum/component/space_camo/camo_comp
+	var/datum/component/space_dive/dive_comp
 	void_target.icon = icon
 	void_target.icon_living = icon_state_living
 	void_target.icon_state = icon_state_living
@@ -105,6 +106,11 @@
 		camo_comp.force_exit_camo()
 		qdel(camo_comp)
 		walker.AddComponent(/datum/component/space_camo, walker.space_alpha, walker.non_space_alpha, 255, 5 SECONDS, image(icon, icon_state_living + "_stealthed", ABOVE_LIGHTING_PLANE))
+
+		dive_comp = walker.GetComponent(/datum/component/space_dive)
+		qdel(dive_comp)
+		walker.AddComponent(/datum/component/space_dive, /obj/effect/dummy/phased_mob/space_dive/voidwalker)
+
 
 	void_target.update_appearance(updates = UPDATE_ICON)
 
@@ -116,3 +122,4 @@
 /datum/void_sprite/voidwalker
 	name = "voidwalker"
 	icon_state_living = "voidwalker"
+
