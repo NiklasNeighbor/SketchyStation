@@ -27,3 +27,54 @@
 	. = ..()
 	human_who_gained_species.gain_trauma(/datum/brain_trauma/voided/avatar)
 
+
+
+
+/datum/action/cooldown/spell/pointed/voidwalker_avatar_summon
+	name = "Conjure Avatar"
+	desc = "Conjure a humanoid avatar to easier interact with the unenlightened."
+	spell_requirements = null
+	cooldown_time = 10 SECONDS
+
+/datum/action/cooldown/spell/pointed/voidwalker_avatar_summon/cast(atom/cast_on)
+	. = ..()
+	var/client/caster_client = owner.client
+	var/list/character_list = caster_client.prefs.create_character_profiles()
+	var/target_char_name = tgui_input_list(
+		owner,
+		"What form will your avatar take?",
+		"Character",
+		character_list,
+		timeout = 30 SECONDS
+	)
+	if (isnull(target_char_name))
+		owner.balloon_alert(owner, "no selection!")
+		return
+	var/datum/preferences/prefs = caster_client.prefs
+	prefs.load_character(character_list.Find(target_char_name))
+	var/mob/living/carbon/human/avatar = new(get_turf(cast_on))
+	prefs.safe_transfer_prefs_to(avatar)
+	avatar.set_species(/datum/species/voidwalker_avatar)
+	avatar.dna.update_dna_identity()
+	new /obj/effect/temp_visual/circle_wave/unsettle(get_turf(avatar))
+
+	//TODO: Insert granting of return abilities
+	var/datum/action/dissolve_voidwalker_avatar/dissolve = new()
+	dissolve.real_body = owner
+	dissolve.Grant(avatar)
+
+	owner.mind.transfer_to(avatar)
+
+
+
+/datum/action/dissolve_voidwalker_avatar
+	name = "Dissolve Avatar"
+	desc = "Destroys your avatar and returns your consciousness to your real voidwalker body."
+	var/mob/living/basic/voidwalker/real_body
+
+/datum/action/dissolve_voidwalker_avatar/Trigger(mob/clicker, trigger_flags)
+	. = ..()
+	owner.mind.transfer_to(real_body)
+	new /obj/effect/temp_visual/circle_wave/unsettle(get_turf(owner))
+	qdel(owner)
+
