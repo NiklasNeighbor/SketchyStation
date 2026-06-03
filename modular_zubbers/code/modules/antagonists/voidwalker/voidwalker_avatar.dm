@@ -20,6 +20,7 @@
 		TRAIT_NODEATH,
 		TRAIT_SPACEWALK,
 		TRAIT_MADNESS_IMMUNE,
+		TRAIT_HARD_SOLES,
 	)
 
 /datum/species/voidwalker_avatar/on_species_gain(mob/living/carbon/human/human_who_gained_species, datum/species/old_species, pref_load, regenerate_icons)
