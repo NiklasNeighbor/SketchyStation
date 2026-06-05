@@ -32,9 +32,17 @@
 
 /datum/action/cooldown/spell/pointed/voidwalker_avatar_summon
 	name = "Conjure Avatar"
-	desc = "Conjure a humanoid avatar to easier interact with the unenlightened."
+	desc = "Conjure a humanoid avatar to easier interact with the unenlightened, or transfer you consciousness to your existing avatar."
 	spell_requirements = null
 	cooldown_time = 10 SECONDS
+	var/mob/living/carbon/human/current_avatar
+
+/datum/action/cooldown/spell/pointed/voidwalker_avatar_summon/on_activation(mob/on_who)
+	. = ..()
+	if(!isnull(current_avatar))
+		unset_click_ability(on_who, FALSE)
+		owner.mind.transfer_to(current_avatar)
+
 
 /datum/action/cooldown/spell/pointed/voidwalker_avatar_summon/cast(atom/cast_on)
 	. = ..()
@@ -53,6 +61,7 @@
 	var/datum/preferences/prefs = caster_client.prefs
 	prefs.load_character(character_list.Find(target_char_name))
 	var/mob/living/carbon/human/avatar = new(get_turf(cast_on))
+	current_avatar = avatar
 	prefs.safe_transfer_prefs_to(avatar)
 	avatar.set_species(/datum/species/voidwalker_avatar)
 	avatar.dna.update_dna_identity()
@@ -62,6 +71,10 @@
 	var/datum/action/dissolve_voidwalker_avatar/dissolve = new()
 	dissolve.real_body = owner
 	dissolve.Grant(avatar)
+
+	var/datum/action/voidwalker_swap_bodies/swap = new()
+	swap.real_body = owner
+	swap.Grant(avatar)
 
 	owner.mind.transfer_to(avatar)
 
@@ -78,3 +91,11 @@
 	new /obj/effect/temp_visual/circle_wave/unsettle(get_turf(owner))
 	qdel(owner)
 
+/datum/action/voidwalker_swap_bodies
+	name = "Transfer Consciousness"
+	desc = "Transfer you consciousness back to your real voidwalker body while still hearing what this avatar hears."
+	var/mob/living/basic/voidwalker/real_body
+
+/datum/action/voidwalker_swap_bodies/Trigger(mob/clicker, trigger_flags)
+	. = ..()
+	owner.mind.transfer_to(real_body)
