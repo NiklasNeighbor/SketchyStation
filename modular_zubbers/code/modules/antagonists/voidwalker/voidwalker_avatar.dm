@@ -70,6 +70,7 @@
 	//TODO: Insert granting of return abilities
 	var/datum/action/dissolve_voidwalker_avatar/dissolve = new()
 	dissolve.real_body = owner
+	dissolve.summon_action = src
 	dissolve.Grant(avatar)
 
 	var/datum/action/voidwalker_swap_bodies/swap = new()
@@ -84,11 +85,24 @@
 	name = "Dissolve Avatar"
 	desc = "Destroys your avatar and returns your consciousness to your real voidwalker body."
 	var/mob/living/basic/voidwalker/real_body
+	var/datum/action/cooldown/spell/pointed/voidwalker_avatar_summon/summon_action
+
+/datum/action/dissolve_voidwalker_avatar/Grant(mob/grant_to)
+	. = ..()
+	RegisterSignal(owner, COMSIG_MOB_APPLY_DAMAGE, PROC_REF(on_take_damage))
+
+/datum/action/dissolve_voidwalker_avatar/proc/on_take_damage()
+	SIGNAL_HANDLER
+	Trigger(owner)
+	return
 
 /datum/action/dissolve_voidwalker_avatar/Trigger(mob/clicker, trigger_flags)
 	. = ..()
 	owner.mind.transfer_to(real_body)
+	real_body = null
+	summon_action.current_avatar = null
 	new /obj/effect/temp_visual/circle_wave/unsettle(get_turf(owner))
+
 	qdel(owner)
 
 /datum/action/voidwalker_swap_bodies
