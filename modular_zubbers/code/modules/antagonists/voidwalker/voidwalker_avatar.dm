@@ -98,9 +98,11 @@
 
 /datum/action/dissolve_voidwalker_avatar/Trigger(mob/clicker, trigger_flags)
 	. = ..()
-	owner.mind.transfer_to(real_body)
+	if(owner.mind)
+		owner.mind.transfer_to(real_body)
 	real_body = null
 	summon_action.current_avatar = null
+	UnregisterSignal(owner, COMSIG_MOB_APPLY_DAMAGE)
 	new /obj/effect/temp_visual/circle_wave/unsettle(get_turf(owner))
 
 	qdel(owner)
