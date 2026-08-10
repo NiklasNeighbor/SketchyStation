@@ -80,6 +80,7 @@
 		my_gang = new_gang
 		if(handler) // if we have a handler, the handler should track this gang
 			handler.gangs += my_gang
+			my_gang.current_theme = handler.current_theme
 		my_gang.name = gang_name
 		my_gang.gang_id = gang_id
 		my_gang.acceptable_clothes = acceptable_clothes.Copy()
@@ -124,7 +125,7 @@
 /// Used to display gang objectives in the player's traitor panel
 /datum/antagonist/gang/proc/add_objectives()
 	var/datum/objective/objective = new ()
-	objective.explanation_text = gang_flavor
+	objective.explanation_text = my_gang.current_theme.gang_objectives[type]
 	objectives.Add(objective)
 
 /// Gives a gangster their equipment in their backpack and / or pockets.
@@ -144,8 +145,6 @@
 			if(!equipped)
 				to_chat(owner.current, "Your [clothing_object.name] has been placed at your feet.")
 				clothing_object.forceMove(get_turf(gangster_human))
-		//Removed stuff to do with theme-specific bonus items
-		/*
 		if(my_gang.current_theme.bonus_items)
 			for(var/bonus_item in my_gang.current_theme.bonus_items)
 				var/obj/item/bonus_object = new bonus_item(owner.current)
@@ -161,13 +160,12 @@
 					if(!equipped)
 						to_chat(owner.current, "Your [bonus_starter_object.name] has been placed at your feet.")
 						bonus_starter_object.forceMove(get_turf(gangster_human))
-						*/
 
 /datum/antagonist/gang/ui_static_data(mob/user)
 	var/list/data = list()
 	data["gang_name"] = gang_name
 	data["antag_name"] = name
-	data["gang_objective"] = gang_flavor
+	data["gang_objective"] = my_gang.current_theme.gang_objectives[type]
 
 	var/list/clothes_we_can_wear = list()
 	for(var/obj/item/accepted_item as anything in acceptable_clothes)
@@ -191,7 +189,7 @@
 	/// The specific, occupied family member antagonist datum that is used to reach the handler / check objectives, and from which the above properties (sans points) are inherited.
 	var/datum/antagonist/gang/my_gang_datum
 	/// The current theme. Used to pull important stuff such as spawning equipment and objectives.
-	//var/datum/gang_theme/current_theme
+	var/datum/gang_theme/current_theme
 
 /// Allow gangs to have custom naming schemes for their gangsters.
 /datum/team/gang/proc/rename_gangster(datum/mind/gangster, original_name, starter_gangster)
@@ -202,12 +200,14 @@
 	report += "<span class='header'>[name]:</span>"
 	if(!members.len)
 		report += span_redtext("The family was wiped out!")
+	if(current_theme.everyone_objective)
+		report += "Objective: [current_theme.everyone_objective]"
 	else
-		var/assigned_objective = my_gang_datum.gang_flavor
+		var/assigned_objective = current_theme.gang_objectives[my_gang_datum.type]
 		if(assigned_objective)
 			report += "Objective: [assigned_objective]"
 		else
-			report += "Objective: ERROR, FILE A REPORT WITH THIS INFO: Gang Name: [my_gang_datum.name]"
+			report += "Objective: ERROR, FILE A REPORT WITH THIS INFO: Gang Name: [my_gang_datum.name], Theme Name: [current_theme.name]"
 	if(members.len)
 		report += "[my_gang_datum.roundend_category] were:"
 		report += printplayerlist(members)

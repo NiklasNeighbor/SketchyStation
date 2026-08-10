@@ -71,10 +71,7 @@ GLOBAL_VAR(families_override_theme)
 	/// List of jobs not eligible for starting family member / undercover cop. Set externally (passed by reference) by gamemode / ruleset; used internally.
 	var/list/restricted_jobs
 	/// The current chosen gamemode theme. Decides the available Gangs, objectives, and equipment.
-	//var/datum/gang_theme/current_theme
-	///The announcement used at the beginning to announce the presence of gangs
-	var/intro_message = "You're listening to the 108.9 Swing, all jazz, all night long, no advertising. We'd like to take this time to remind you to avoid smoky backrooms and \
-	suspicious individuals in suits and hats. Don't make a deal you can't pay back."
+	var/datum/gang_theme/current_theme
 
 /**
  * Sets antag_candidates and restricted_jobs.
@@ -112,9 +109,14 @@ GLOBAL_VAR(families_override_theme)
  * Takes no arguments.
  */
 /datum/gang_handler/proc/pre_setup_analogue()
-	var/player_count = get_active_player_count(TRUE, TRUE)
-	///How many total gangsters should be spawned to be starting gangsters.
-	var/gangsters_to_make = max(2, FLOOR(player_count / 10, 1))
+	if(!GLOB.families_override_theme)
+		var/theme_to_use = pick(subtypesof(/datum/gang_theme))
+		current_theme = new theme_to_use
+	else
+		current_theme = new GLOB.families_override_theme
+	message_admins("Families has chosen the theme: [current_theme.name]")
+	log_game("FAMILIES: The following theme has been chosen: [current_theme.name]")
+	var/gangsters_to_make = length(current_theme.involved_gangs) * current_theme.starting_gangsters
 	for(var/i in 1 to gangsters_to_make)
 		if (!antag_candidates.len)
 			break
@@ -151,25 +153,15 @@ GLOBAL_VAR(families_override_theme)
  * * return_if_no_gangs - Boolean that determines if the proc should return FALSE should it find no eligible family members. Should be used for dynamic only.
  */
 /datum/gang_handler/proc/post_setup_analogue(return_if_no_gangs = FALSE)
-	var/list/possible_gangs = subtypesof(/datum/antagonist/gang)
-	var/amount_of_gangs = clamp(rand(0, 3), 2, 3) //picks random number between 0 and 3. if it is 3, is spawns 3 gangs, otherwise spawns 2 gangs
-	if (gangbangers.len < 3)
-		amount_of_gangs = 2
-	var/list/gangs_to_use
-	var/list/chosen_gangs = list() //which gangs are involved this round
-	for(var/i = 1, i <= amount_of_gangs, i++)
-		var/gang_to_add = pick_n_take(possible_gangs)
-		chosen_gangs += gang_to_add
-	gangs_to_use = chosen_gangs.Copy()
-	for(var/datum/antagonist/gang/single_gang in chosen_gangs)
-		message_admins("Using gang: [single_gang.name]")
-	var/amount_of_gangsters = amount_of_gangs
+	var/list/gangs_to_use = current_theme.involved_gangs.Copy()
+	var/amount_of_gangs = gangs_to_use.len
+	var/amount_of_gangsters = amount_of_gangs * current_theme.starting_gangsters
 	for(var/_ in 1 to amount_of_gangsters)
 		if(!gangbangers.len) // We ran out of candidates!
 			break
 		if(!gangs_to_use.len)
-			gangs_to_use = chosen_gangs.Copy()
-		var/gang_to_use = pick_n_take(gangs_to_use) // Evenly distributes Leaders among the gangs. One gang might still have an extra member but that's fine.
+			gangs_to_use = current_theme.involved_gangs.Copy()
+		var/gang_to_use = pick_n_take(gangs_to_use) // Evenly distributes Leaders among the gangs
 		var/datum/mind/gangster_mind = pick_n_take(gangbangers)
 		var/datum/antagonist/gang/new_gangster = new gang_to_use()
 		new_gangster.handler = src
@@ -211,7 +203,7 @@ GLOBAL_VAR(families_override_theme)
 
 /// Internal. Announces the presence of families to the entire station and sets sent_announcement to true to allow other checks to occur.
 /datum/gang_handler/proc/announce_gang_locations()
-	priority_announce(intro_message, "Families", 'sound/mobs/non-humanoids/beepsky/radio.ogg')
+	priority_announce(current_theme.description, current_theme.name, 'sound/mobs/non-humanoids/beepsky/radio.ogg')
 	sent_announcement = TRUE
 
 /// Internal. Checks if our wanted level has changed; calls update_wanted_level. Only updates wanted level post the initial announcement and until the cops show up. After that, it's locked.
@@ -404,7 +396,7 @@ GLOBAL_VAR(families_override_theme)
 
 			cop.mind.add_antag_datum(ert_antag)
 			cop.mind.set_assigned_role(ert_antag.ert_job_path)
-			//TODO: Should probably make a ghost role spawn for this? maybe just remove it for the sake of my sanity.
+			//DEBUG: Should probably make a ghost role spawn for this? maybe just remove it for the sake of my sanity.
 			// Space cops are having a staffing shortage.
 			//SSjob.SendToLateJoin(cop)
 
