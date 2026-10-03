@@ -27,9 +27,13 @@
 	var/original_name
 	/// Type of team to create when creating the gang in the first place. Used for renames.
 	var/gang_team_type = /datum/team/gang
+	/// What sound should play when we become a gangster?
+	var/antag_sound = 'sound/ambience/antag/thatshowfamiliesworks.ogg'
 
 	/// A reference to the handler datum that manages the families gamemode. In case of no handler (admin-spawned during round), this will be null; this is fine.
 	var/datum/gang_handler/handler
+	/// What type should our HUD check for?
+	var/hud_type_check = /datum/antagonist/gang
 
 	/// A flavor text that is shown to new recruits and is supposed to convey the general vibes of a group.
 	var/gang_flavor = "Damn it feels good to be a gangsta!"
@@ -94,7 +98,7 @@
 	my_gang.rename_gangster(owner, original_name, starter_gangster) // fully_replace_character_name
 	if(starter_gangster)
 		equip_gangster_in_inventory()
-	owner.current.playsound_local(get_turf(owner.current), 'sound/music/antag/thatshowfamiliesworks.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
+	owner.current.playsound_local(get_turf(owner.current), antag_sound, 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
 	add_objectives()
 	..()
 
@@ -115,7 +119,7 @@
 	if(starter_gangster)
 		package_spawner.Grant(owner.current)
 		package_spawner.my_gang_datum = src
-	add_team_hud(mob_override || owner.current, /datum/antagonist/gang)
+	add_team_hud(mob_override || owner.current, hud_type_check)
 
 /datum/antagonist/gang/remove_innate_effects(mob/living/mob_override)
 	if(starter_gangster)
@@ -125,7 +129,7 @@
 /// Used to display gang objectives in the player's traitor panel
 /datum/antagonist/gang/proc/add_objectives()
 	var/datum/objective/objective = new ()
-	objective.explanation_text = my_gang.current_theme.gang_objectives[type]
+	objective.explanation_text = istype(my_gang.current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
 	objectives.Add(objective)
 
 /// Gives a gangster their equipment in their backpack and / or pockets.
@@ -153,19 +157,22 @@
 					to_chat(owner.current, "Your [bonus_object.name] has been placed at your feet.")
 					bonus_object.forceMove(get_turf(gangster_human))
 		if(starter_gangster)
-			if(my_gang.current_theme.bonus_first_gangster_items)
+			if(my_gang.current_theme.bonus_first_gangster_items && !my_gang.starting_item_handed_out)
 				for(var/bonus_starter_item in my_gang.current_theme.bonus_first_gangster_items)
-					var/obj/item/bonus_starter_object = new bonus_starter_item(owner.current)
-					var/equipped = bonus_starter_object.equip_to_best_slot(gangster_human)
-					if(!equipped)
-						to_chat(owner.current, "Your [bonus_starter_object.name] has been placed at your feet.")
-						bonus_starter_object.forceMove(get_turf(gangster_human))
+					if(!isnull(my_gang.current_theme.bonus_first_gangster_items[bonus_starter_item]) && bonus_starter_item == src.type)
+						my_gang.starting_item_handed_out = TRUE
+						var/path_to_spawn = my_gang.current_theme.bonus_first_gangster_items[bonus_starter_item]
+						var/obj/item/bonus_starter_object = new path_to_spawn(owner.current)
+						var/equipped = bonus_starter_object.equip_to_best_slot(gangster_human)
+						if(!equipped)
+							to_chat(owner.current, "Your [bonus_starter_object.name] has been placed at your feet.")
+							bonus_starter_object.forceMove(get_turf(gangster_human))
 
 /datum/antagonist/gang/ui_static_data(mob/user)
 	var/list/data = list()
 	data["gang_name"] = gang_name
 	data["antag_name"] = name
-	data["gang_objective"] = my_gang.current_theme.gang_objectives[type]
+	data["gang_objective"] = istype(my_gang.current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
 
 	var/list/clothes_we_can_wear = list()
 	for(var/obj/item/accepted_item as anything in acceptable_clothes)
@@ -190,6 +197,8 @@
 	var/datum/antagonist/gang/my_gang_datum
 	/// The current theme. Used to pull important stuff such as spawning equipment and objectives.
 	var/datum/gang_theme/current_theme
+	/// Has the starting item been handed out yet?
+	var/starting_item_handed_out = FALSE
 
 /// Allow gangs to have custom naming schemes for their gangsters.
 /datum/team/gang/proc/rename_gangster(datum/mind/gangster, original_name, starter_gangster)
@@ -203,7 +212,7 @@
 	if(current_theme.everyone_objective)
 		report += "Objective: [current_theme.everyone_objective]"
 	else
-		var/assigned_objective = current_theme.gang_objectives[my_gang_datum.type]
+		var/assigned_objective = istype(current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : current_theme.gang_objectives[my_gang_datum.type]
 		if(assigned_objective)
 			report += "Objective: [assigned_objective]"
 		else
