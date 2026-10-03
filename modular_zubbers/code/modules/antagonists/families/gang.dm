@@ -27,9 +27,13 @@
 	var/original_name
 	/// Type of team to create when creating the gang in the first place. Used for renames.
 	var/gang_team_type = /datum/team/gang
+	/// What sound should play when we become a gangster?
+	var/antag_sound = 'sound/ambience/antag/thatshowfamiliesworks.ogg'
 
 	/// A reference to the handler datum that manages the families gamemode. In case of no handler (admin-spawned during round), this will be null; this is fine.
 	var/datum/gang_handler/handler
+	/// What type should our HUD check for?
+	var/hud_type_check = /datum/antagonist/gang
 
 	/// A flavor text that is shown to new recruits and is supposed to convey the general vibes of a group.
 	var/gang_flavor = "Damn it feels good to be a gangsta!"
@@ -94,7 +98,7 @@
 	my_gang.rename_gangster(owner, original_name, starter_gangster) // fully_replace_character_name
 	if(starter_gangster)
 		equip_gangster_in_inventory()
-	owner.current.playsound_local(get_turf(owner.current), 'sound/music/antag/thatshowfamiliesworks.ogg', 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
+	owner.current.playsound_local(get_turf(owner.current), antag_sound, 100, FALSE, pressure_affected = FALSE, use_reverb = FALSE)
 	add_objectives()
 	..()
 
@@ -115,7 +119,7 @@
 	if(starter_gangster)
 		package_spawner.Grant(owner.current)
 		package_spawner.my_gang_datum = src
-	add_team_hud(mob_override || owner.current, /datum/antagonist/gang)
+	add_team_hud(mob_override || owner.current, hud_type_check)
 
 /datum/antagonist/gang/remove_innate_effects(mob/living/mob_override)
 	if(starter_gangster)
