@@ -833,5 +833,77 @@
 	else
 		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
 
+/datum/antagonist/gang/big_game_referees
+	show_in_antagpanel = TRUE
+	name = "\improper Big Game Referee"
+	roundend_category = "Big Game Referees"
+	gang_name = "Big Game Referees"
+	gang_id = "REFS"
+	free_clothes = list(
+		/obj/item/clothing/under/costume/big_game_referees,
+		/obj/item/clothing/head/big_game_referees,
+		/obj/item/clothing/shoes/big_game_referees,
+		/obj/item/clothing/mask/whistle/referee,
+	)
+	antag_hud_name = "Referees"
+	gang_team_type = /datum/team/gang/big_game_referees
+
+/datum/team/gang/big_game_referees/rename_gangster(datum/mind/gangster, original_name, starter_gangster)
+	var/static/regex/last_name = new("\[^\\s-\]+$") //First word before whitespace or "-"
+	last_name.Find(original_name)
+	if(starter_gangster)
+		gangster.current.fully_replace_character_name(gangster.current.real_name, "Sybil Coach [last_name.match]")
+	else
+		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
+
+// Security is put into their own Family during Families because mechanically speaking, Security is a faction in Families. By properly integrating them into
+// the gamemode as a Family, this allows admins to keep tabs on Security during Families easier and allows us to provide better direction to Security during
+// the Families gamemode. It also allows for a better defined split between neutral parties and station-aligned parties.
+/datum/antagonist/gang/security // https://en.wikipedia.org/wiki/List_of_LASD_deputy_gangs
+	show_in_antagpanel = TRUE
+	name = "Security Officer"
+	roundend_category = "the Security Department"
+	gang_name = "Nanotrasen"
+	gang_id = "SEC"
+	acceptable_clothes = list(/obj/item/clothing/under/rank/security/officer,
+		/obj/item/clothing/suit/armor/vest/alt,
+		/obj/item/clothing/head/helmet/sec,
+		/obj/item/clothing/shoes/jackboots,
+		/obj/item/clothing/gloves/color/black)
+	free_clothes = list(/obj/item/toy/crayon/spraycan)
+	antag_hud_name = "hud_spacecop"
+	gang_team_type = /datum/team/gang/security
+	antag_sound = 'sound/effects/families_police.ogg'
+	hud_type_check = /datum/antagonist/gang/security
+
+/datum/team/gang/security/rename_gangster(datum/mind/gangster, original_name, starter_gangster)
+	var/static/regex/last_name = new("\[^\\s-\]+$") //First word before whitespace or "-"
+	last_name.Find(original_name)
+	if(starter_gangster)
+		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
+	else
+		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
+
+/datum/antagonist/gang/revolution
+	show_in_antagpanel = TRUE
+	name = "Revolution"
+	roundend_category = "the Revolutionaries"
+	gang_name = "Revolutionaries"
+	gang_id = "VIVA"
+	acceptable_clothes = list()
+	free_clothes = list(/obj/item/toy/crayon/spraycan)
+	antag_hud_name = "rev"
+	gang_team_type = /datum/team/gang/security
+	antag_hud_type_to_use = /datum/atom_hud/alternate_appearance/basic/has_antagonist/exact
+	hud_type_check = /datum/antagonist/gang/revolution
+
+/datum/team/gang/revolution/rename_gangster(datum/mind/gangster, original_name, starter_gangster)
+	var/static/regex/last_name = new("\[^\\s-\]+$") //First word before whitespace or "-"
+	last_name.Find(original_name)
+	if(starter_gangster)
+		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
+	else
+		gangster.current.fully_replace_character_name(gangster.current.real_name, original_name)
+
 
 #undef MAX_GANG_OUTNUMBERING
