@@ -536,7 +536,7 @@ GLOBAL_LIST_EMPTY(antagonists)
 	QDEL_NULL(team_hud_ref)
 
 	team_hud_ref = WEAKREF(target.add_alt_appearance(
-		/datum/atom_hud/alternate_appearance/basic/has_antagonist,
+		antag_hud_type_to_use, //BUBBER EDIT; was: "/datum/atom_hud/alternate_appearance/basic/has_antagonist,"
 		"antag_team_hud_[REF(src)]",
 		hud_image_on(target),
 		antag_to_check || type,

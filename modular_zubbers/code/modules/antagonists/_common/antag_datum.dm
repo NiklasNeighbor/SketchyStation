@@ -3,6 +3,8 @@
 	var/antag_panel_title = "Antagonist Panel"
 	var/antag_panel_description = "This is the antagonist panel. It contains all the abilities you have access to as an antagonist. Use them wisely."
 
+	var/antag_hud_type_to_use = /datum/atom_hud/alternate_appearance/basic/has_antagonist
+
 /datum/antagonist/proc/ability_ui_data(actions = list())
 	var/list/data = list()
 	data["title"] = "[antag_panel_title]\n[antag_panel_data()]"
