@@ -227,6 +227,8 @@
 
 	)
 
+/*
+//Fighting over the NAD is probably too gamery for Bubber, even without pulling the nuke
 /datum/gang_theme/space_rosa
 	name = "Space Rosa"
 	description = "Hey there, this is the Economy Zone on BOX News 66.6. The stock market is still reeling from accusations that three well known corporate entities \
@@ -262,6 +264,7 @@
 		Remember, any unauthorized shooting of station employees will result in a mandatory 2 week paid vacation to the resort planet of your choice, \
 		as dictated by the Security Union contract."
 	)
+*/
 
 /datum/gang_theme/february_revolution
 	name = "Feburary Revolution"
