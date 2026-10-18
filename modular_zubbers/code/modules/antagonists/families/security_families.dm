@@ -21,3 +21,4 @@
 		security_gangster_datum.handler = GLOB.families_handler
 		spawning.mind.add_antag_datum(security_gangster_datum)
 
+// There is a similar datum for the Security Officer, but I had to put it in the main secoff file as a bubber edit.
