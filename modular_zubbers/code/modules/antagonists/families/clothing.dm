@@ -162,3 +162,20 @@
 /obj/item/clothing/neck/infinity_scarf/driscoll
 	greyscale_colors = "#b70101"
 	name = "O'Driscoll Scarf"
+
+/obj/item/clothing/head/big_game_referees
+	name = "big game referee cap"
+	icon_state = "bg_ref_cap"
+	inhand_icon_state = "bg_ref_cap"
+
+/obj/item/clothing/shoes/big_game_referees
+	name = "big game referee shoes"
+	desc = "FOOTBALL! YEAH!"
+	icon_state = "bg_ref_shoes"
+	inhand_icon_state = "bg_ref_shoes"
+
+/obj/item/clothing/under/costume/big_game_referees
+	name = "big game referee uniform"
+	icon_state = "bg_ref_uniform"
+	inhand_icon_state = "bg_ref_uniform"
+	can_adjust = FALSE
