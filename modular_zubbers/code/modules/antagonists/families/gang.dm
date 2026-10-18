@@ -126,7 +126,7 @@
 /// Used to display gang objectives in the player's traitor panel
 /datum/antagonist/gang/proc/add_objectives()
 	var/datum/objective/objective = new ()
-	objective.explanation_text = istype(my_gang.current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
+	objective.explanation_text = isnull(my_gang.current_theme) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
 	objectives.Add(objective)
 
 /// Gives a gangster their equipment in their backpack and / or pockets.
@@ -169,7 +169,7 @@
 	var/list/data = list()
 	data["gang_name"] = gang_name
 	data["antag_name"] = name
-	data["gang_objective"] = istype(my_gang.current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
+	data["gang_objective"] = isnull(my_gang.current_theme) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : my_gang.current_theme.gang_objectives[src.type]
 
 	var/list/clothes_we_can_wear = list()
 	for(var/obj/item/accepted_item as anything in acceptable_clothes)
@@ -209,7 +209,7 @@
 	if(current_theme.everyone_objective)
 		report += "Objective: [current_theme.everyone_objective]"
 	else
-		var/assigned_objective = istype(current_theme, /datum/gang_theme/warriors) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : current_theme.gang_objectives[my_gang_datum.type]
+		var/assigned_objective = isnull(current_theme) ? "Take control of the station and become the top Family that all the other Families answer to, and bring about peace under your rule!" : current_theme.gang_objectives[my_gang_datum.type]
 		if(assigned_objective)
 			report += "Objective: [assigned_objective]"
 		else
