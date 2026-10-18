@@ -164,17 +164,23 @@
 	name = "O'Driscoll Scarf"
 
 /obj/item/clothing/head/big_game_referees
+	icon = 'modular_zubbers/icons/misc/families_icons/obj/hats.dmi'
+	worn_icon = 'modular_zubbers/icons/misc/families_icons/mob/head.dmi'
 	name = "big game referee cap"
 	icon_state = "bg_ref_cap"
 	inhand_icon_state = "bg_ref_cap"
 
 /obj/item/clothing/shoes/big_game_referees
+	icon = 'modular_zubbers/icons/misc/families_icons/obj/shoes.dmi'
+	worn_icon = 'modular_zubbers/icons/misc/families_icons/mob/feet.dmi'
 	name = "big game referee shoes"
 	desc = "FOOTBALL! YEAH!"
 	icon_state = "bg_ref_shoes"
 	inhand_icon_state = "bg_ref_shoes"
 
 /obj/item/clothing/under/costume/big_game_referees
+	icon = 'modular_zubbers/icons/misc/families_icons/obj/costume.dmi'
+	worn_icon = 'modular_zubbers/icons/misc/families_icons/mob/costume.dmi'
 	name = "big game referee uniform"
 	icon_state = "bg_ref_uniform"
 	inhand_icon_state = "bg_ref_uniform"
