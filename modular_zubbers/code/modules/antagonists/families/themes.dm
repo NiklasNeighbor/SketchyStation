@@ -324,6 +324,9 @@
 		as dictated by the Security Union contract."
 	)
 
+
+/*
+// Dear fuck absolutely not, we are not doing TDM
 /datum/gang_theme/warriors
 	name = "Warriors"
 	description = "Warriors, come out to play-i-ay! Warriors, come out to play-i-ay!"
@@ -341,3 +344,5 @@
 			var/datum/antagonist/gang/new_gangster = new gang_to_use()
 			new_gangster.handler = handler
 			gangster_mind.add_antag_datum(new_gangster)
+
+*/
