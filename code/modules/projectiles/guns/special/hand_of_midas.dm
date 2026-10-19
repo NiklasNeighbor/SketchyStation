@@ -75,15 +75,14 @@
 	return ITEM_INTERACT_SUCCESS
 
 // If we botch a shot, we have to start over again by inserting gold coins into the gun. Can only be done if it has no charges or gold.
-/obj/item/gun/magic/midas_hand/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!istype(tool, /obj/item/coin/gold))
-		return NONE
+/obj/item/gun/magic/midas_hand/attackby(obj/item/I, mob/living/user, list/modifiers, list/attack_modifiers)
+	. = ..()
 	if(charges || gold_timer)
 		balloon_alert(user, "already loaded")
-		return ITEM_INTERACT_BLOCKING
-	handle_gold_charges(user, 1.5 SECONDS)
-	qdel(tool)
-	return ITEM_INTERACT_SUCCESS
+		return
+	if(istype(I, /obj/item/coin/gold))
+		handle_gold_charges(user, 1.5 SECONDS)
+		qdel(I)
 
 /// Handles recharging & inserting gold amount
 /obj/item/gun/magic/midas_hand/proc/handle_gold_charges(user, gold_amount)

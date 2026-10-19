@@ -22,7 +22,7 @@ INITIALIZE_IMMEDIATE(/mob/dead)
 	prepare_huds()
 
 	if(length(CONFIG_GET(keyed_list/cross_server)))
-		ASSIGN_GAME_VERB(src, /mob/dead, server_hop)
+		add_verb(src, /mob/dead/proc/server_hop)
 	set_focus(src)
 	become_hearing_sensitive()
 	log_mob_tag("TAG: [tag] CREATED: [key_name(src)] \[[src.type]\]")
@@ -50,7 +50,10 @@ INITIALIZE_IMMEDIATE(/mob/dead)
 
 #define SERVER_HOPPER_TRAIT "server_hopper"
 
-GAME_VERB_PROC_DESC(/mob/dead, server_hop, "Server Hop", "Jump to the other server", "OOC")
+/mob/dead/proc/server_hop()
+	set category = "OOC"
+	set name = "Server Hop"
+	set desc= "Jump to the other server"
 	if(HAS_TRAIT(src, TRAIT_NO_TRANSFORM)) // in case the round is ending and a cinematic is already playing we don't wanna clash with that (yes i know)
 		return
 	var/list/our_id = CONFIG_GET(string/cross_comms_name)
@@ -58,7 +61,7 @@ GAME_VERB_PROC_DESC(/mob/dead, server_hop, "Server Hop", "Jump to the other serv
 	var/pick
 	switch(length(csa))
 		if(0)
-			UNASSIGN_GAME_VERB(src, /mob/dead, server_hop)
+			remove_verb(src, /mob/dead/proc/server_hop)
 			to_chat(src, span_notice("Server Hop has been disabled."))
 		if(1)
 			pick = csa[1]

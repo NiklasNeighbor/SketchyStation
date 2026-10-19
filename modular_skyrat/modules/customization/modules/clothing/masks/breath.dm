@@ -45,8 +45,12 @@
 /obj/item/clothing/mask/balaclavaadjust/attack_self(mob/user)
 	adjust_mask(user)
 
-GAME_VERB_SRC(/obj/item/clothing/mask/balaclavaadjust, toggle, usr, "Adjust Balaclava", "Object")
+/obj/item/clothing/mask/balaclavaadjust/verb/toggle()
+		set category = "Object"
+		set name = "Adjust Balaclava"
+		set src in usr
 		adjust_mask(usr)
+
 
 /obj/item/clothing/mask/balaclava/threehole
 	name = "three hole balaclava"

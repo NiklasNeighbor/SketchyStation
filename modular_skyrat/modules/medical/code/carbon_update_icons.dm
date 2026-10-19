@@ -6,9 +6,9 @@
 
 	for(var/b in bodyparts)
 		var/obj/item/bodypart/BP = b
-		var/obj/item/stack/medical/wrap/our_gauze = LAZYACCESS(BP.applied_items, LIMB_ITEM_GAUZE)
+		var/obj/item/stack/medical/gauze/our_gauze = BP.current_gauze
 		if (!our_gauze)
 			continue
-		overlays.add_overlay(our_gauze.get_overlay_prefix(BP))
+		overlays.add_overlay(our_gauze.get_overlay_prefix())
 
 	apply_overlay(BANDAGE_LAYER)

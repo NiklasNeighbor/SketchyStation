@@ -46,9 +46,6 @@
 	max_ammo = 7
 	multiple_sprites = AMMO_BOX_PER_BULLET
 	item_flags = NO_MAT_REDEMPTION
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2,
-	)
 
 
 /obj/item/clothing/head/hats/sus_bowler
@@ -102,6 +99,7 @@
 	rack_sound = 'modular_skyrat/modules/moretraitoritems/sound/slide.ogg'
 	fire_sound_volume = 100
 	bolt_wording = "fuckin' slide"
+	reload_time = 0 //FAST AS FUCK BOIS!
 	var/unrestricted = FALSE
 
 /obj/item/gun/ballistic/automatic/pistol/robohand/unrestricted

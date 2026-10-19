@@ -195,7 +195,9 @@
 "kW" = (
 /obj/structure/flora/bush/grassy/style_random,
 /obj/structure/flora/bush/flowers_br/style_3,
-/obj/structure/window/directional/west,
+/obj/structure/window{
+	dir = 8
+	},
 /turf/open/floor/grass,
 /area/misc/condo)
 "lU" = (
@@ -481,8 +483,12 @@
 "RM" = (
 /obj/structure/flora/bush/large/style_random,
 /obj/structure/flora/bush/lavendergrass/style_random,
-/obj/structure/window/directional/west,
-/obj/structure/window/directional/north,
+/obj/structure/window{
+	dir = 8
+	},
+/obj/structure/window{
+	dir = 1
+	},
 /turf/open/floor/grass,
 /area/misc/condo)
 "RP" = (

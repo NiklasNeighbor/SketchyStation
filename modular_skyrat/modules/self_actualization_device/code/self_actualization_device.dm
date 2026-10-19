@@ -31,6 +31,7 @@
 	density = TRUE
 	active_power_usage = 240 KILO WATTS
 	idle_power_usage = 24 KILO WATTS
+	ignore_size = TRUE
 	/// Is someone being processed inside of the machine?
 	var/processing = FALSE
 	/// How long does the machine take to work?
@@ -225,8 +226,11 @@
 
 	playsound(src, 'sound/machines/microwave/microwave-end.ogg', 100, FALSE)
 	say("Procedure complete! Enjoy your life being a new you!")
+	if(isethereal(patient.dna.species))
+		var/datum/species/ethereal/ethereal = patient.dna.species
+		ethereal.refresh_light_color(patient)
 	open_machine()
-	SSquirks.OverrideQuirks(patient, patient.client, spawn_items = FALSE)
+	SSquirks.OverrideQuirks(patient, patient.client)
 
 /// Ejection and shut down of the machine, used before the preferences have been applied to the player. Damage optional.
 /obj/machinery/self_actualization_device/proc/eject_old_you(damaged_goods = FALSE)
@@ -267,7 +271,7 @@
 	user.emote("scream")
 
 	if(do_after(user, BREAKOUT_TIME, target = src))
-		if(!user || !IS_UNCONSCIOUS_OR_CRIT(user) || user.loc != src || state_open)
+		if(!user || user.stat != CONSCIOUS || user.loc != src || state_open)
 			return
 		user.visible_message(span_warning("[user] successfully broke out of [src]!"), \
 			span_notice("You successfully break out of [src]!"))
@@ -282,7 +286,7 @@
 		to_chat(user, span_warning("[src] is currently occupied!"))
 		return
 
-	if(default_deconstruction_screwdriver(user, used_item))
+	if(default_deconstruction_screwdriver(user, icon_state, icon_state, used_item))
 		update_appearance()
 		return
 

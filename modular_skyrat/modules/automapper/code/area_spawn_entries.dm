@@ -20,11 +20,10 @@
 	target_areas = list(/area/station/security/medical, /area/station/security/lockers)
 	desired_atom = /obj/structure/closet/secure_closet/security_medic
 
-// Removed the Blueshield's Locker because they get their own offices now
-// /datum/area_spawn/blueshield_locker
-// 	target_areas = list(/area/station/command/heads_quarters/captain, /area/station/command/bridge, /area/station/command/corporate_dock, /area/station/command/meeting_room, /area/station/command/gateway)
-// 	desired_atom = /obj/structure/closet/secure_closet/blueshield
-// 	mode = AREA_SPAWN_MODE_HUG_WALL
+/datum/area_spawn/blueshield_locker
+	target_areas = list(/area/station/command/heads_quarters/captain, /area/station/command/bridge, /area/station/command/corporate_dock, /area/station/command/meeting_room, /area/station/command/gateway)
+	desired_atom = /obj/structure/closet/secure_closet/blueshield
+	mode = AREA_SPAWN_MODE_HUG_WALL
 
 /datum/area_spawn/command_drobe
 	target_areas = list(/area/station/command/meeting_room, /area/station/command/meeting_room/council, /area/station/command/bridge)
@@ -83,10 +82,9 @@
 	target_areas = list(/area/station/service/salon, /area/station/hallway/secondary/service)
 	desired_atom = /obj/effect/landmark/start/barber
 
-// Removed Blueshield automatic spawns because they're mapped now
-// /datum/area_spawn/blueshield_landmark
-//	target_areas = list(/area/station/command/heads_quarters/captain, /area/station/command/bridge)
-//	desired_atom = /obj/effect/landmark/start/blueshield
+/datum/area_spawn/blueshield_landmark
+	target_areas = list(/area/station/command/heads_quarters/captain, /area/station/command/bridge)
+	desired_atom = /obj/effect/landmark/start/blueshield
 
 /datum/area_spawn/bouncer_landmark
 	desired_atom = /obj/effect/landmark/start/bouncer

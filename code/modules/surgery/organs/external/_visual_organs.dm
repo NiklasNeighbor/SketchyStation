@@ -96,10 +96,13 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 /obj/item/organ/update_overlays()
 	. = ..()
 
-	if(!use_mob_sprite_as_obj_sprite || isnull(bodypart_owner) || isnull(bodypart_overlay))
+	if(!use_mob_sprite_as_obj_sprite)
 		return
 
-	. += bodypart_overlay.get_all_overlays(bodypart_owner)
+	//Build the mob sprite and use it as our overlay
+	for(var/external_layer in bodypart_overlay.all_layers)
+		if(bodypart_overlay.layers & external_layer)
+			. += bodypart_overlay.get_overlay(external_layer, bodypart_owner)
 
 ///The horns of a lizard!
 /obj/item/organ/horns
@@ -118,16 +121,12 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 	organ_flags = parent_type::organ_flags | ORGAN_EXTERNAL
 
 /datum/bodypart_overlay/mutant/horns
-	layers = list(EXTERNAL_ADJACENT = BODY_ADJ_LAYER)
+	layers = EXTERNAL_ADJACENT
 	feature_key = FEATURE_HORNS
 	dyable = TRUE
-	draw_on_husks = HUSK_OVERLAY_NORMAL
-	offset_location = UPPER_BODY
 
-/* BUBBER EDIT REMOVE BEGIN - Customization
-/datum/bodypart_overlay/mutant/horns/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner, mob/living/carbon/owner)
-	return ..() && !(bodypart_owner.owner?.obscured_slots & HIDEHAIR)
-*/// BUBBER EDIT REMOVE END
+/datum/bodypart_overlay/mutant/horns/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	return !(bodypart_owner.owner?.obscured_slots & HIDEHAIR)
 
 ///The frills of a lizard (like weird fin ears)
 /obj/item/organ/frills
@@ -146,37 +145,11 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 	organ_flags = parent_type::organ_flags | ORGAN_EXTERNAL
 
 /datum/bodypart_overlay/mutant/frills
-	layers = list(EXTERNAL_ADJACENT = BODY_ADJ_LAYER)
+	layers = EXTERNAL_ADJACENT
 	feature_key = FEATURE_FRILLS
-	offset_location = UPPER_BODY
 
-/datum/bodypart_overlay/mutant/frills/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner, mob/living/carbon/owner)
-	return ..() && !(bodypart_owner.owner?.obscured_slots & HIDEHAIR)
-
-/datum/bodypart_overlay/mutant/frills/icon_render_key(obj/item/bodypart/limb)
-	. = ..()
-	if(LAZYLEN(limb?.owner?.hair_masks))
-		. += jointext(limb.owner.hair_masks, ",")
-
-/datum/bodypart_overlay/mutant/frills/get_image(obj/item/bodypart/limb, layer_index, layer_real)
-	if(!LAZYLEN(limb?.owner?.hair_masks))
-		return ..()
-
-	var/list/hair_masks_to_use = limb.owner.hair_masks
-	var/icon_state_to_use = build_icon_state(layer_index, limb)
-	var/frill_cache_key = "[sprite_datum.type]-[icon_state_to_use]-[jointext(hair_masks_to_use, ",")]"
-	var/static/list/cached_frill_icons
-	var/icon/cached_icon = LAZYACCESS(cached_frill_icons, frill_cache_key)
-	if(isnull(cached_icon))
-		cached_icon = icon(sprite_datum.icon, build_icon_state(layer_index, limb))
-		for(var/datum/hair_mask/mask as anything in hair_masks_to_use)
-			cached_icon.Blend(icon(mask::icon, mask::icon_state), ICON_ADD)
-		LAZYSET(cached_frill_icons, frill_cache_key, cached_icon)
-
-	var/mutable_appearance/uncached_appearance = mutable_appearance(cached_icon, layer = layer_real)
-	if(sprite_datum.center)
-		center_image(uncached_appearance, sprite_datum.dimension_x, sprite_datum.dimension_y)
-	return uncached_appearance
+/datum/bodypart_overlay/mutant/frills/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	return !(bodypart_owner.owner?.obscured_slots & HIDEEARS)
 
 ///Guess what part of the lizard this is?
 /obj/item/organ/snout
@@ -215,13 +188,11 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 	return ..()
 
 /datum/bodypart_overlay/mutant/snout
-	layers = list(EXTERNAL_ADJACENT = BODY_ADJ_LAYER)
+	layers = EXTERNAL_ADJACENT
 	feature_key = FEATURE_SNOUT
-	draw_on_husks = HUSK_OVERLAY_GRAYSCALE
-	offset_location = UPPER_BODY
 
-/datum/bodypart_overlay/mutant/snout/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner, mob/living/carbon/owner)
-	return ..() && !(bodypart_owner.owner?.obscured_slots & HIDESNOUT)
+/datum/bodypart_overlay/mutant/snout/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	return !(bodypart_owner.owner?.obscured_slots & HIDESNOUT)
 
 ///A moth's antennae
 /obj/item/organ/antennae
@@ -285,13 +256,9 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 
 ///Moth antennae datum, with full burning functionality
 /datum/bodypart_overlay/mutant/antennae
-	layers = list(
-		EXTERNAL_FRONT = BODY_FRONT_LAYER,
-		EXTERNAL_BEHIND = BODY_BEHIND_LAYER
-	)
+	layers = EXTERNAL_FRONT | EXTERNAL_BEHIND
 	feature_key = FEATURE_MOTH_ANTENNAE
 	dyable = TRUE
-	offset_location = UPPER_BODY
 	///Accessory datum of the burn sprite
 	var/datum/sprite_accessory/burn_datum = /datum/sprite_accessory/moth_antennae/burnt_off
 	///Are we burned? If so we draw differently
@@ -305,8 +272,13 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 /datum/bodypart_overlay/mutant/antennae/get_base_icon_state()
 	return burnt ? burn_datum.icon_state : sprite_datum.icon_state
 
-/datum/bodypart_overlay/mutant/antennae/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner, mob/living/carbon/owner)
-	return ..() && !(bodypart_owner.owner?.obscured_slots & HIDEANTENNAE)
+/datum/bodypart_overlay/mutant/antennae/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	// BUBBER EDIT ADDITION BEGIN: Customization
+	. = ..()
+	if(!.)
+		return
+	// BUBBER EDIT ADDITION END: Customization
+	return !(bodypart_owner.owner?.obscured_slots & HIDEANTENNAE)
 
 ///The leafy hair of a podperson
 /obj/item/organ/pod_hair
@@ -327,21 +299,17 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 
 ///Podperson bodypart overlay, with special coloring functionality to render the flowers in the inverse color
 /datum/bodypart_overlay/mutant/pod_hair
-	layers = list(
-		EXTERNAL_FRONT = BODY_FRONT_LAYER,
-		EXTERNAL_ADJACENT = BODY_ADJ_LAYER
-	)
+	layers = EXTERNAL_FRONT|EXTERNAL_ADJACENT
 	feature_key = FEATURE_POD_HAIR
 	dyable = TRUE
-	offset_location = UPPER_BODY
 
 	///This layer will be colored differently than the rest of the organ. So we can get differently colored flowers or something
 	var/color_swapped_layer = EXTERNAL_FRONT
 	///The individual rgb colors are subtracted from this to get the color shifted layer
 	var/color_inverse_base = 255
 
-/datum/bodypart_overlay/mutant/pod_hair/color_image(image/overlay, obj/item/bodypart/limb, layer_index)
-	if(layer_index != color_swapped_layer)
+/datum/bodypart_overlay/mutant/pod_hair/color_image(image/overlay, draw_layer, obj/item/bodypart/limb)
+	if(draw_layer != bitflag_to_layer(color_swapped_layer))
 		return ..()
 
 	var/color_to_use = dye_color || draw_color
@@ -351,5 +319,5 @@ Unlike normal organs, we're actually inside a persons limbs at all times
 	else
 		overlay.color = null
 
-/datum/bodypart_overlay/mutant/pod_hair/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner, mob/living/carbon/owner)
-	return ..() && !(bodypart_owner.owner?.obscured_slots & HIDEHAIR)
+/datum/bodypart_overlay/mutant/pod_hair/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	return !(bodypart_owner.owner?.obscured_slots & HIDEHAIR)

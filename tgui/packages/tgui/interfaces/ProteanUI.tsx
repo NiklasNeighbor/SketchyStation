@@ -18,17 +18,14 @@ type ProteanData = {
   metal: number;
   metal_max: number;
   low_power: boolean;
-  transformation: boolean;
   lock: boolean;
-  assimilated: boolean;
-  is_owner: boolean;
   icon: string;
   icon_state: string;
 };
 
 export const ProteanUI = () => {
   return (
-    <Window width={400} height={300}>
+    <Window width={400} height={270}>
       <Protean />
     </Window>
   );
@@ -36,17 +33,7 @@ export const ProteanUI = () => {
 
 export const Protean = () => {
   const { data, act } = useBackend<ProteanData>();
-  const {
-    lock,
-    metal,
-    metal_max,
-    icon,
-    icon_state,
-    low_power,
-    transformation,
-    assimilated,
-    is_owner,
-  } = data;
+  const { lock, metal, metal_max, icon, icon_state, low_power } = data;
 
   return (
     <Section
@@ -90,9 +77,6 @@ export const Protean = () => {
           <Table.Cell fontSize="10px" textAlign="center">
             Heal Organs
           </Table.Cell>
-          <Table.Cell fontSize="10px" textAlign="center">
-            Wearer Transformation
-          </Table.Cell>
         </Table.Row>
         <Table.Row>
           <Table.Cell textAlign="center">
@@ -112,51 +96,20 @@ export const Protean = () => {
           <Table.Cell textAlign="center">
             <Button color="default" icon="heart" onClick={() => act('heal')} />
           </Table.Cell>
-          <Table.Cell textAlign="center">
-            <Button
-              color={transformation ? 'good' : 'default'}
-              icon="video-camera"
-              tooltip="Make your current wearer temporarily look like you"
-              onClick={() => act('protean_transform')}
-            />
-          </Table.Cell>
         </Table.Row>
       </Table>
       <Divider />
-      <Stack justify="flex-end">
-        <Stack.Item>
-          <Stack vertical align="center">
-            <Stack.Item>
-              <ImageButton
-                dmIcon={icon}
-                dmIconState={icon_state}
-                style={{ display: 'inline-flex' }}
-                tooltipPosition="top"
-                tooltip="Modsuit UI"
-                onClick={() => act('openui')}
-              />
-            </Stack.Item>
-            <Stack.Item>
-              <Button.Confirm
-                fluid
-                textAlign="center"
-                icon="right-from-bracket"
-                color="good"
-                confirmColor="bad"
-                confirmContent="Are you sure?"
-                disabled={!assimilated || !is_owner}
-                tooltip={
-                  assimilated
-                    ? 'Extract the modsuit you absorbed from your body'
-                    : 'No assimilated modsuit'
-                }
-                onClick={() => act('eject_modsuit')}
-              >
-                Eject Suit
-              </Button.Confirm>
-            </Stack.Item>
-          </Stack>
-        </Stack.Item>
+      <Stack
+        style={{ display: 'flex', justifyContent: 'right', width: '100%' }}
+      >
+        <ImageButton
+          dmIcon={icon}
+          dmIconState={icon_state}
+          style={{ display: 'inline-flex' }}
+          tooltipPosition="top"
+          tooltip="Modsuit UI"
+          onClick={() => act('openui')}
+        />
       </Stack>
     </Section>
   );

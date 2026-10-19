@@ -185,10 +185,7 @@
 	name = "Biological Battery"
 	id = "etherealstomach"
 	build_type = LIMBGROWER
-	reagents_list = list(
-		/datum/reagent/medicine/c2/synthflesh = 10,
-		/datum/reagent/consumable/liquidelectricity = 20,
-	)
+	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10, /datum/reagent/consumable/liquidelectricity/enriched = 20)
 	build_path = /obj/item/organ/stomach/ethereal
 	category = list(SPECIES_ETHEREAL)
 
@@ -196,10 +193,7 @@
 	name = "Electrical Discharger"
 	id = "etherealtongue"
 	build_type = LIMBGROWER
-	reagents_list = list(
-		/datum/reagent/medicine/c2/synthflesh = 10,
-		/datum/reagent/consumable/liquidelectricity = 20,
-	)
+	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10, /datum/reagent/consumable/liquidelectricity/enriched = 20)
 	build_path = /obj/item/organ/tongue/ethereal
 	category = list(SPECIES_ETHEREAL)
 
@@ -207,10 +201,7 @@
 	name = "Aeration Reticulum"
 	id = "ethereallungs"
 	build_type = LIMBGROWER
-	reagents_list = list(
-		/datum/reagent/medicine/c2/synthflesh = 10,
-		/datum/reagent/consumable/liquidelectricity = 20,
-	)
+	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10, /datum/reagent/consumable/liquidelectricity/enriched = 20)
 	build_path = /obj/item/organ/lungs/ethereal
 	category = list(SPECIES_ETHEREAL)
 
@@ -218,10 +209,7 @@
 /datum/design/ethereal_heart
 	name = "Crystal Core"
 	build_type = LIMBGROWER
-	reagents_list = list(
-		/datum/reagent/medicine/c2/synthflesh = 10,
-		/datum/reagent/consumable/liquidelectricity = 20,
-	)
+	reagents_list = list(/datum/reagent/medicine/c2/synthflesh = 10, /datum/reagent/consumable/liquidelectricity/enriched = 20)
 	build_path = /obj/item/organ/heart/ethereal
 	category = list(SPECIES_ETHEREAL)
 
@@ -256,13 +244,12 @@
 	category = list(
 		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_MEDICAL
 	)
-	departmental_flags = NONE // BUBBER EDIT CHANGE - ORIGINAL: DEPARTMENT_BITFLAG_MEDICAL
+	departmental_flags = DEPARTMENT_BITFLAG_MEDICAL
 
 /obj/item/disk/design_disk/limbs/felinid
 	name = "Felinid Organ Design Disk"
 	limb_designs = list(/datum/design/cat_tail, /datum/design/cat_ears, /datum/design/cat_tongue)
-// BUBBER EDIT REMOVE BEGIN - LIMB GROWERS INCLUDE ALL LIMB TYPES
-/*
+
 /datum/design/limb_disk/felinid
 	name = "Felinid Organ Design Disk"
 	desc = "Contains designs for felinid organs for the limbgrower - Felinid ears, tail and tongue."
@@ -298,5 +285,3 @@
 	desc = "Contains designs for ethereal organs for the limbgrower - Ethereal tongue and stomach."
 	id = "limbdesign_ethereal"
 	build_path = /obj/item/disk/design_disk/limbs/ethereal
-*/
-// BUBBER EDIT REMOVE END - LIMB GROWERS INCLUDE ALL LIMB TYPES

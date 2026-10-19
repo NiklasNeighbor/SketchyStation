@@ -1,6 +1,6 @@
 SUBSYSTEM_DEF(privacy)
 	name = "Privacy Policy"
-	ss_flags = SS_NO_FIRE
+	flags = SS_NO_FIRE
 
 /datum/controller/subsystem/privacy/Initialize()
 	if(!CONFIG_GET(flag/sql_enabled))

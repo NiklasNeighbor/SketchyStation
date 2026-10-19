@@ -66,7 +66,7 @@
 	if(!.)
 		return FALSE
 	/// Must be CONSCIOUS
-	if(IS_UNCONSCIOUS(user))
+	if(user.stat != CONSCIOUS)
 		to_chat(owner, span_warning("Your cloak failed due to you falling unconcious!"))
 		return FALSE
 	return TRUE

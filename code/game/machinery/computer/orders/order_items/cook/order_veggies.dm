@@ -11,7 +11,7 @@
 
 /datum/orderable_item/veggies/carrot
 	name = "Carrot"
-	purchase_path = /obj/item/food/grown/carrotlike/carrot
+	purchase_path = /obj/item/food/grown/carrot
 
 /datum/orderable_item/veggies/eggplant
 	name = "Eggplant"
@@ -40,7 +40,7 @@
 
 /datum/orderable_item/veggies/watermelon
 	name = "Watermelon"
-	purchase_path = /obj/item/food/grown/melonlike/watermelon
+	purchase_path = /obj/item/food/grown/watermelon
 
 /datum/orderable_item/veggies/corn
 	name = "Corn"
@@ -113,7 +113,7 @@
 
 /datum/orderable_item/veggies/parsnip
 	name = "Parsnip"
-	purchase_path = /obj/item/food/grown/carrotlike/parsnip
+	purchase_path = /obj/item/food/grown/parsnip
 
 /datum/orderable_item/veggies/redbeet
 	name = "Red Beet"
@@ -153,7 +153,7 @@
 
 /datum/orderable_item/veggies/trumpet
 	name = "Spaceman's Trumpet"
-	purchase_path = /obj/item/food/grown/flower/trumpet
+	purchase_path = /obj/item/food/grown/trumpet
 	cost_per_order = 25
 
 /datum/orderable_item/veggies/banana

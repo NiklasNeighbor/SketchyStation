@@ -8,7 +8,7 @@
 		/datum/reagent/consumable/sugar = 1
 	)
 	result = /obj/item/food/nekoroll
-	dish_category = DISH_SUSHI
+	category = CAT_SEAFOOD
 
 /datum/crafting_recipe/food/bignekoroll
 	added_foodtypes = MEAT
@@ -20,4 +20,4 @@
 		/datum/reagent/consumable/sugar = 2
 	)
 	result = /obj/item/food/bignekoroll
-	dish_category = DISH_SUSHI
+	category = CAT_SEAFOOD

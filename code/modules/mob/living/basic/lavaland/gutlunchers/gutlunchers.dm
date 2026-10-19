@@ -36,6 +36,7 @@
 	GLOB.gutlunch_count++
 	if(greyscale_config)
 		set_greyscale(colors = list(pick(possible_colors)))
+	AddElement(/datum/element/ai_retaliate)
 	if(can_breed)
 		add_breeding_component()
 
@@ -45,16 +46,16 @@
 
 /mob/living/basic/mining/gutlunch/early_melee_attack(atom/target, list/modifiers, ignore_cooldown)
 	. = ..()
-	if(.)
+	if(!.)
 		return
 	if(!istype(target, /obj/structure/ore_container/food_trough/gutlunch_trough))
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 	var/obj/ore_food = locate(/obj/item/stack/ore) in target
 	if(isnull(ore_food))
 		balloon_alert(src, "no food!")
 	else
 		UnarmedAttack(ore_food, TRUE, modifiers)
-	return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+	return FALSE
 
 /mob/living/basic/mining/gutlunch/proc/after_birth(mob/living/basic/mining/gutlunch/grub/baby, mob/living/partner)
 	var/our_color = LAZYACCESS(atom_colours, FIXED_COLOUR_PRIORITY) || COLOR_GRAY
@@ -162,7 +163,7 @@
 	)
 
 /mob/living/basic/mining/gutlunch/grub/proc/ready_to_grow()
-	return (!IS_UNCONSCIOUS_OR_CRIT(src))
+	return (stat == CONSCIOUS)
 
 /mob/living/basic/mining/gutlunch/grub/proc/determine_growth_path()
 	var/final_type = prob(50) ? /mob/living/basic/mining/gutlunch/warrior : /mob/living/basic/mining/gutlunch/milk

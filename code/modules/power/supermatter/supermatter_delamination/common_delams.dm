@@ -2,7 +2,6 @@
 
 /// When we have too much gas.
 /datum/sm_delam/singularity
-	name = "singularity delamination"
 
 /datum/sm_delam/singularity/can_select(obj/machinery/power/supermatter_crystal/sm)
 	return (sm.absorbed_gasmix.total_moles() >= MOLE_PENALTY_THRESHOLD)
@@ -18,7 +17,9 @@
 	return TRUE
 
 /datum/sm_delam/singularity/delaminate(obj/machinery/power/supermatter_crystal/sm)
-	log_delamination(sm)
+	message_admins("Supermatter [sm] at [ADMIN_VERBOSEJMP(sm)] triggered a singularity delam.")
+	sm.investigate_log("triggered a singularity delam.", INVESTIGATE_ENGINE)
+
 	effect_irradiate(sm)
 	effect_demoralize(sm)
 	if(sm.is_main_engine)
@@ -62,7 +63,6 @@
 
 /// When we have too much power.
 /datum/sm_delam/tesla
-	name = "tesla delamination"
 
 /datum/sm_delam/tesla/can_select(obj/machinery/power/supermatter_crystal/sm)
 	return (sm.internal_energy > POWER_PENALTY_THRESHOLD)
@@ -78,7 +78,9 @@
 	return TRUE
 
 /datum/sm_delam/tesla/delaminate(obj/machinery/power/supermatter_crystal/sm)
-	log_delamination(sm)
+	message_admins("Supermatter [sm] at [ADMIN_VERBOSEJMP(sm)] triggered a tesla delam.")
+	sm.investigate_log("triggered a tesla delam.", INVESTIGATE_ENGINE)
+
 	effect_irradiate(sm)
 	effect_demoralize(sm)
 	if(sm.is_main_engine)
@@ -111,13 +113,14 @@
 
 /// Default delam.
 /datum/sm_delam/explosive
-	name = "explosive delamination"
 
 /datum/sm_delam/explosive/can_select(obj/machinery/power/supermatter_crystal/sm)
 	return TRUE
 
 /datum/sm_delam/explosive/delaminate(obj/machinery/power/supermatter_crystal/sm)
-	log_delamination(sm)
+	message_admins("Supermatter [sm] at [ADMIN_VERBOSEJMP(sm)] triggered a normal delam.")
+	sm.investigate_log("triggered a normal delam.", INVESTIGATE_ENGINE)
+
 	effect_irradiate(sm)
 	effect_demoralize(sm)
 	if(sm.is_main_engine)

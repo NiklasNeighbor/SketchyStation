@@ -13,7 +13,10 @@
 
 	joining_soul.join_soulcatcher()
 
-GAME_VERB(/mob/dead/observer, join_soulcatcher, "Enter Soulcatcher", "IC")
+/mob/dead/observer/verb/join_soulcatcher()
+	set name = "Enter Soulcatcher"
+	set category = "IC"
+
 	var/list/joinable_soulcatchers = list()
 	var/list/rooms_to_join = list()
 

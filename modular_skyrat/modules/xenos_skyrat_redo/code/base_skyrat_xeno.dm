@@ -194,8 +194,7 @@
 
 /mob/living/carbon/alien/adult/skyrat/findQueen() //Yes we really do need to do this whole thing to let the queen finder work
 	if(hud_used)
-		var/atom/movable/screen/alien/queen_finder = hud_used.screen_objects[HUD_ALIEN_QUEEN_FINDER]
-		queen_finder?.cut_overlays()
+		hud_used.alien_queen_finder.cut_overlays()
 		var/mob/queen = get_alien_type(/mob/living/carbon/alien/adult/skyrat/queen)
 		if(!queen)
 			return
@@ -214,4 +213,4 @@
 			if(21 to INFINITY)
 				finder_icon = "finder_far"
 		var/image/finder_eye = image('icons/hud/screen_alien.dmi', finder_icon, dir = Qdir)
-		queen_finder?.add_overlay(finder_eye)
+		hud_used.alien_queen_finder.add_overlay(finder_eye)

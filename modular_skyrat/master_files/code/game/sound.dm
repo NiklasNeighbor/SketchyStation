@@ -203,6 +203,9 @@
 /obj/machinery/door/window
 	impact_sound = SFX_BULLET_IMPACT_GLASS
 
+/obj/machinery/computer
+	impact_sound = SFX_BULLET_IMPACT_GLASS
+
 /obj/machinery/door/airlock/wood
 	impact_sound = SFX_BULLET_IMPACT_WOOD
 

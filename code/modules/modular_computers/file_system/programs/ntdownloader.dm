@@ -30,7 +30,6 @@
 		PROGRAM_CATEGORY_ENGINEERING,
 		PROGRAM_CATEGORY_SUPPLY,
 		PROGRAM_CATEGORY_SCIENCE,
-		PROGRAM_CATEGORY_SERVICE,
 	)
 
 /datum/computer_file/program/ntnetdownload/kill_program(mob/user)

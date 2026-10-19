@@ -7,7 +7,6 @@ import type { Antagonist, Observable } from './types';
 const customJobs = [
   'Telecomms Specialist',
   'Barber',
-  'Blacksmith',
   'Blueshield',
   'Bouncer',
   'Corrections Officer',

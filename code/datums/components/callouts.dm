@@ -20,14 +20,13 @@
 	/// Cooldown for callouts
 	COOLDOWN_DECLARE(callout_cooldown)
 
-/datum/component/callouts/Initialize(item_slot = null, voiceline = FALSE, radio_prefix = null, examine_text = null, active = TRUE)
+/datum/component/callouts/Initialize(item_slot = null, voiceline = FALSE, radio_prefix = null, examine_text = null)
 	if (!isitem(parent) && !ismob(parent))
 		return COMPONENT_INCOMPATIBLE
 	src.item_slot = item_slot
 	src.voiceline = voiceline
 	src.radio_prefix = radio_prefix
 	src.examine_text = examine_text
-	src.active = active
 
 	if (ismob(parent))
 		cur_user = parent
@@ -123,24 +122,27 @@
 		return
 
 	COOLDOWN_START(src, callout_cooldown, CALLOUT_COOLDOWN)
-	var/obj/effect/temp_visual/point/callout/callout = user.point_at(clicked_atom, TRUE, /obj/effect/temp_visual/point/callout)
-	callout.set_callout(user, selection)
+	new /obj/effect/temp_visual/callout(get_turf(user), user, selection, clicked_atom)
 	SEND_SIGNAL(user, COMSIG_MOB_CREATED_CALLOUT, selection, clicked_atom)
 	if (voiceline)
 		user.say((!isnull(radio_prefix) ? radio_prefix : "") + selection::voiceline, forced = src)
 
-/obj/effect/temp_visual/point/callout
+/obj/effect/temp_visual/callout
 	name = "callout"
 	icon = 'icons/effects/callouts.dmi'
 	icon_state = "point"
+	plane = ABOVE_LIGHTING_PLANE
 	duration = CALLOUT_TIME
 
-/obj/effect/temp_visual/point/callout/proc/set_callout(mob/creator, datum/callout_option/callout)
+/obj/effect/temp_visual/callout/Initialize(mapload, mob/creator, datum/callout_option/callout, atom/target)
+	. = ..()
 	if (isnull(creator))
 		return
 	icon_state = callout::icon_state
 	color = colorize_string(creator.get_voice(), 2, 0.9)
 	update_appearance()
+	var/turf/target_loc = get_turf(target)
+	animate(src, pixel_x = (target_loc.x - loc.x) * ICON_SIZE_X + target.pixel_x, pixel_y = (target_loc.y - loc.y) * ICON_SIZE_Y + target.pixel_y, time = 0.2 SECONDS, easing = SINE_EASING|EASE_OUT)
 
 /datum/callout_option
 	var/name = "ERROR"

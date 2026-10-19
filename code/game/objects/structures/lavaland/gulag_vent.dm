@@ -13,7 +13,7 @@
 	anchored = TRUE
 	density = TRUE
 	/// What kind of rock we got in there?
-	var/spawned_boulder = /obj/item/boulder/gulag_vent
+	var/spawned_boulder = /obj/item/boulder/gulag
 	/// Prevents multiple people from hauling at a time
 	var/occupied = FALSE
 

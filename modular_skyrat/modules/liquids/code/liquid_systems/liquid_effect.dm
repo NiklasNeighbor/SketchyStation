@@ -116,6 +116,9 @@
 	. = ..()
 	if(fire_state)
 		set_fire_state(LIQUID_FIRE_STATE_NONE)
+		// Adding this fixes tiles always re-igniting.
+		// It's probably because check_fire() always ingites if it's possible to burn.
+		SSliquids.processing_fire -= my_turf
 
 /obj/effect/abstract/liquid_turf/proc/process_fire()
 	if(!fire_state)
@@ -124,10 +127,11 @@
 	if(!check_fire())
 		SSliquids.processing_fire -= my_turf
 	//Try spreading
-	if(fire_state == old_state) //If an extinguisher made our fire smaller, dont spread, else it's too hard to put out
+	if(fire_state == old_state) // This check seems to do nothing.  Aledgedly was for extingishing.
 		for(var/turf/adjacent_turf in my_turf.atmos_adjacent_turfs)
-			if(adjacent_turf.liquids && !adjacent_turf.liquids.fire_state && adjacent_turf.liquids.check_fire(TRUE))
-				SSliquids.processing_fire[adjacent_turf] = TRUE
+			if(prob(70)) // 70% chance to spread
+				if(adjacent_turf.liquids && !adjacent_turf.liquids.fire_state && adjacent_turf.liquids.check_fire(TRUE))
+					SSliquids.processing_fire[adjacent_turf] = TRUE
 	//Burn our resources
 	var/datum/reagent/reagent //Faster declaration
 	var/burn_rate
@@ -143,6 +147,7 @@
 				reagent_list[reagent_type] -= burn_rate
 				total_reagents -= burn_rate
 
+	// This seemingly does nothing.
 	my_turf.hotspot_expose((T20C+50) + (50*fire_state), 125)
 	for(var/atom/content in my_turf.contents)
 		if(!QDELETED(content))
@@ -299,7 +304,7 @@
 /obj/effect/abstract/liquid_turf/immutable/take_reagents_flat(flat_amount)
 	return simulate_reagents_flat(flat_amount)
 
-//Returns a reagents holder with all the reagents with a higher volume than the threshold
+//Returns a reagents holder with all the reagents with a higher volume than the threshold, returns null if no reagents exceeded the threshold
 /obj/effect/abstract/liquid_turf/proc/simulate_reagents_threshold(amount_threshold)
 	var/datum/reagents/tempr = new(10000)
 	var/passed_list = list()
@@ -310,6 +315,9 @@
 		passed_list[reagent_type] = amount
 	tempr.add_noreact_reagent_list(passed_list)
 	tempr.chem_temp = temp
+	if(tempr.total_volume == 0)
+		qdel(tempr)
+		return null
 	return tempr
 
 //Returns a flat of our reagents without any effects on the liquids
@@ -336,7 +344,7 @@
 	color = mix_color_from_reagent_list(reagent_list)
 
 /obj/effect/abstract/liquid_turf/proc/calculate_height()
-	var/new_height = ceil(total_reagents)/LIQUID_HEIGHT_DIVISOR
+	var/new_height = CEILING(total_reagents, 1)/LIQUID_HEIGHT_DIVISOR
 	set_height(new_height)
 	var/determined_new_state
 	//We add the turf height if it's positive to state calculations
@@ -357,7 +365,7 @@
 		set_new_liquid_state(determined_new_state)
 
 /obj/effect/abstract/liquid_turf/immutable/calculate_height()
-	var/new_height = ceil(total_reagents)/LIQUID_HEIGHT_DIVISOR
+	var/new_height = CEILING(total_reagents, 1)/LIQUID_HEIGHT_DIVISOR
 	set_height(new_height)
 	var/determined_new_state
 	switch(new_height)
@@ -384,7 +392,7 @@
 				'modular_zubbers/sound/effects/water_wade1.ogg',
 				'modular_zubbers/sound/effects/water_wade2.ogg',
 				'modular_zubbers/sound/effects/water_wade3.ogg',
-				'modular_zubbers/sound/effects/water_wade4.ogg'
+				'modular_zubbers/sound/effects/water_wade4.ogg',
 				))
 			playsound(my_turf, sound_to_play, 60, 0)
 		var/obj/splashy = new /obj/effect/temp_visual/liquid_splash(my_turf)
@@ -409,14 +417,13 @@
 				for(var/thing in my_turf)
 					AM = thing
 					if(!AM.anchored && !AM.pulledby && !isobserver(AM) && (AM.move_resist < INFINITY))
-						var/mob/living/carbon/carbon = AM
-						if(istype(carbon))
-							var/obj/item/clothing/shoes/shoes = carbon.get_item_by_slot(ITEM_SLOT_FEET)
-							if(!(shoes && shoes.clothing_flags))
-								step(carbon, dir)
-								if(prob(60) && carbon.body_position != LYING_DOWN)
-									to_chat(carbon, span_userdanger("The current knocks you down!"))
-									carbon.Knockdown(1 SECONDS)
+						if(iscarbon(AM))
+							var/mob/living/carbon/C = AM
+							if(!(C.shoes && C.shoes.clothing_flags))
+								step(C, dir)
+								if(prob(60) && C.body_position != LYING_DOWN)
+									to_chat(C, span_userdanger("The current knocks you down!"))
+									C.Paralyze(60)
 						else
 							step(AM, dir)
 
@@ -434,7 +441,7 @@
 				'modular_zubbers/sound/effects/water_wade1.ogg',
 				'modular_zubbers/sound/effects/water_wade2.ogg',
 				'modular_zubbers/sound/effects/water_wade3.ogg',
-				'modular_zubbers/sound/effects/water_wade4.ogg'
+				'modular_zubbers/sound/effects/water_wade4.ogg',
 				))
 			playsound(T, sound_to_play, 50, 0)
 		if(iscarbon(AM))
@@ -443,7 +450,7 @@
 	else if (isliving(AM))
 		var/mob/living/L = AM
 		if(prob(7) && !(L.movement_type & FLYING))
-			L.slip(1 SECONDS, T, NO_SLIP_WHEN_WALKING, 2 SECONDS, TRUE)
+			L.slip(60, T, NO_SLIP_WHEN_WALKING, 20, TRUE)
 	if(fire_state)
 		AM.fire_act((T20C+50) + (50*fire_state), 125)
 
@@ -459,8 +466,7 @@
 			if(falling_carbon.stat >= DEAD)
 				return
 
-			var/obj/item/clothing/mask/wear_mask = falling_carbon.get_item_by_slot(ITEM_SLOT_MASK)
-			if(wear_mask && wear_mask.flags_cover & MASKCOVERSMOUTH)
+			if(falling_carbon.wear_mask && falling_carbon.wear_mask.flags_cover & MASKCOVERSMOUTH)
 				to_chat(falling_carbon, span_userdanger("You fall in the [reagents_to_text()]!"))
 			else
 				var/datum/reagents/tempr = take_reagents_flat(CHOKE_REAGENTS_INGEST_ON_FALL_AMOUNT)
@@ -522,8 +528,10 @@
 //Exposes my turf with simulated reagents
 /obj/effect/abstract/liquid_turf/proc/ExposeMyTurf()
 	var/datum/reagents/tempr = simulate_reagents_threshold(LIQUID_REAGENT_THRESHOLD_TURF_EXPOSURE)
-	if(tempr.total_volume > 0)
-		tempr.expose(my_turf, TOUCH, tempr.total_volume)
+	// Nothing met the threshold
+	if(isnull(tempr))
+		return
+	tempr.expose(my_turf, TOUCH, tempr.total_volume)
 	qdel(tempr)
 
 /obj/effect/abstract/liquid_turf/proc/ChangeToNewTurf(turf/NewT)
@@ -565,7 +573,11 @@
 
 	var/liquid_state_template = liquid_state_messages["[liquid_state]"]
 
+	examine_list += EXAMINE_SECTION_BREAK
+
 	if(examiner.can_see_reagents())
+		examine_list += EXAMINE_SECTION_BREAK
+
 		if(length(reagent_list) == 1)
 			// Single reagent text.
 			var/datum/reagent/reagent_type = reagent_list[1]
@@ -582,11 +594,12 @@
 				var/volume = round(reagent_list[reagent_type], 0.01)
 				examine_list += "&bull; [volume] units of [reagent_name]"
 
-		examine_list += span_notice("The solution has a temperature of [temp]K.[EXAMINE_SECTION_BREAK]")
+		examine_list += span_notice("The solution has a temperature of [temp]K.")
+		examine_list += EXAMINE_SECTION_BREAK
 		return
 
 	// Otherwise, just show the total volume
-	examine_list += span_notice("There is [replacetext(liquid_state_template, "$", "liquid")] here.[EXAMINE_SECTION_BREAK]")
+	examine_list += span_notice("There is [replacetext(liquid_state_template, "$", "liquid")] here.")
 
 /**
  * Creates a string of the reagents that make up this liquid.

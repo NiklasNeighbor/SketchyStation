@@ -17,7 +17,7 @@ These procs are incredibly expensive and should only really be run once. That's 
 
 SUBSYSTEM_DEF(decay)
 	name = "Decay System"
-	ss_flags = SS_NO_FIRE
+	flags = SS_NO_FIRE
 	dependencies = list(
 		/datum/controller/subsystem/mapping,
 		/datum/controller/subsystem/atoms,

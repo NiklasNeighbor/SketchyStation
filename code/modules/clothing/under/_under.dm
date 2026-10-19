@@ -10,7 +10,6 @@
 	interaction_flags_click = NEED_DEXTERITY|ALLOW_RESTING
 	armor_type = /datum/armor/clothing_under
 	supports_variations_flags = CLOTHING_DIGITIGRADE_MASK
-	bodyshapes_with_variations = BODYSHAPE_DIGITIGRADE
 	equip_sound = 'sound/items/equip/jumpsuit_equip.ogg'
 	drop_sound = 'sound/items/handling/cloth/cloth_drop1.ogg'
 	pickup_sound = 'sound/items/handling/cloth/cloth_pickup1.ogg'
@@ -42,6 +41,9 @@
 	var/max_number_of_accessories = 5
 	/// A list of all accessories attached to us.
 	var/list/obj/item/clothing/accessory/attached_accessories
+	/// The overlay of the accessory we're demonstrating. Only index 1 will show up.
+	/// This is the overlay on the MOB, not the item itself.
+	var/mutable_appearance/accessory_overlay
 
 /datum/armor/clothing_under
 	bio = 10
@@ -107,26 +109,22 @@
 
 	return changed ? CONTEXTUAL_SCREENTIP_SET : .
 
-/obj/item/clothing/under/worn_overlays(mutable_appearance/standing, isinhands = FALSE, icon_file, bodyshape = NONE, file2use = null, mutant_styles = NONE) // SKYRAT EDIT - customisation
+
+/obj/item/clothing/under/worn_overlays(mutable_appearance/standing, isinhands = FALSE, file2use = null, mutant_styles = NONE) // SKYRAT EDIT - customisation
 	. = ..()
 	if(isinhands)
 		return
-	if(damaged_clothes)
-		//BUBBER EDIT BEGIN
-		//. += mutable_appearance('icons/effects/item_damage.dmi', "damageduniform") //ORIGINAL
-		var/mob/living/carbon/human/wearer = loc
-		if(ishuman(wearer) && icon_exists('modular_zubbers/icons/effects/item_damage_species.dmi', "damageduniform_[wearer.dna.species.id]"))
-			. += mutable_appearance('modular_zubbers/icons/effects/item_damage_species.dmi', "damageduniform_[wearer.dna.species.id]")
-		else
-			. += mutable_appearance('icons/effects/item_damage.dmi', "damageduniform")
-		//BUBBER EDIT END
-	. += get_accessory_overlays()
 
-/obj/item/clothing/under/separate_worn_overlays(mutable_appearance/standing, mutable_appearance/draw_target, isinhands = FALSE, icon_file, bodyshape = NONE)
+	if(damaged_clothes)
+		. += mutable_appearance('icons/effects/item_damage.dmi', "damageduniform")
+	if(accessory_overlay)
+		. += modify_accessory_overlay() // SKYRAT EDIT CHANGE - ORIGINAL: . += accessory_overlay
+
+/obj/item/clothing/under/separate_worn_overlays(mutable_appearance/standing, mutable_appearance/draw_target, isinhands = FALSE, icon_file)
 	. = ..()
 	if (isinhands)
 		return
-	var/blood_overlay = get_blood_overlay("uniform", bodyshape)
+	var/blood_overlay = get_blood_overlay("uniform")
 	if (blood_overlay)
 		. += blood_overlay
 
@@ -219,17 +217,6 @@
 /obj/item/clothing/under/generate_digitigrade_icons(icon/base_icon, greyscale_colors)
 	var/icon/legs = icon(SSgreyscale.GetColoredIconByType(/datum/greyscale_config/digitigrade, greyscale_colors), "jumpsuit_worn")
 	return replace_icon_legs(base_icon, legs)
-
-/obj/item/clothing/under/machine_wash()
-	. = ..()
-	if(stubborn_stains)
-		return
-
-	var/fresh_mood = AddComponent( \
-		/datum/component/onwear_mood, \
-		saved_event_type = /datum/mood_event/fresh_laundry, \
-	)
-	QDEL_IN(fresh_mood, 2 MINUTES)
 
 /obj/item/clothing/under/equipped(mob/living/user, slot)
 	..()
@@ -370,11 +357,14 @@ BUBBERSTATION CHANGE END */
 		return
 	if(user && !user.temporarilyRemoveItemFromInventory(accessory))
 		return
-	if(!accessory.try_attach(src, user))
+	if(!accessory.attach(src, user))
 		return
 
+	LAZYADD(attached_accessories, accessory)
+	accessory.forceMove(src)
+
 	// Allow for accessories to react to the acccessory list now
-	accessory.attach(src)
+	accessory.successful_attach(src)
 
 	if(user && attach_message)
 		balloon_alert(user, "accessory attached")
@@ -396,16 +386,25 @@ BUBBERSTATION CHANGE END */
 
 /// Removes the passed accesory from our accessories list
 /obj/item/clothing/under/proc/remove_accessory(obj/item/clothing/accessory/removed, update = TRUE)
+
+
 	// Remove it from the list before detaching
 	LAZYREMOVE(attached_accessories, removed)
-	removed.detach(src, update)
-	update_appearance()
 
-/// Get a list of all accessory overlays
-/obj/item/clothing/under/proc/get_accessory_overlays()
-	. = list()
-	for(var/obj/item/clothing/accessory/accessory as anything in attached_accessories)
-		. += accessory.generate_accessory_overlay(src)
+	removed.detach(src)
+
+	if(update)
+		update_accessory_overlay()
+
+/// Handles creating, updating and cutting the worn overlay mutable appearance.
+/obj/item/clothing/under/proc/update_accessory_overlay()
+	if(!length(attached_accessories))
+		accessory_overlay = null
+	else
+		accessory_overlay = mutable_appearance()
+		for(var/obj/item/clothing/accessory/accessory as anything in attached_accessories)
+			accessory_overlay.overlays += accessory.generate_accessory_overlay(src)
+	update_appearance() // so we update the suit inventory overlay too
 
 /obj/item/clothing/under/Exited(atom/movable/gone, direction)
 	. = ..()
@@ -418,10 +417,7 @@ BUBBERSTATION CHANGE END */
 	for(var/obj/item/clothing/accessory/worn_accessory as anything in attached_accessories)
 		remove_accessory(worn_accessory, update = FALSE)
 		worn_accessory.forceMove(drop_to)
-
-	if (ishuman(loc))
-		var/mob/living/carbon/human/wearer = loc
-		wearer.update_clothing(slot_flags)
+	update_accessory_overlay()
 
 /obj/item/clothing/under/atom_destruction(damage_flag)
 	dump_attachments()
@@ -463,7 +459,10 @@ BUBBERSTATION CHANGE END */
 
 	return all_accessories
 
-GAME_VERB_SRC(/obj/item/clothing/under, toggle, usr, "Adjust Suit Sensors", null)
+/obj/item/clothing/under/verb/toggle()
+	set name = "Adjust Suit Sensors"
+	set category = "Object"
+	set src in usr
 	var/mob/user_mob = usr
 	if(!can_toggle_sensors(user_mob))
 		return
@@ -531,7 +530,10 @@ GAME_VERB_SRC(/obj/item/clothing/under, toggle, usr, "Adjust Suit Sensors", null
 		return
 	pop_accessory(user)
 
-GAME_VERB_SRC(/obj/item/clothing/under, jumpsuit_adjust, usr, "Adjust Jumpsuit Style", null)
+/obj/item/clothing/under/verb/jumpsuit_adjust()
+	set name = "Adjust Jumpsuit Style"
+	set category = null
+	set src in usr
 
 	if(!can_adjust)
 		balloon_alert(usr, "can't be adjusted!")

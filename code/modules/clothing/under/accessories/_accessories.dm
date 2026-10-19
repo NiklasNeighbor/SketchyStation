@@ -60,19 +60,25 @@
 // If accessory is being worn, make sure it updates on the player
 /obj/item/clothing/accessory/update_greyscale()
 	. = ..()
+
 	var/obj/item/clothing/under/attached_to = loc
+
 	if(!istype(attached_to))
 		return
+
 	var/mob/living/carbon/human/wearer = attached_to.loc
-	if(istype(wearer) && wearer.get_item_by_slot(ITEM_SLOT_ICLOTHING) == attached_to)
-		wearer.update_clothing(attached_to.slot_flags)
+
+	if(!istype(wearer))
+		return
+
+	attached_to.update_accessory_overlay()
 
 /**
- * Try to attach this accessory to the passed clothing article.
+ * Actually attach this accessory to the passed clothing article.
  *
  * The accessory is not yet within the clothing's loc at this point, this hapens after success.
  */
-/obj/item/clothing/accessory/proc/try_attach(obj/item/clothing/under/attach_to, mob/living/attacher)
+/obj/item/clothing/accessory/proc/attach(obj/item/clothing/under/attach_to, mob/living/attacher)
 	SHOULD_CALL_PARENT(TRUE)
 
 	if(atom_storage)
@@ -97,17 +103,18 @@
 
 	return TRUE
 
-/// Called after try_attach returns TRUE and thus the accessory can be finally be moved into its target
-/obj/item/clothing/accessory/proc/attach(obj/item/clothing/under/attached_to)
+/// Called after attach is completely successful and the accessory is in the clothing's loc
+/obj/item/clothing/accessory/proc/successful_attach(obj/item/clothing/under/attached_to)
 	SHOULD_CALL_PARENT(TRUE)
 
-	LAZYADD(attached_to.attached_accessories, src)
-	forceMove(attached_to)
+	if(!attached_to.accessory_overlay)
+		attached_to.accessory_overlay = mutable_appearance()
+	attached_to.accessory_overlay.overlays += generate_accessory_overlay(attached_to) //uniform appearance will be updated by the caller
 
 	// Do on-equip effects if we're already equipped
 	var/mob/worn_on = attached_to.loc
 	if(istype(worn_on))
-		on_uniform_equipped(attached_to, worn_on, worn_on.get_slot_by_item(attached_to), update = TRUE)
+		on_uniform_equipped(attached_to, worn_on, worn_on.get_slot_by_item(attached_to))
 
 	SEND_SIGNAL(src, COMSIG_ACCESSORY_ATTACHED, attached_to)
 	SEND_SIGNAL(attached_to, COMSIG_CLOTHING_ACCESSORY_ATTACHED, src)
@@ -125,7 +132,7 @@
  *
  * We may have exited the clothing's loc at this point
  */
-/obj/item/clothing/accessory/proc/detach(obj/item/clothing/under/detach_from, update = TRUE)
+/obj/item/clothing/accessory/proc/detach(obj/item/clothing/under/detach_from)
 	SHOULD_CALL_PARENT(TRUE)
 
 	if(detach_from.atom_storage?.real_location == src)
@@ -137,7 +144,7 @@
 	UnregisterSignal(detach_from, list(COMSIG_ITEM_EQUIPPED, COMSIG_ITEM_DROPPED, COMSIG_CLOTHING_UNDER_ADJUSTED, COMSIG_ATOM_UPDATE_OVERLAYS))
 	var/mob/dropped_from = detach_from.loc
 	if(istype(dropped_from))
-		on_uniform_dropped(detach_from, dropped_from, update = update)
+		on_uniform_dropped(detach_from, dropped_from)
 
 	SEND_SIGNAL(src, COMSIG_ACCESSORY_DETACHED, detach_from)
 	SEND_SIGNAL(detach_from, COMSIG_CLOTHING_ACCESSORY_DETACHED, src)
@@ -156,32 +163,29 @@
 	return TRUE
 
 /// Signal proc for [COMSIG_ITEM_EQUIPPED] on the uniform we're pinned to
-/obj/item/clothing/accessory/proc/on_uniform_equipped(obj/item/clothing/under/source, mob/living/user, slot, update = FALSE)
+/obj/item/clothing/accessory/proc/on_uniform_equipped(obj/item/clothing/under/source, mob/living/user, slot)
 	SIGNAL_HANDLER
 
-	if(!(slot & source.slot_flags))
-		return
-	accessory_equipped(source, user)
-	if (update) // Don't update_clothing twice if we were already attached to our holder
-		user.update_clothing(source.slot_flags)
+	if(slot & source.slot_flags)
+		accessory_equipped(source, user)
 
 /// Signal proc for [COMSIG_ITEM_DROPPED] on the uniform we're pinned to
-/obj/item/clothing/accessory/proc/on_uniform_dropped(obj/item/clothing/under/source, mob/living/user, update = FALSE)
+/obj/item/clothing/accessory/proc/on_uniform_dropped(obj/item/clothing/under/source, mob/living/user)
 	SIGNAL_HANDLER
 
 	accessory_dropped(source, user)
-	if (update)
-		user.update_clothing(source.slot_flags)
+	user.update_clothing(ITEM_SLOT_ICLOTHING|ITEM_SLOT_OCLOTHING|ITEM_SLOT_NECK)
 
 /// Called when the uniform this accessory is pinned to is equipped in a valid slot
 /obj/item/clothing/accessory/proc/accessory_equipped(obj/item/clothing/under/clothes, mob/living/user)
 	equipped(user, user.get_slot_by_item(clothes)) // so we get any actions, item_flags get set, etc
-	for(var/trait in clothing_traits) // Accessory don't have slot flags by def, but they still apply clothing traits when the suit is equipped in the right slot.
-		ADD_CLOTHING_TRAIT(user, trait)
+	user.update_clothing(ITEM_SLOT_OCLOTHING|ITEM_SLOT_NECK)
+	return
 
 /// Called when the uniform this accessory is pinned to is dropped
 /obj/item/clothing/accessory/proc/accessory_dropped(obj/item/clothing/under/clothes, mob/living/user)
-	dropped(user) //This handles removing clothing traits from the user by default everytime.
+	dropped(user)
+	return
 
 /// Signal proc for [COMSIG_CLOTHING_UNDER_ADJUSTED] on the uniform we're pinned to
 /// Checks if we can no longer be attached to the uniform, and if so, drops us
@@ -191,13 +195,15 @@
 	if(can_attach_accessory(source))
 		return
 
-	forceMove(source.drop_location()) //This calls remove_accessory()
+	source.remove_accessory(src)
+	forceMove(source.drop_location())
 	source.visible_message(span_warning("[src] falls off of [source]!"))
 
 /// Signal proc for [COMSIG_ATOM_UPDATE_OVERLAYS] on the uniform we're pinned to to add our overlays to the inventory icon
 /obj/item/clothing/accessory/proc/on_uniform_update(obj/item/source, list/overlays)
 	SIGNAL_HANDLER
-	overlays += appearance
+
+	overlays |= src
 
 /obj/item/clothing/accessory/attack_self_secondary(mob/user)
 	. = ..()

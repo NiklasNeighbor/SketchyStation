@@ -1,4 +1,6 @@
-GAME_VERB(/client, mentorwho, "Mentorwho", "Mentor")
+/client/verb/mentorwho()
+	set category = "Mentor"
+	set name = "Mentorwho"
 	var/msg = "<b>Current Mentors:</b>\n"
 	for(var/X in GLOB.mentors)
 		var/client/C = X

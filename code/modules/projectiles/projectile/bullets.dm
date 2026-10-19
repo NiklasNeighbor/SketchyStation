@@ -1,6 +1,6 @@
 /obj/projectile/bullet
 	name = "bullet"
-	icon_state = "bullet_tracer"
+	icon_state = "bullet"
 	damage = 60
 	damage_type = BRUTE
 	armor_flag = BULLET

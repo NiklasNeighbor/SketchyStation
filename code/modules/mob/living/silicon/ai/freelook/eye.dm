@@ -127,7 +127,6 @@
 	if(same_z_layer)
 		return
 	update_ai_detect_hud()
-	ai?.on_looking_z_level_change(old_turf, new_turf)
 
 /*----------------------------------------------------*/
 
@@ -211,7 +210,9 @@
 	else
 		eyeobj.RemoveInvisibility(type)
 
-GAME_VERB(/mob/living/silicon/ai, toggle_acceleration, "Toggle Camera Acceleration", "AI Commands")
+/mob/living/silicon/ai/verb/toggle_acceleration()
+	set category = "AI Commands"
+	set name = "Toggle Camera Acceleration"
 
 	if(incapacitated)
 		return

@@ -76,7 +76,7 @@
 
 
 /datum/nanite_program/protocol/offline/check_conditions()
-	if(!IS_UNCONSCIOUS_OR_CRIT(nanites.host_mob))
+	if(nanites.host_mob.stat == CONSCIOUS)
 		return FALSE
 	return ..()
 

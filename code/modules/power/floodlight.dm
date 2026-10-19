@@ -98,33 +98,31 @@
 
 	return ITEM_INTERACT_SUCCESS
 
-/obj/structure/floodlight_frame/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(istype(tool, /obj/item/stack/cable_coil) && state == FLOODLIGHT_NEEDS_WIRES)
-		var/obj/item/stack/coil = tool
-		if(!coil.use(5))
+/obj/structure/floodlight_frame/attackby(obj/item/O, mob/user, list/modifiers, list/attack_modifiers)
+	if(istype(O, /obj/item/stack/cable_coil) && state == FLOODLIGHT_NEEDS_WIRES)
+		var/obj/item/stack/S = O
+		if(S.use(5))
+			icon_state = "floodlight_c2"
+			state = FLOODLIGHT_NEEDS_SECURING
+			return
+		else
 			balloon_alert(user, "need 5 cable pieces!")
-			return ITEM_INTERACT_BLOCKING
+			return
 
-		icon_state = "floodlight_c2"
-		state = FLOODLIGHT_NEEDS_SECURING
-		return ITEM_INTERACT_SUCCESS
-
-
-	if(istype(tool, /obj/item/light/tube))
+	if(istype(O, /obj/item/light/tube))
 		if(state != FLOODLIGHT_NEEDS_LIGHTS)
 			balloon_alert(user, "construction not completed!")
-			return ITEM_INTERACT_BLOCKING
-
-		if(astype(tool, /obj/item/light/tube).status == LIGHT_BROKEN) // light tube broken.
+			return
+		var/obj/item/light/tube/L = O
+		if(L.status != LIGHT_BROKEN) // light tube not broken.
+			new /obj/machinery/power/floodlight(loc)
+			qdel(src)
+			qdel(O)
+			return
+		else //A minute of silence for all the accidentally broken light tubes.
 			balloon_alert(user, "light tube is broken!")
-			return ITEM_INTERACT_BLOCKING
-
-		new /obj/machinery/power/floodlight(loc)
-		qdel(src)
-		qdel(tool)
-		return ITEM_INTERACT_SUCCESS
-
-	return NONE
+			return
+	..()
 
 /obj/structure/floodlight_frame/completed
 	name = "floodlight frame"
@@ -264,6 +262,7 @@
 	return ..()
 
 /obj/machinery/power/floodlight/wrench_act(mob/living/user, obj/item/tool)
+	. = ..()
 	default_unfasten_wrench(user, tool)
 	change_setting(FLOODLIGHT_OFF)
 	if(anchored)
@@ -273,14 +272,11 @@
 	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/power/floodlight/screwdriver_act(mob/living/user, obj/item/tool)
-	if(panel_open)
-		panel_open = FALSE
-		balloon_alert(user, "closed panel")
-		return ITEM_INTERACT_SUCCESS
+	. = ..()
 	change_setting(FLOODLIGHT_OFF)
 	panel_open = TRUE
 	balloon_alert(user, "opened panel")
-	return ITEM_INTERACT_SUCCESS
+	return TRUE
 
 /obj/machinery/power/floodlight/attack_hand(mob/user, list/modifiers)
 	. = ..()

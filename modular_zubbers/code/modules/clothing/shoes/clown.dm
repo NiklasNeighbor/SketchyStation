@@ -11,7 +11,6 @@
 	name = "squeaky clown heels"
 	desc = "Some Clowns have been throwing away their shoes to wear heels. This corrects that through painful nerve implanting needles! And squeaking heels. May have went a bit far in a few places..."
 	icon_state = "clussy_heels"
-	worn_icon_teshari = 'modular_zubbers/icons/mob/clothing/feet/feet_teshari.dmi'
 
 //No waddle and no squeak version for all use.
 /obj/item/clothing/shoes/latex_heels/bubber/clussy/mute
@@ -20,7 +19,6 @@
 	icon = 'modular_zubbers/icons/obj/clothing/feet/feet.dmi'
 	worn_icon = 'modular_zubbers/icons/mob/clothing/feet/feet.dmi'
 	worn_icon_digi = 'modular_zubbers/icons/mob/clothing/feet/feet_digi.dmi'
-	worn_icon_teshari = 'modular_zubbers/icons/mob/clothing/feet/feet_teshari.dmi'
 	icon_state = "clussy_heels"
 	worn_icon_state = "clussy_heels"
 
@@ -33,16 +31,3 @@
 	desc = "As if two jester shoes weren't enough, here's a third. Never ask Clown Planet for anything again."
 	icon_state = "striped_jester_shoes"
 	squeak_sound = list('sound/effects/jingle.ogg'=1)
-
-// unrelated clown shoes
-/obj/item/clothing/shoes/jester_shoes
-	greyscale_config_worn_digi = /datum/greyscale_config/jester_shoes/worn/digi
-	greyscale_config_worn_teshari = /datum/greyscale_config/jester_shoes/worn/teshari
-
-/obj/item/clothing/shoes/clown_shoes/jester
-	greyscale_config_worn_digi = /datum/greyscale_config/jester_shoes/worn/digi
-	greyscale_config_worn_teshari = /datum/greyscale_config/jester_shoes/worn/teshari
-
-/obj/item/clothing/shoes/clown_shoes/britches
-	worn_icon_digi = 'modular_zubbers/icons/mob/clothing/feet/feet_digi.dmi'
-	worn_icon_teshari = 'modular_zubbers/icons/mob/clothing/feet/feet_teshari.dmi'

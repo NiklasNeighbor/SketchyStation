@@ -133,7 +133,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 		character_appearance = character_appearance,
 		dna_string = record_dna.unique_enzymes,
 		fingerprint = md5(record_dna.unique_identity),
-		gender = person.gender,
+		gender = person_gender,
 		initial_rank = assignment,
 		name = person.real_name,
 		rank = chosen_assignment, // SKYRAT EDIT - Alt job titles - ORIGINAL: rank = assignment,
@@ -143,8 +143,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 		locked_dna = record_dna,
 		mind_ref = person.mind,
 		// BUBBER EDIT ADDITION BEGIN - Records
-		exploitable_information = person_client?.prefs.read_preference(/datum/preference/text/exploitable) || "",
-		background_information = person_client?.prefs.read_preference(/datum/preference/text/background) || "",
+		exploitable_information = person_client?.prefs.read_preference(/datum/preference/text/security) || "",
 		// BUBBER EDIT END
 	)
 
@@ -169,7 +168,6 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 		minor_disabilities_desc = person.get_quirk_string(TRUE, CAT_QUIRK_MINOR_DISABILITY),
 		quirk_notes = person.get_quirk_string(TRUE, CAT_QUIRK_NOTES),
 		// SKYRAT EDIT START - RP Records
-		security_note = person.get_quirk_security_string(CAT_QUIRK_NOTES),
 		past_general_records = person_client?.prefs.read_preference(/datum/preference/text/general) || "",
 		past_medical_records = person_client?.prefs.read_preference(/datum/preference/text/medical) || "",
 		past_security_records = person_client?.prefs.read_preference(/datum/preference/text/security) || "",
@@ -234,7 +232,7 @@ GLOBAL_DATUM_INIT(manifest, /datum/manifest, new)
 			if(open_slots < 1)
 				continue
 			open += open_slots
-		positions[department.department_name] = list("exceptions" = exceptions, "open" = open, "color" = department.ui_color)
+		positions[department.department_name] = list("exceptions" = exceptions, "open" = open)
 
 	return list(
 		"manifest" = get_manifest(),

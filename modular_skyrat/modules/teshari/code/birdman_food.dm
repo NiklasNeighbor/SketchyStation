@@ -104,4 +104,4 @@
 			/obj/item/food/bun = 1
 	)
 	result = /obj/item/food/burger/human/chicken
-	dish_category = DISH_BURGER
+	category = CAT_BURGER

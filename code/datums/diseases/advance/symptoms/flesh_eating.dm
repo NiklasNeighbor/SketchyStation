@@ -19,7 +19,8 @@ Bonus
 	level = 6
 	severity = 5
 	base_message_chance = 50
-	symptom_delay = 37.5
+	symptom_delay_min = 15
+	symptom_delay_max = 60
 	symptom_cure = /datum/reagent/medicine/omnizine
 	cure_color = "orange"
 	threshold_descs = list(
@@ -59,7 +60,7 @@ Bonus
 	if(bleed)
 		if(ishuman(M))
 			var/mob/living/carbon/human/H = M
-			var/obj/item/bodypart/random_part = pick(H.get_bodyparts())
+			var/obj/item/bodypart/random_part = pick(H.bodyparts)
 			random_part.adjustBleedStacks(5 * power)
 	return 1
 
@@ -92,7 +93,8 @@ Bonus
 	level = 7
 	severity = 6
 	base_message_chance = 50
-	symptom_delay = 4.5
+	symptom_delay_min = 3
+	symptom_delay_max = 6
 	symptom_cure = /datum/reagent/medicine/earthsblood // Good luck finding THAT.
 	cure_color = "red"
 	var/chems = FALSE

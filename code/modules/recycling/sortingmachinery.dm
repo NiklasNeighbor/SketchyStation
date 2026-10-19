@@ -37,7 +37,7 @@
 		new /obj/effect/decal/cleanable/wrapping(turf_loc)
 	else
 		playsound(loc, 'sound/items/box_cut.ogg', 50, TRUE)
-		new /obj/item/stack/package_wrap/one(turf_loc)
+		new /obj/item/stack/package_wrap(turf_loc)
 	for(var/atom/movable/movable_content as anything in contents)
 		movable_content.forceMove(turf_loc)
 
@@ -81,7 +81,7 @@
 		return
 	to_chat(user, span_notice("You lean on the back of [container] and start pushing to rip the wrapping around it."))
 	if(do_after(user, 5 SECONDS, target = container))
-		if(!user || IS_UNCONSCIOUS_OR_CRIT(user) || user.loc != container || container.loc != src)
+		if(!user || user.stat != CONSCIOUS || user.loc != container || container.loc != src)
 			return
 		to_chat(user, span_notice("You successfully removed [container]'s wrapping!"))
 		container.forceMove(loc)
@@ -104,57 +104,52 @@
 	if(sticker)
 		. += "[base_icon_state]_barcode"
 
-/obj/item/delivery/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(istype(tool, /obj/item/dest_tagger))
-		var/relevant_tag = astype(tool, /obj/item/dest_tagger).currTag
-		if(sort_tag == relevant_tag)
-			return ITEM_INTERACT_BLOCKING
-		var/tag = uppertext(GLOB.TAGGERLOCATIONS[relevant_tag])
-		to_chat(user, span_notice("*[tag]*"))
-		sort_tag = relevant_tag
-		playsound(loc, 'sound/machines/beep/twobeep_high.ogg', 100, TRUE)
-		update_appearance()
-		return ITEM_INTERACT_SUCCESS
+/obj/item/delivery/attackby(obj/item/item, mob/user, list/modifiers, list/attack_modifiers)
+	if(istype(item, /obj/item/dest_tagger))
+		var/obj/item/dest_tagger/dest_tagger = item
 
-	if(istype(tool, /obj/item/stack/wrapping_paper))
-		if(giftwrapped)
-			return ITEM_INTERACT_BLOCKING
-		var/obj/item/stack/wrapping_paper/wrapping_paper = tool
-		if(!wrapping_paper.use(3))
+		if(sort_tag != dest_tagger.currTag)
+			var/tag = uppertext(GLOB.TAGGERLOCATIONS[dest_tagger.currTag])
+			to_chat(user, span_notice("*[tag]*"))
+			sort_tag = dest_tagger.currTag
+			playsound(loc, 'sound/machines/beep/twobeep_high.ogg', 100, TRUE)
+			update_appearance()
+
+	else if(istype(item, /obj/item/stack/wrapping_paper) && !giftwrapped)
+		var/obj/item/stack/wrapping_paper/wrapping_paper = item
+		if(wrapping_paper.use(3))
+			user.visible_message(span_notice("[user] wraps the package in festive paper!"))
+			giftwrapped = TRUE
+			greyscale_config = text2path("/datum/greyscale_config/gift[icon_state]")
+			set_greyscale(colors = wrapping_paper.greyscale_colors)
+			update_appearance()
+		else
 			to_chat(user, span_warning("You need more paper!"))
-			return ITEM_INTERACT_BLOCKING
-		user.visible_message(span_notice("[user] wraps the package in festive paper!"))
-		giftwrapped = TRUE
-		greyscale_config = text2path("/datum/greyscale_config/gift[icon_state]")
-		set_greyscale(colors = wrapping_paper.greyscale_colors)
-		update_appearance()
-		return ITEM_INTERACT_SUCCESS
 
-	if(istype(tool, /obj/item/paper))
+	else if(istype(item, /obj/item/paper))
 		if(note)
 			to_chat(user, span_warning("This package already has a note attached!"))
-			return ITEM_INTERACT_BLOCKING
-		if(!user.transferItemToLoc(tool, src))
-			to_chat(user, span_warning("For some reason, you can't attach [tool]!"))
-			return ITEM_INTERACT_BLOCKING
-		user.visible_message(span_notice("[user] attaches [tool] to [src]."), span_notice("You attach [tool] to [src]."))
-		note = tool
+			return
+		if(!user.transferItemToLoc(item, src))
+			to_chat(user, span_warning("For some reason, you can't attach [item]!"))
+			return
+		user.visible_message(span_notice("[user] attaches [item] to [src]."), span_notice("You attach [item] to [src]."))
+		note = item
 		update_appearance()
-		return ITEM_INTERACT_SUCCESS
 
-	if(istype(tool, /obj/item/universal_scanner))
-		var/obj/item/universal_scanner/sales_tagger = tool
+	else if(istype(item, /obj/item/universal_scanner))
+		var/obj/item/universal_scanner/sales_tagger = item
 		if(sales_tagger.scanning_mode != SCAN_SALES_TAG)
-			return ITEM_INTERACT_BLOCKING
+			return
 		if(sticker)
 			to_chat(user, span_warning("This package already has a barcode attached!"))
-			return ITEM_INTERACT_BLOCKING
+			return
 		if(!(sales_tagger.payments_acc))
 			to_chat(user, span_warning("Swipe an ID on [sales_tagger] first!"))
-			return ITEM_INTERACT_BLOCKING
+			return
 		if(sales_tagger.paper_count <= 0)
 			to_chat(user, span_warning("[sales_tagger] is out of paper!"))
-			return ITEM_INTERACT_BLOCKING
+			return
 		user.visible_message(span_notice("[user] attaches a barcode to [src]."), span_notice("You attach a barcode to [src]."))
 		sales_tagger.paper_count -= 1
 		sticker = new /obj/item/barcode(src)
@@ -164,41 +159,40 @@
 		for(var/obj/wrapped_item in get_all_contents())
 			if(HAS_TRAIT(wrapped_item, TRAIT_NO_BARCODES))
 				continue
-			wrapped_item.AddComponent(/datum/component/pricetag, list(sticker.payments_acc), sales_tagger.cut_multiplier)
+			wrapped_item.AddComponent(/datum/component/pricetag, sticker.payments_acc, sales_tagger.cut_multiplier)
 		update_appearance()
-		return ITEM_INTERACT_SUCCESS
 
-	if(istype(tool, /obj/item/barcode))
-		var/obj/item/barcode/stickerA = tool
+	else if(istype(item, /obj/item/barcode))
+		var/obj/item/barcode/stickerA = item
 		if(sticker)
 			to_chat(user, span_warning("This package already has a barcode attached!"))
-			return ITEM_INTERACT_BLOCKING
+			return
 		if(!(stickerA.payments_acc))
 			to_chat(user, span_warning("This barcode seems to be invalid. Guess it's trash now."))
-			return ITEM_INTERACT_BLOCKING
-		if(!user.transferItemToLoc(tool, src))
-			to_chat(user, span_warning("For some reason, you can't attach [tool]!"))
-			return ITEM_INTERACT_BLOCKING
+			return
+		if(!user.transferItemToLoc(item, src))
+			to_chat(user, span_warning("For some reason, you can't attach [item]!"))
+			return
 		sticker = stickerA
 		for(var/obj/wrapped_item in get_all_contents())
 			if(HAS_TRAIT(wrapped_item, TRAIT_NO_BARCODES))
 				continue
-			wrapped_item.AddComponent(/datum/component/pricetag, list(sticker.payments_acc), sticker.cut_multiplier)
+			wrapped_item.AddComponent(/datum/component/pricetag, sticker.payments_acc, sticker.cut_multiplier)
 		update_appearance()
-		return ITEM_INTERACT_SUCCESS
 
-	if(istype(tool, /obj/item/boxcutter))
-		var/obj/item/boxcutter/boxcutter_item = tool
-		if(!HAS_TRAIT(boxcutter_item, TRAIT_TRANSFORM_ACTIVE))
+	else if(istype(item, /obj/item/boxcutter))
+		var/obj/item/boxcutter/boxcutter_item = item
+		if(HAS_TRAIT(boxcutter_item, TRAIT_TRANSFORM_ACTIVE))
+			if(!attempt_pre_unwrap_contents(user, time = 0.5 SECONDS))
+				return
+			unwrap_contents()
+			balloon_alert(user, "cutting open package...")
+			post_unwrap_contents(user, rip_open = FALSE)
+		else
 			balloon_alert(user, "prime the boxcutter!")
-			return ITEM_INTERACT_BLOCKING
-		if(!attempt_pre_unwrap_contents(user, time = 0.5 SECONDS))
-			return ITEM_INTERACT_BLOCKING
-		unwrap_contents()
-		post_unwrap_contents(user, rip_open = FALSE)
-		return ITEM_INTERACT_SUCCESS
 
-	return NONE
+	else
+		return ..()
 
 /obj/item/delivery/nameformat(input, user)
 	playsound(src, SFX_WRITING_PEN, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE, SOUND_FALLOFF_EXPONENT + 3, ignore_walls = FALSE)
@@ -272,7 +266,6 @@
 	sound_vary = TRUE
 	pickup_sound = SFX_GENERIC_DEVICE_PICKUP
 	drop_sound = SFX_GENERIC_DEVICE_DROP
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 2.5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 1.5)
 
 /obj/item/dest_tagger/borg
 	name = "cyborg destination tagger"
@@ -355,34 +348,34 @@
 	if(payments_acc)
 		. += span_notice("<b>Ctrl-click</b> to clear the registered account.")
 
-/obj/item/sales_tagger/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(isidcard(tool))
-		var/obj/item/card/id/potential_acc = tool
-		if(!potential_acc.registered_account)
+/obj/item/sales_tagger/attackby(obj/item/item, mob/living/user, list/modifiers, list/attack_modifiers)
+	. = ..()
+	if(isidcard(item))
+		var/obj/item/card/id/potential_acc = item
+		if(potential_acc.registered_account)
+			if(payments_acc == potential_acc.registered_account)
+				to_chat(user, span_notice("ID card already registered."))
+				return
+			else
+				payments_acc = potential_acc.registered_account
+				playsound(src, 'sound/machines/ping.ogg', 40, TRUE)
+				to_chat(user, span_notice("[src] registers the ID card. Tag a wrapped item to create a barcode."))
+		else if(!potential_acc.registered_account)
 			to_chat(user, span_warning("This ID card has no account registered!"))
-			return ITEM_INTERACT_BLOCKING
-		if(payments_acc == potential_acc.registered_account)
-			to_chat(user, span_notice("ID card already registered."))
-			return ITEM_INTERACT_BLOCKING
-		payments_acc = potential_acc.registered_account
-		playsound(src, 'sound/machines/ping.ogg', 40, TRUE)
-		to_chat(user, span_notice("[src] registers the ID card. Tag a wrapped item to create a barcode."))
-		return ITEM_INTERACT_SUCCESS
-
-	if(istype(tool, /obj/item/paper))
-		if ((paper_count >= max_paper_count))
+			return
+	if(istype(item, /obj/item/paper))
+		if (!(paper_count >= max_paper_count))
+			paper_count += 10
+			qdel(item)
+			if (paper_count >= max_paper_count)
+				paper_count = max_paper_count
+				to_chat(user, span_notice("[src]'s paper supply is now full."))
+				return
+			to_chat(user, span_notice("You refill [src]'s paper supply, you have [paper_count] left."))
+			return
+		else
 			to_chat(user, span_notice("[src]'s paper supply is full."))
-			return ITEM_INTERACT_BLOCKING
-		paper_count += 10
-		qdel(tool)
-		if (paper_count >= max_paper_count)
-			paper_count = max_paper_count
-			to_chat(user, span_notice("[src]'s paper supply is now full."))
-			return ITEM_INTERACT_SUCCESS
-		to_chat(user, span_notice("You refill [src]'s paper supply, you have [paper_count] left."))
-		return ITEM_INTERACT_SUCCESS
-
-	return NONE
+			return
 
 /obj/item/sales_tagger/attack_self(mob/user)
 	. = ..()

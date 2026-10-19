@@ -14,8 +14,9 @@
 
 /obj/structure/transit_tube_pod/Initialize(mapload)
 	. = ..()
-	var/list/new_gases = list(/datum/gas/oxygen = MOLES_O2STANDARD, /datum/gas/nitrogen = MOLES_N2STANDARD)
-	air_contents.adjust_multiple_gases(new_gases)
+	air_contents.add_gases(/datum/gas/oxygen, /datum/gas/nitrogen)
+	air_contents.gases[/datum/gas/oxygen][MOLES] = MOLES_O2STANDARD
+	air_contents.gases[/datum/gas/nitrogen][MOLES] = MOLES_N2STANDARD
 	air_contents.temperature = T20C
 
 /obj/structure/transit_tube_pod/Destroy()
@@ -26,18 +27,17 @@
 	icon_state = contents.len ? occupied_icon_state : initial(icon_state)
 	return ..()
 
-/obj/structure/transit_tube_pod/crowbar_act(mob/living/user, obj/item/tool)
-	if(moving)		// can you even click on one of these while they're in a tube?
-		return NONE	// for that matter can you click them when they're outside of a tube?
-
-	tool.play_tool_sound(src)
-	if(contents.len)
-		user.visible_message(span_notice("[user] empties \the [src]."), \
-							span_notice("You empty \the [src]."))
-		empty_pod()
+/obj/structure/transit_tube_pod/attackby(obj/item/I, mob/user, list/modifiers, list/attack_modifiers)
+	if(I.tool_behaviour == TOOL_CROWBAR)
+		if(!moving)
+			I.play_tool_sound(src)
+			if(contents.len)
+				user.visible_message(span_notice("[user] empties \the [src]."), span_notice("You empty \the [src]."))
+				empty_pod()
+			else
+				deconstruct(TRUE)
 	else
-		deconstruct(TRUE)
-	return ITEM_INTERACT_SUCCESS
+		return ..()
 
 /obj/structure/transit_tube_pod/atom_deconstruct(disassembled = TRUE)
 	var/atom/location = get_turf(src)

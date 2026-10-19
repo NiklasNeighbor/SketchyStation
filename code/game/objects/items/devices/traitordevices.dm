@@ -270,7 +270,8 @@ effective or pretty fucking useless.
 		return
 
 	var/turf/our_turf = get_turf(owner)
-	if(our_turf?.check_lumcount_above(0.3))
+	var/lumcount = our_turf?.get_lumcount() || 0
+	if(lumcount > 0.3)
 		// Decay charge while invisible+ in the light
 		charge = max(0, charge - (max_charge * 0.05) * seconds_per_tick)
 		build_all_button_icons(UPDATE_BUTTON_STATUS)
@@ -392,7 +393,7 @@ effective or pretty fucking useless.
 	for (var/obj/item/radio/radio in target.get_all_contents() + target)
 		if(ignore_syndie && (radio.special_channels & RADIO_SPECIAL_SYNDIE))
 			continue
-		radio.set_broadcasting(FALSE, actual_setting = FALSE)
+		radio.set_broadcasting(FALSE)
 
 /obj/item/jammer/Destroy()
 	GLOB.active_jammers -= src
@@ -403,7 +404,7 @@ effective or pretty fucking useless.
 	desc = "A jury-rigged device that disrupts nearby radio communication. Its crude construction provides a significantly smaller area of effect compared to its Syndicate counterpart."
 	range = 5
 	disruptor_range = 3
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.8, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 0.55)
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 0.5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 0.5)
 
 /obj/item/jammer/makeshift/Initialize(mapload)
 	. = ..()
@@ -441,39 +442,35 @@ effective or pretty fucking useless.
 
 	return TRUE
 
-/obj/machinery/porta_turret/syndicate/toolbox/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!istype(tool, /obj/item/wrench/combat))
+/obj/machinery/porta_turret/syndicate/toolbox/attackby(obj/item/attacking_item, mob/living/user, list/modifiers, list/attack_modifiers)
+	if(!istype(attacking_item, /obj/item/wrench/combat))
 		return ..()
 
-	if(!tool.toolspeed) // This is a check for the laser wrench being off, I think
-		return ITEM_INTERACT_BLOCKING
+	if(!attacking_item.toolspeed)
+		return
 
 	if(user.combat_mode)
 		balloon_alert(user, "deconstructing...")
-		if(!tool.use_tool(src, user, 5 SECONDS, volume = 20))
-			return ITEM_INTERACT_BLOCKING
+		if(!attacking_item.use_tool(src, user, 5 SECONDS, volume = 20))
+			return
 
 		deconstruct(TRUE)
-		tool.play_tool_sound(src, 50)
+		attacking_item.play_tool_sound(src, 50)
 		balloon_alert(user, "deconstructed!")
-		return ITEM_INTERACT_SUCCESS
 
+	else
+		if(atom_integrity == max_integrity)
+			balloon_alert(user, "already repaired!")
+			return
 
-	if(atom_integrity == max_integrity)
-		balloon_alert(user, "already repaired!")
-		return ITEM_INTERACT_BLOCKING
+		balloon_alert(user, "repairing...")
+		while(atom_integrity != max_integrity)
+			if(!attacking_item.use_tool(src, user, 2 SECONDS, volume = 20))
+				return
 
-	balloon_alert(user, "repairing...")
-	. = ITEM_INTERACT_BLOCKING // I'm doing this such that at least one successful repair considers the interaction a success
-	while(atom_integrity != max_integrity)
-		if(!tool.use_tool(src, user, 2 SECONDS, volume = 20))
-			return .
+			repair_damage(10)
 
-		repair_damage(10)
-		. = ITEM_INTERACT_SUCCESS
-
-	balloon_alert(user, "repaired!")
-	return ITEM_INTERACT_SUCCESS
+		balloon_alert(user, "repaired!")
 
 /obj/machinery/porta_turret/syndicate/toolbox/on_deconstruction(disassembled)
 	if(disassembled)
@@ -558,16 +555,14 @@ effective or pretty fucking useless.
 
 /obj/item/clothing/shoes/jackboots/dagger/equipped(mob/living/user, slot)
 	. = ..()
-
 	if(!(slot & ITEM_SLOT_FEET) || !istype(user))
-		return
-	modified_bodyparts += user.get_bodypart(BODY_ZONE_L_LEG)
-	modified_bodyparts += user.get_bodypart(BODY_ZONE_R_LEG)
-	for(var/obj/item/bodypart/bodypart in modified_bodyparts)
-		bodypart.unarmed_sharpness |= SHARP_EDGED
-		bodypart.unarmed_attack_effect = ATTACK_EFFECT_SLASH
-		RegisterSignals(bodypart, list(COMSIG_BODYPART_REMOVED, COMSIG_QDELETING), PROC_REF(clear_modification))
-	RegisterSignal(user, COMSIG_CARBON_POST_ATTACH_LIMB, PROC_REF(modify_legs))
+		modified_bodyparts += user.get_bodypart(BODY_ZONE_L_LEG)
+		modified_bodyparts += user.get_bodypart(BODY_ZONE_R_LEG)
+		for(var/obj/item/bodypart/bodypart in modified_bodyparts)
+			bodypart.unarmed_sharpness |= SHARP_EDGED
+			bodypart.unarmed_attack_effect = ATTACK_EFFECT_SLASH
+			RegisterSignals(bodypart, list(COMSIG_BODYPART_REMOVED, COMSIG_QDELETING), PROC_REF(clear_modification))
+		RegisterSignal(user, COMSIG_CARBON_POST_ATTACH_LIMB, PROC_REF(modify_legs))
 
 /obj/item/clothing/shoes/jackboots/dagger/dropped(mob/user)
 	. = ..()
@@ -601,5 +596,4 @@ effective or pretty fucking useless.
 
 /obj/item/clothing/shoes/jackboots/dagger/examine_more(mob/user)
 	. = ..()
-	if(user.is_holding(src))
-		. += span_notice("Upon closer inspection, you notice a dagger embedded into the sole.")
+	. += span_notice("Upon closer inspection, you notice a dagger embedded into the sole.")

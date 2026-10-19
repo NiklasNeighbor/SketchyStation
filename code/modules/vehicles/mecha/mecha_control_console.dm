@@ -1,7 +1,6 @@
 /obj/machinery/computer/mecha
 	name = "exosuit control console"
 	desc = "Used to remotely locate or lockdown exosuits."
-	icon_state = MAP_SWITCH("computer", "/obj/machinery/computer/mecha")
 	icon_screen = "mecha"
 	icon_keyboard = "tech_key"
 	req_access = list(ACCESS_ROBOTICS)
@@ -68,7 +67,7 @@
 				return
 			var/obj/vehicle/sealed/mecha/our_mecha = our_mecha_tracker.chassis
 			if(our_mecha)
-				our_mecha_tracker.remote_emp_triggered()
+				our_mecha_tracker.shock()
 				usr.log_message("has activated remote EMP on exosuit [our_mecha], located at [loc_name(our_mecha)], which is currently [LAZYLEN(our_mecha.occupants) ? "occupied by [our_mecha.occupants.Join(", ")]." : "without a pilot."]", LOG_ATTACK)
 				usr.log_message("has activated remote EMP on exosuit [our_mecha], located at [loc_name(our_mecha)], which is currently [LAZYLEN(our_mecha.occupants) ? "occupied by [our_mecha.occupants.Join(", ")]." : "without a pilot."]", LOG_GAME, log_globally = FALSE)
 				message_admins("[key_name_admin(usr)][ADMIN_FLW(usr)] has activated remote EMP on exosuit [our_mecha][ADMIN_JMP(our_mecha)], which is currently [LAZYLEN(our_mecha.occupants) ? "occupied by [our_mecha.occupants.Join(",")][ADMIN_FLW(our_mecha)]." : "without a pilot."]")
@@ -80,7 +79,6 @@
 	icon = 'icons/obj/devices/new_assemblies.dmi'
 	icon_state = "motion2"
 	w_class = WEIGHT_CLASS_SMALL
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5)
 	/// If this beacon allows for AI control. Exists to avoid using istype() on checking
 	var/ai_beacon = FALSE
 	/// Cooldown variable for EMP pulsing
@@ -139,7 +137,7 @@
 /**
  * Attempts to EMP mech that the tracker is attached to, if there is one and tracker is not on cooldown
  */
-/obj/item/mecha_parts/mecha_tracking/proc/remote_emp_triggered()
+/obj/item/mecha_parts/mecha_tracking/proc/shock()
 	if(recharging)
 		return
 	if(!chassis)
@@ -157,6 +155,5 @@
 /obj/item/mecha_parts/mecha_tracking/ai_control
 	name = "exosuit AI control beacon"
 	desc = "A device used to transmit exosuit data. Also allows active AI units to take control of said exosuit."
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 5, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 2)
 	ai_beacon = TRUE
 	flag_to_check = BEACON_CONTROLLABLE

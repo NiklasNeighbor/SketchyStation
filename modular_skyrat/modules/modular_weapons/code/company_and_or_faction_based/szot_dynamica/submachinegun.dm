@@ -8,9 +8,6 @@
 
 	icon = 'modular_skyrat/modules/modular_weapons/icons/obj/company_and_or_faction_based/szot_dynamica/guns_48.dmi'
 	icon_state = "miecz"
-	greyscale_config = /datum/greyscale_config/szot_dynamica_48
-	greyscale_colors = "#83825E#CD445B"
-	flags_1 = parent_type::flags_1 | IS_PLAYER_COLORABLE_1 | NO_NEW_GAGS_PREVIEW_1
 
 	inhand_icon_state = "c20r"
 	worn_icon_state = "gun"
@@ -41,7 +38,6 @@
 /obj/item/gun/ballistic/automatic/miecz/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/automatic_fire, fire_delay)
-	AddElement(/datum/element/gags_recolorable)
 
 /obj/item/gun/ballistic/automatic/miecz/give_manufacturer_examine()
 	AddElement(/datum/element/manufacturer_examine, COMPANY_SZOT)
@@ -53,12 +49,12 @@
 /obj/item/gun/ballistic/automatic/miecz/examine_more(mob/user)
 	. = ..()
 
-	. += "The Miecz is one of the newest weapons to come out of CIN member state hands and \
+	. += "The Meicz is one of the newest weapons to come out of CIN member state hands and \
 		into the wild, typically the frontier. It was built alongside the round it fires, the \
-		.27-54 Cesarzowa pistol round. Based on the proven Lanca design, it seeks to bring that \
-		same reliable weapon design into the form factor of a submachinegun. While it is significantly \
+		.27-54 Cesarzawa pistol round. Based on the proven Lanca design, it seeks to bring that \
+		same reliable weapon design into the factor of a submachinegun. While it is significantly \
 		larger than many comparable weapons in TerraGov use, it more than makes up for it with ease \
-		of control and a significant fire rate."
+		of control and significant firerate."
 
 	return .
 

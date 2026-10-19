@@ -6,7 +6,7 @@
 	icon = FA_ICON_WIND
 	gain_text = span_notice("You feel like walking silly")
 	lose_text = span_notice("You no longer feel like walking silly")
-	quirk_flags = null
+	quirk_flags = QUIRK_HUMAN_ONLY
 	mail_goodies = list(/obj/item/food/grown/banana)
 
 

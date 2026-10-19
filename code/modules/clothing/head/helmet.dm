@@ -45,30 +45,30 @@
 	. = ..()
 	AddComponent(/datum/component/seclite_attachable, light_icon_state = "flight")
 
-/obj/item/clothing/head/helmet/sec/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!issignaler(tool))
-		return ..()
+/obj/item/clothing/head/helmet/sec/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
+	if(issignaler(attacking_item))
+		var/obj/item/assembly/signaler/attached_signaler = attacking_item
+		// There's a flashlight in us. Remove it first, or it'll be lost forever!
+		var/obj/item/flashlight/seclite/blocking_us = locate() in src
+		if(blocking_us)
+			to_chat(user, span_warning("[blocking_us] is in the way, remove it first!"))
+			return TRUE
 
-	var/obj/item/assembly/signaler/attached_signaler = tool
-	// There's a flashlight in us. Remove it first, or it'll be lost forever!
-	var/obj/item/flashlight/seclite/blocking_us = locate() in src
-	if(blocking_us)
-		to_chat(user, span_warning("[blocking_us] is in the way, remove it first!"))
-		return ITEM_INTERACT_BLOCKING
+		if(!attached_signaler.secured)
+			to_chat(user, span_warning("Secure [attached_signaler] first!"))
+			return TRUE
 
-	if(!attached_signaler.secured)
-		to_chat(user, span_warning("Secure [attached_signaler] first!"))
-		return ITEM_INTERACT_BLOCKING
+		to_chat(user, span_notice("You add [attached_signaler] to [src]."))
 
-	to_chat(user, span_notice("You add [attached_signaler] to [src]."))
+		qdel(attached_signaler)
+		var/obj/item/bot_assembly/secbot/secbot_frame = new(drop_location())
+		var/held_index = user.is_holding(src)
+		qdel(src)
+		if (held_index)
+			user.put_in_hand(secbot_frame, held_index)
+		return TRUE
 
-	qdel(attached_signaler)
-	var/obj/item/bot_assembly/secbot/secbot_frame = new(drop_location())
-	var/held_index = user.is_holding(src)
-	qdel(src)
-	if (held_index)
-		user.put_in_hand(secbot_frame, held_index)
-	return ITEM_INTERACT_SUCCESS
+	return ..()
 
 /obj/item/clothing/head/helmet/sec/attack_self(mob/user)
 	. = ..()
@@ -110,7 +110,7 @@
 	. = ..()
 	AddComponent(/datum/component/seclite_attachable, light_icon_state = "flight")
 
-/obj/item/clothing/head/helmet/press/worn_overlays(mutable_appearance/standing, isinhands, icon_file, bodyshape = NONE)
+/obj/item/clothing/head/helmet/press/worn_overlays(mutable_appearance/standing, isinhands, icon_file)
 	. = ..()
 	if(!isinhands)
 		. += emissive_appearance(icon_file, "[icon_state]-emissive", src, alpha = src.alpha, effect_type = EMISSIVE_SPECULAR)
@@ -283,7 +283,6 @@
 	flags_inv = HIDEHAIR|HIDEEARS|HIDESNOUT
 	resistance_flags = FIRE_PROOF
 	dog_fashion = null
-	custom_materials = list(/datum/material/plastic = SHEET_MATERIAL_AMOUNT * 3.6)
 
 /datum/armor/balloon
 	melee = 10
@@ -608,7 +607,7 @@
 	icon_state = "h2helmet"
 	inhand_icon_state = "h2_helmet"
 	armor_type = /datum/armor/helmet_elder_atmosian
-	material_flags = MATERIAL_EFFECTS
+	material_flags = MATERIAL_EFFECTS | MATERIAL_COLOR | MATERIAL_AFFECT_STATISTICS //Can change color and add prefix
 	flags_inv = HIDEMASK|HIDEEARS|HIDEEYES|HIDEFACE|HIDEHAIR|HIDESNOUT
 	flags_cover = HEADCOVERSEYES | HEADCOVERSMOUTH
 

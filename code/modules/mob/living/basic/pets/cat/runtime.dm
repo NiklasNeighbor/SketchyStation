@@ -8,7 +8,6 @@
 	icon_state = "cat"
 	icon_living = "cat"
 	icon_dead = "cat_dead"
-	held_state = "cat"
 	gender = FEMALE
 	gold_core_spawnable = NO_SPAWN
 	unique_pet = TRUE
@@ -35,7 +34,6 @@
 		icon_state = "original"
 		icon_living = "original"
 		icon_dead = "original_dead"
-		held_state = "original"
 		update_appearance()
 
 	post_birth_callback = CALLBACK(src, PROC_REF(after_birth))

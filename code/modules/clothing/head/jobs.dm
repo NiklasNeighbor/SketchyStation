@@ -124,12 +124,6 @@
 	icon_state = "capcap"
 	dog_fashion = null
 
-/obj/item/clothing/head/hats/caphat/bicorne
-	name = "captain's bicorne"
-	desc = "Why be king when you can be Emperor?"
-	icon_state = "capbicorne"
-	dog_fashion = null
-
 /obj/item/clothing/head/caphat/beret
 	name = "captain's beret"
 	desc = "For the Captains known for their sense of fashion."
@@ -193,6 +187,7 @@
 	/// Cooldown for retrieving precious candy corn with rmb
 	COOLDOWN_DECLARE(candy_cooldown)
 
+
 /datum/armor/fedora_det_hat
 	melee = 25
 	bullet = 5
@@ -243,12 +238,6 @@
 
 /obj/item/clothing/head/fedora/det_hat/minor
 	flask_path = /obj/item/reagent_containers/cup/glass/flask/det/minor
-
-/obj/item/clothing/head/fedora/det_hat/noir
-	name = "detective's noir fedora"
-	desc = "There's only one man who can recklessly discharge a firearm into a crowded street while trying to stop a criminal, \
-		and he's likely wearing this hat."
-	icon_state = /obj/item/clothing/head/fedora::icon_state
 
 ///Detectives Fedora, but like Inspector Gadget. Not a subtype to not inherit candy corn stuff
 /obj/item/clothing/head/fedora/inspector_hat
@@ -320,38 +309,35 @@
 		var/obj/item/found_item = items_by_regex[found_regex]
 		if(wearer.put_in_hands(found_item))
 			wearer.visible_message(span_warning("[src] drops [found_item] into the hands of [wearer]!"))
-			. = HEAR_HEARD | HEAR_UNDERSTOOD
+			. = TRUE
 		else
 			balloon_alert(wearer, "can't put in hands!")
 			break
 
 	return .
 
-/obj/item/clothing/head/fedora/inspector_hat/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/item/clothing/head/fedora/inspector_hat/attackby(obj/item/item, mob/user, list/modifiers, list/attack_modifiers)
 	. = ..()
-	if(ITEM_INTERACT_ANY_BLOCKER & .)
-		return .
 
 	if(LAZYLEN(contents) >= max_items)
 		balloon_alert(user, "full!")
-		return ITEM_INTERACT_BLOCKING
-
-	if(tool.w_class > max_weight)
+		return
+	if(item.w_class > max_weight)
 		balloon_alert(user, "too big!")
-		return ITEM_INTERACT_BLOCKING
+		return
 
 	var/desired_phrase = tgui_input_text(user, "What is the activation phrase?", "Activation phrase", "gadget", max_length = 26)
 	if(!desired_phrase || !user.can_perform_action(src, FORBID_TELEKINESIS_REACH))
-		return ITEM_INTERACT_BLOCKING
+		return
 
-	if(tool.loc != user || !user.transferItemToLoc(tool, src))
-		return ITEM_INTERACT_BLOCKING
+	if(item.loc != user || !user.transferItemToLoc(item, src))
+		return
 
-	to_chat(user, span_notice("You install [tool] into the [thtotext(contents.len)] slot of [src]."))
+	to_chat(user, span_notice("You install [item] into the [thtotext(contents.len)] slot of [src]."))
 	playsound(src, 'sound/machines/click.ogg', 30, TRUE)
-	set_phrase(desired_phrase, tool)
+	set_phrase(desired_phrase,item)
 
-	return ITEM_INTERACT_SUCCESS
+	return TRUE
 
 /obj/item/clothing/head/fedora/inspector_hat/attack_self(mob/user)
 	. = ..()
@@ -727,7 +713,7 @@
 	. = ..()
 	UnregisterSignal(user, COMSIG_MOB_EXAMINING_MORE)
 
-/obj/item/clothing/head/utility/head_mirror/proc/examining(mob/living/examiner, atom/examining, list/examine_list, list/examine_overrides)
+/obj/item/clothing/head/utility/head_mirror/proc/examining(mob/living/examiner, atom/examining, list/examine_list)
 	SIGNAL_HANDLER
 	if(!ishuman(examining) || examining == examiner || examiner.is_blind() || !examiner.Adjacent(examining))
 		return

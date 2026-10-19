@@ -5,8 +5,10 @@ GLOBAL_LIST_EMPTY(ckey_to_sooc_name)
 #define SOOC_LISTEN_PLAYER 1
 #define SOOC_LISTEN_ADMIN 2
 
-GAME_VERB(/client, sooc, "SOOC", "OOC")
-	VERB_ARG(msg, VERB_ARG_TYPE_TEXT, VERB_ARG_SOURCE_INPUT)
+/client/verb/sooc(msg as text)
+	set name = "SOOC"
+	set category = "OOC"
+
 	if(GLOB.say_disabled)	//This is here to try to identify lag problems
 		to_chat(usr, span_danger("Speech is currently admin-disabled."))
 		return

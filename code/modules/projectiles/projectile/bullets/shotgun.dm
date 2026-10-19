@@ -1,6 +1,6 @@
 /obj/projectile/bullet/shotgun_slug
 	name = "12g shotgun slug"
-	icon_state = "bullet_tracer"
+	icon_state = "pellet"
 	damage = 25
 	armour_penetration = 30
 	sharpness = SHARP_POINTY
@@ -9,6 +9,7 @@
 
 /obj/projectile/bullet/shotgun_slug/milspec
 	name = "12g shotgun milspec slug"
+	icon_state = "pellet"
 	damage = 50
 
 /obj/projectile/bullet/shotgun_slug/executioner
@@ -31,22 +32,16 @@
 	embed_type = null
 
 /obj/projectile/bullet/shotgun_beanbag/a40mm
-	name = "rubber puck"
+	name = "rubber slug"
 	icon_state = "cannonball"
-	damage = 10
-	stamina = 80 //BONK
-	knockdown = 10
+	damage = 20
+	stamina = 160 //BONK
 	wound_bonus = 30
-	ricochets_max = 4
-	ricochet_chance = 100
-	ricochet_decay_chance = 1
-	ricochet_decay_damage = 0.8
-	ricochet_auto_aim_range = 2
-	ricochet_auto_aim_angle = 30
-	ricochet_incidence_leeway = 75
+	weak_against_armour = TRUE
 
 /obj/projectile/bullet/incendiary/shotgun
 	name = "incendiary slug"
+	icon_state = "pellet"
 	damage = 20
 
 /obj/projectile/bullet/incendiary/shotgun/no_trail
@@ -56,7 +51,6 @@
 
 /obj/projectile/bullet/incendiary/shotgun/dragonsbreath
 	name = "dragonsbreath pellet"
-	icon_state = "pellet_tracer"
 	damage = 5
 
 /obj/projectile/bullet/shotgun_stunslug
@@ -72,7 +66,7 @@
 
 /obj/projectile/bullet/shotgun_frag12
 	name ="frag12 slug"
-	icon_state = "bullet_tracer"
+	icon_state = "pellet"
 	damage = 15
 	paralyze = 10
 
@@ -82,7 +76,7 @@
 	return BULLET_ACT_HIT
 
 /obj/projectile/bullet/pellet
-	icon_state = "pellet_tracer"
+	icon_state = "pellet"
 	damage_falloff_tile = -0.25
 
 /obj/projectile/bullet/pellet/shotgun_buckshot
@@ -99,7 +93,6 @@
  * The casings they're in have a very small chance to misfire and will gradually damage the firearm, making it weaker.
  */
 /obj/projectile/bullet/pellet/shotgun_buckshot/old
-	icon_state = "pellet"
 	damage_falloff_tile = -1
 	wound_bonus = -100
 	exposed_wound_bonus = -100
@@ -108,16 +101,8 @@
 	name = "milspec buckshot pellet"
 	damage = 7.5
 
-/obj/projectile/bullet/pellet/shotgun_buckshot/milspec/flak
-	name = "titanium ball bearing"
-	damage = 10
-	damage_falloff_tile = -0.5 //much harsher falloff
-	wound_bonus = 0
-	armour_penetration = 20
-
 /obj/projectile/bullet/pellet/shotgun_rubbershot
 	name = "rubber shot pellet"
-	icon_state = "pellet"
 	damage = 3
 	stamina = 10
 	sharpness = NONE
@@ -141,7 +126,6 @@
 
 /obj/projectile/bullet/pellet/shotgun_incapacitate
 	name = "incapacitating pellet"
-	icon_state = "pellet"
 	damage = 1
 	stamina = 6
 	embed_type = null
@@ -193,7 +177,7 @@
 // Mech Scattershot
 
 /obj/projectile/bullet/scattershot
-	icon_state = "pellet_tracer"
+	icon_state = "pellet"
 	damage = 24
 
 //Breaching Ammo

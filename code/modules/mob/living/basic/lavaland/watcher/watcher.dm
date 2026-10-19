@@ -18,6 +18,7 @@
 	attack_sound = 'sound/items/weapons/bladeslice.ogg'
 	attack_verb_continuous = "buffets"
 	attack_verb_simple = "buffet"
+	crusher_loot = /obj/item/crusher_trophy/watcher_wing
 	ai_controller = /datum/ai_controller/basic_controller/watcher
 	butcher_results = list(
 		/obj/item/stack/sheet/bone = 1,
@@ -43,6 +44,7 @@
 
 /mob/living/basic/mining/watcher/Initialize(mapload)
 	. = ..()
+	AddElement(/datum/element/ai_retaliate)
 	AddElement(/datum/element/simple_flying)
 	AddElement(/datum/element/content_barfer)
 	AddComponent(/datum/component/ai_target_timer)
@@ -89,11 +91,8 @@
 	health = 175
 	projectile_type = /obj/projectile/temp/watcher/magma_wing
 	gaze_attack = /datum/action/cooldown/mob_cooldown/watcher_gaze/fire
-	butcher_results = list(
-		/obj/item/stack/sheet/bone = 1,
-		/obj/item/stack/ore/diamond = 2,
-		/obj/item/stack/sheet/sinew/magmawing = 3,
-	)
+	crusher_loot = /obj/item/crusher_trophy/blaster_tubes/magma_wing
+	crusher_drop_chance = 100 // There's only going to be one of these per round throw them a bone
 
 /// Less durable, freezing projectiles
 /mob/living/basic/mining/watcher/icewing
@@ -107,8 +106,6 @@
 	health = 130
 	projectile_type = /obj/projectile/temp/watcher/ice_wing
 	gaze_attack = /datum/action/cooldown/mob_cooldown/watcher_gaze/ice
-	butcher_results = list(
-		/obj/item/stack/sheet/bone = 1,
-		/obj/item/stack/ore/diamond = 5,
-		/obj/item/stack/sheet/sinew/icewing = 3,
-	)
+	butcher_results = list(/obj/item/stack/ore/diamond = 5, /obj/item/stack/sheet/bone = 1)
+	crusher_loot = /obj/item/crusher_trophy/watcher_wing/ice_wing
+	crusher_drop_chance = 100

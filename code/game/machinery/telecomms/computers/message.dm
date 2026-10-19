@@ -11,7 +11,6 @@
 /obj/machinery/computer/message_monitor
 	name = "message monitor console"
 	desc = "Used to monitor the crew's PDA messages, as well as request console messages."
-	icon_state = MAP_SWITCH("computer", "/obj/machinery/computer/telecomms/server")
 	icon_screen = "comm_logs"
 	circuit = /obj/item/circuitboard/computer/message_monitor
 	light_color = LIGHT_COLOR_GREEN
@@ -120,20 +119,6 @@
 			data["requests"] = request_list
 	return data
 
-/obj/machinery/computer/message_monitor/ui_static_data(mob/user)
-	var/list/data = list()
-	data["is_on_station"] = is_on_station()
-	return data
-
-/// Check if this console is on the station and in a valid area
-/obj/machinery/computer/message_monitor/proc/is_on_station()
-	if(!is_station_level(z))
-		return FALSE
-	var/area/station/area = get_area(src)
-	if(isnull(area) || !(area.area_flags & VALID_TERRITORY))
-		return FALSE
-	return TRUE
-
 /obj/machinery/computer/message_monitor/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
 	. = ..()
 	if(.)
@@ -165,11 +150,7 @@
 				message_servers += message_server
 
 			if(length(message_servers) > 1)
-				var/selected_server = tgui_input_list(usr, "Please select a server", "Server Selection", message_servers)
-				if(QDELETED(src) || !is_operational || !usr.can_interact_with(src))
-					screen = MSG_MON_SCREEN_MAIN
-					return TRUE
-				set_linked_server(selected_server)
+				set_linked_server(tgui_input_list(usr, "Please select a server", "Server Selection", message_servers))
 				if(linked_server)
 					notice_message = "NOTICE: Server selected."
 			else if(length(message_servers) == 1)
@@ -201,17 +182,10 @@
 			notice_message = "NOTICE: Logs cleared."
 			return TRUE
 		if("set_key")
-			if(!is_on_station())
-				return TRUE
-
 			var/dkey = tgui_input_text(usr, "Please enter the decryption key", "Telecomms Decryption", max_length = 16)
-			if(QDELETED(src) || !is_operational || !usr.can_interact_with(src))
-				return TRUE
 			if(dkey && dkey != "")
 				if(linked_server.decryptkey == dkey)
 					var/newkey = tgui_input_text(usr, "Please enter the new key (3 - 16 characters max)", "New Key", max_length = 16)
-					if(QDELETED(src) || !is_operational || !usr.can_interact_with(src))
-						return TRUE
 					if(length(newkey) <= 3)
 						notice_message = "NOTICE: Decryption key too short!"
 					else if(newkey && newkey != "")
@@ -264,12 +238,10 @@
 
 			if(isnull(recipient))
 				notice_message = "NOTICE: No recipient selected!"
-				return TRUE
+				return attack_hand(usr)
 			if(isnull(message) || message == "")
 				notice_message = "NOTICE: No message entered!"
-				return TRUE
-			if(QDELETED(src) || !is_operational || !usr.can_interact_with(src))
-				return TRUE
+				return attack_hand(usr)
 
 			var/datum/signal/subspace/messaging/tablet_message/signal = new(src, list(
 				"fakename" = "[sender]",

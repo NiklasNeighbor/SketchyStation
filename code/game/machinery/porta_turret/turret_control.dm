@@ -91,30 +91,27 @@
 		to_chat(user, span_notice("You link \the [multi_tool.buffer] with \the [src]."))
 		return ITEM_INTERACT_SUCCESS
 
-/obj/machinery/turretid/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/machinery/turretid/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
 	if(machine_stat & BROKEN)
-		return NONE
+		return
 
 	if (issilicon(user))
 		return attack_hand(user)
 
-	var/card = tool.GetID()
+	var/id = attacking_item.GetID()
 
-	if(isnull(card))
-		return NONE
+	if(isnull(id))
+		return
 
-	if(!check_access(card))
+	if (check_access(id))
+		if(obj_flags & EMAGGED)
+			to_chat(user, span_warning("The turret control is unresponsive!"))
+			return
+
+		locked = !locked
+		to_chat(user, span_notice("You [ locked ? "lock" : "unlock"] the panel."))
+	else
 		to_chat(user, span_alert("Access denied."))
-		return ITEM_INTERACT_BLOCKING
-
-	if(obj_flags & EMAGGED)
-		to_chat(user, span_warning("The turret control is unresponsive!"))
-		return ITEM_INTERACT_BLOCKING
-
-	locked = !locked
-	to_chat(user, span_notice("You [ locked ? "lock" : "unlock"] the panel."))
-	return ITEM_INTERACT_SUCCESS
-
 
 /obj/machinery/turretid/emag_act(mob/user, obj/item/card/emag/emag_card)
 	if(obj_flags & EMAGGED)
@@ -124,25 +121,17 @@
 	locked = FALSE
 	return TRUE
 
-/obj/machinery/turretid/proc/is_ai_locked(mob/user)
-	if(!issilicon(user))
-		return FALSE
-	if(ailock || user.has_status_effect(/datum/status_effect/firewalled))
-		return TRUE
-	return FALSE
+/obj/machinery/turretid/attack_ai(mob/user)
+	if(!ailock || isAdminGhostAI(user))
+		return attack_hand(user)
+	else
+		to_chat(user, span_warning("There seems to be a firewall preventing you from accessing this device!"))
 
 /obj/machinery/turretid/ui_interact(mob/user, datum/tgui/ui)
-	if(is_ai_locked(user))
-		to_chat(user, span_warning("There seems to be a firewall preventing you from accessing this device!"))
-		return
-
 	ui = SStgui.try_update_ui(user, src, ui)
 	if(!ui)
 		ui = new(user, src, "TurretControl", name)
 		ui.open()
-
-/obj/machinery/turretid/ui_status(mob/user, datum/ui_state/state)
-	return is_ai_locked(user) ? UI_CLOSE : ..()
 
 /obj/machinery/turretid/ui_data(mob/user)
 	var/list/data = list()
@@ -159,8 +148,6 @@
 		return
 
 	var/mob/user = ui.user
-	if(is_ai_locked(user))
-		return
 
 	switch(action)
 		if("lock")

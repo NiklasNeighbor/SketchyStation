@@ -24,10 +24,3 @@
 		/obj/item/reagent_containers/cup/bucket,
 		)
 	)
-
-/datum/storage/bluespace_belt
-	max_slots = 21
-	max_total_storage = WEIGHT_CLASS_GIGANTIC * 21
-	max_specific_storage = WEIGHT_CLASS_GIGANTIC
-	allow_big_nesting = TRUE
-	silent = TRUE

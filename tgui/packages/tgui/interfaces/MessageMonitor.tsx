@@ -32,7 +32,6 @@ type Data = {
   notice_message: string;
   requests: Request[];
   messages: Message[];
-  is_on_station: BooleanLike;
 };
 
 type Request = {
@@ -171,7 +170,7 @@ const MainScreenAuth = (props: AuthScreenProps) => {
   const { auth_password, setPassword } = props;
 
   const { act, data } = useBackend<Data>();
-  const { status, is_malf, is_on_station } = data;
+  const { status, is_malf } = data;
 
   return (
     <>
@@ -230,7 +229,7 @@ const MainScreenAuth = (props: AuthScreenProps) => {
         </Table.Row>
         <Table.Row>
           <Table.Cell>
-            <Button.Confirm
+            <Button
               content={'Clear Message Logs'}
               onClick={() => act('clear_message_logs')}
             />
@@ -239,24 +238,19 @@ const MainScreenAuth = (props: AuthScreenProps) => {
         </Table.Row>
         <Table.Row>
           <Table.Cell>
-            <Button.Confirm
+            <Button
               content={'Clear Request Console Logs'}
               onClick={() => act('clear_request_logs')}
             />
           </Table.Cell>
           <Table.Cell>Clears request console logs</Table.Cell>
         </Table.Row>
-        {!!is_on_station && (
-          <Table.Row>
-            <Table.Cell>
-              <Button
-                content={'Set Custom Key'}
-                onClick={() => act('set_key')}
-              />
-            </Table.Cell>
-            <Table.Cell>Changes decryption key</Table.Cell>
-          </Table.Row>
-        )}
+        <Table.Row>
+          <Table.Cell>
+            <Button content={'Set Custom Key'} onClick={() => act('set_key')} />
+          </Table.Cell>
+          <Table.Cell>Changes decryption key</Table.Cell>
+        </Table.Row>
         <Table.Row>
           <Table.Cell>
             <Button

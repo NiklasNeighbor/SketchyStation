@@ -27,7 +27,8 @@
 	var/signal_result = SEND_SIGNAL(src, COMSIG_CAN_VENTCRAWL, ventcrawl_target, provide_feedback)
 	if(!HAS_TRAIT(src, TRAIT_VENTCRAWLER_NUDE) && !HAS_TRAIT(src, TRAIT_VENTCRAWLER_ALWAYS) && !signal_result)
 		return
-	if(IS_UNCONSCIOUS_OR_CRIT(src))
+	// BUBBER ADDITION END - VENTCRAWLING SIGNAL
+	if(stat)
 		if(provide_feedback)
 			to_chat(src, span_warning("You must be conscious to do this!"))
 		return

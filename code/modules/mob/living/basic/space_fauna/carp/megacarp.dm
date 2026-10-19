@@ -33,6 +33,3 @@
 	melee_damage_upper += rand(10,20)
 	maxHealth += rand(30,60)
 	health = maxHealth
-
-/mob/living/basic/carp/mega/get_hud_x_offset()
-	return -5

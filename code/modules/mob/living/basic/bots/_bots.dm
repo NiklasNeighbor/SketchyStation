@@ -108,13 +108,11 @@ GLOBAL_LIST_INIT(command_strings, list(
 	var/list/original_allies
 	/// If true we will offer this
 	COOLDOWN_DECLARE(offer_ghosts_cooldown)
-	/// List of overlays to add to the bot if someone has drawn on it, index to a boolean of whether it should ignore paint colour
-	var/list/facepaint_overlays
 
 /mob/living/basic/bot/Initialize(mapload)
 	. = ..()
 
-	add_traits(list(TRAIT_REAGENT_SCANNER, TRAIT_UNOBSERVANT), INNATE_TRAIT)
+	add_traits(list(TRAIT_SILICON_ACCESS, TRAIT_REAGENT_SCANNER, TRAIT_UNOBSERVANT), INNATE_TRAIT)
 	AddElement(/datum/element/ai_retaliate)
 	RegisterSignal(src, COMSIG_MOVABLE_MOVED, PROC_REF(handle_loop_movement))
 	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(after_attacked))
@@ -150,13 +148,6 @@ GLOBAL_LIST_INIT(command_strings, list(
 
 	if(mapload && is_station_level(z) && (bot_mode_flags & BOT_MODE_CAN_BE_SAPIENT) && (bot_mode_flags & BOT_MODE_ROUNDSTART_POSSESSION))
 		enable_possession(mapload = mapload)
-
-	if (length(facepaint_overlays))
-		AddComponent(/datum/component/defaceable, \
-			icon = 'icons/mob/silicon/aibot_faces.dmi', \
-			icon_states = facepaint_overlays, \
-			drawing_of = "a face", \
-		)
 
 	pa_system = (isnull(announcement_type)) ? new(src, automated_announcements = generate_speak_list()) : new announcement_type(src, automated_announcements = generate_speak_list())
 	pa_system.Grant(src)
@@ -196,7 +187,7 @@ GLOBAL_LIST_INIT(command_strings, list(
 /mob/living/basic/bot/proc/get_emagged_message()
 	return get_policy(ROLE_EMAGGED_BOT) || "You are a malfunctioning bot! Disrupt everyone and cause chaos!"
 
-/mob/living/basic/bot/proc/turn_on(mob/user)
+/mob/living/basic/bot/proc/turn_on()
 	if(stat == DEAD)
 		return FALSE
 	set_mode_flags(bot_mode_flags | BOT_MODE_ON)
@@ -441,33 +432,30 @@ GLOBAL_LIST_INIT(command_strings, list(
 	heal_overall_damage(10)
 	user.visible_message(span_notice("[user] repairs [src]!"),span_notice("You repair [src]."))
 
-/mob/living/basic/bot/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(tool.GetID())
+/mob/living/basic/bot/attackby(obj/item/attacking_item, mob/living/user, list/modifiers, list/attack_modifiers)
+	if(attacking_item.GetID())
 		unlock_with_id(user)
-		return ITEM_INTERACT_SUCCESS
+		return
 
-	if(istype(tool, /obj/item/pai_card))
-		insertpai(user, tool)
-		return ITEM_INTERACT_SUCCESS
+	if(istype(attacking_item, /obj/item/pai_card))
+		insertpai(user, attacking_item)
+		return
 
-	if(tool.tool_behaviour != TOOL_HEMOSTAT || !paicard)
+	if(attacking_item.tool_behaviour != TOOL_HEMOSTAT || !paicard)
 		return ..()
 
 	if(bot_access_flags & BOT_COVER_MAINTS_OPEN)
 		balloon_alert(user, "open the access panel!")
-		return ITEM_INTERACT_BLOCKING
+		return
 
 	balloon_alert(user, "removing pAI...")
 	if(!do_after(user, 3 SECONDS, target = src) || !paicard)
-		return ITEM_INTERACT_BLOCKING
+		return
 
-	user.visible_message(
-		span_notice("[user] uses [tool] to pull [paicard] out of [initial(src.name)]!"),
-		span_notice("You pull [paicard] out of [initial(src.name)] with [tool]."),
-	)
+	user.visible_message(span_notice("[user] uses [attacking_item] to pull [paicard] out of [initial(src.name)]!"), \
+		span_notice("You pull [paicard] out of [initial(src.name)] with [attacking_item]."))
 
 	ejectpai(user)
-	return ITEM_INTERACT_SUCCESS
 
 /mob/living/basic/bot/attack_effects(damage_done, hit_zone, armor_block, obj/item/attacking_item, mob/living/attacker)
 	if(damage_done > 0 && attacking_item.damtype != STAMINA && stat != DEAD)
@@ -791,7 +779,6 @@ GLOBAL_LIST_INIT(command_strings, list(
 
 /mob/living/basic/bot/rust_heretic_act()
 	adjust_brute_loss(400)
-	return TRUE
 
 /mob/living/basic/bot/proc/retrieve_access(mob/bot, list/player_access)
 	SIGNAL_HANDLER

@@ -1,4 +1,4 @@
-/obj/item
+/obj/item/clothing/neck
 	/// If this collar counts as a pet collar for kink purposes, such as with MKUltra
 	var/kink_collar = FALSE
 

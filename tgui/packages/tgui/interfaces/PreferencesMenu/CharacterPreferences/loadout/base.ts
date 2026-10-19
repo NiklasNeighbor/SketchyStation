@@ -36,7 +36,6 @@ export type LoadoutItem = {
   path: typePath;
   icon: DmIconFile | null;
   icon_state: DmIconState | null;
-  image?: string;
   buttons: LoadoutButton[];
   reskins: ReskinOption[] | null;
   information: LoadoutTooltip[];

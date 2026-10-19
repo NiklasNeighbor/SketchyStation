@@ -27,6 +27,7 @@
 
 	gold_core_spawnable = FRIENDLY_SPAWN
 
+	can_be_held = TRUE
 	held_w_class = WEIGHT_CLASS_TINY
 	held_state = "chinchilla_white"
 
@@ -53,35 +54,38 @@
 	held_state = "chinchilla_[body_color]" // not handled by variety element
 	AddElement(/datum/element/animal_variety, "chinchilla", body_color, FALSE)
 
-	AddElement(/datum/element/can_be_held)
-
 //ai behavior
 
 /datum/ai_controller/basic_controller/chinchilla
-	behavior_tree_json = "modular_skyrat/modules/basic_mobs/code/chinchilla.bt.json"
+	blackboard = list(
+		BB_CURRENT_HUNTING_TARGET = null, // dust to take dust baths
+	)
+
 	ai_traits = STOP_MOVING_WHEN_PULLED
 	ai_movement = /datum/ai_movement/basic_avoidance
+	idle_behavior = /datum/idle_behavior/idle_random_walk
+	planning_subtrees = list(
+		// chinchillas will try to look for dust to roll around in
+		/datum/ai_planning_subtree/find_and_hunt_target/look_for_dust,
+		// randomly squeak and shit
+		/datum/ai_planning_subtree/random_speech/chinchilla,
+	)
 
-/datum/bt_node/subtree/roll_in_dust
-	behavior_tree_json = "modular_skyrat/modules/basic_mobs/code/roll_in_dust.bt.json"
+/datum/ai_planning_subtree/find_and_hunt_target/look_for_dust
+	hunting_behavior = /datum/ai_behavior/hunt_target/dust_roll
+	hunt_targets = list(/obj/effect/decal/cleanable/ash, /obj/effect/decal/cleanable/food/flour)
+	hunt_range = 0 //need to be on top of anything dusty
+	hunt_chance = 50
 
-/// Dust piles chinchillas will look for to roll around in.
-/datum/target_source/oview_typed/dust_bath
-	typecache = list(/obj/effect/decal/cleanable/ash, /obj/effect/decal/cleanable/food/flour)
-
-/datum/target_source/oview_typed/dust_bath/New()
-	. = ..()
-	typecache = typecacheof(typecache)
-
-/datum/bt_node/ai_behavior/hunt_target/dust_roll
+/datum/ai_behavior/hunt_target/dust_roll
 	hunt_cooldown = 20 SECONDS
 
-/datum/bt_node/ai_behavior/hunt_target/dust_roll/target_caught(mob/living/basic/pet/hunter, obj/effect/decal/cleanable/dust)
-	hunter.balloon_alert_to_viewers("rolls in dust", null, 5)
+/datum/ai_behavior/hunt_target/dust_roll/target_caught(mob/living/basic/pet/hunter, obj/effect/decal/cleanable/dust)
+	hunter.visible_message(span_notice("[hunter] starts taking a dust bath in [dust]."))
 	hunter.spin(10, 1)
 	qdel(dust)
 
-/datum/bt_node/ai_behavior/random_speech/chinchilla
+/datum/ai_planning_subtree/random_speech/chinchilla
 	speech_chance = 5
 	emote_hear = list(
 		"squeaks.",

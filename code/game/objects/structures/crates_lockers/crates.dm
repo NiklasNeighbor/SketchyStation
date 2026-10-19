@@ -111,9 +111,10 @@
 		. += lid
 
 /obj/structure/closet/crate/attack_hand(mob/user, list/modifiers)
-	if(tear_manifest(user))
-		return TRUE
-	return ..()
+	. = ..()
+	if(.)
+		return
+	tear_manifest(user)
 
 /obj/structure/closet/crate/after_open(mob/living/user, force)
 	. = ..()
@@ -146,12 +147,12 @@
 
 	UnregisterSignal(src, COMSIG_CLOSET_CONTENTS_INITIALIZED)
 
-///Removes the supply manifest from the closet, returning TRUE if one was torn off
+///Removes the supply manifest from the closet
 /obj/structure/closet/crate/proc/tear_manifest(mob/user)
 	var/obj/item/paper/fluff/jobs/cargo/manifest/our_manifest = manifest?.resolve()
 	if(QDELETED(our_manifest))
 		manifest = null
-		return FALSE
+		return
 	if(user)
 		to_chat(user, span_notice("You tear the manifest off of [src]."))
 	playsound(src, 'sound/items/poster/poster_ripped.ogg', 75, TRUE)
@@ -161,7 +162,6 @@
 		user.put_in_hands(our_manifest)
 	manifest = null
 	update_appearance()
-	return TRUE
 
 /obj/structure/closet/crate/preopen
 	opened = TRUE
@@ -236,16 +236,10 @@
 	base_icon_state = "medicalcrate"
 
 /obj/structure/closet/crate/deforest
-	name = "\improper DeForest Medical crate"
+	name = "deforest medical crate"
 	desc = "A DeForest brand crate of medical supplies."
 	icon_state = "deforest"
 	base_icon_state = "deforest"
-
-/obj/structure/closet/crate/interdyne_normal
-	name = "\improper Interdyne Pharmaceutics crate"
-	desc = "An Interdyne Pharmaceutics brand crate. Probably contains helpful chemicals? Hopefully contains helpful chemicals."
-	icon_state = "interdynecrate"
-	base_icon_state = "interdynecrate"
 
 /obj/structure/closet/crate/medical/department
 	icon_state = "medical"
@@ -452,13 +446,13 @@
 	icon_state = "gold"
 	base_icon_state = "gold"
 
-//subtype that comes with roundstart items.
-/obj/structure/closet/crate/goldcrate/stocked/PopulateContents()
+/obj/structure/closet/crate/goldcrate/PopulateContents()
 	..()
 	new /obj/item/storage/belt/champion(src)
 
-/obj/structure/closet/crate/goldcrate/stocked/populate_contents_immediate()
+/obj/structure/closet/crate/goldcrate/populate_contents_immediate()
 	. = ..()
+
 	for(var/i in 1 to 3)
 		new /obj/item/stack/sheet/mineral/gold(src, 1, FALSE)
 
@@ -508,25 +502,3 @@
 	icon_state = "lavender"
 	base_icon_state = "lavender"
 	glitter_color = "#db80ff"
-
-/obj/structure/closet/crate/market
-	name = "shield bubble"
-	desc = "A rippling blue energy bubble, capable of sustaining itself until it hits a solid wall."
-	icon = 'icons/effects/effects.dmi'
-	icon_state = "shield2"
-	base_icon_state = "shield2"
-
-/obj/structure/closet/crate/market/after_open(mob/living/user, force)
-	. = ..()
-	visible_message(span_notice("[src] pops as [user] touches it!"))
-	pop_crate()
-
-/obj/structure/closet/crate/market/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
-	. = ..()
-	pop_crate()
-
-/// Called when the bubble either arrives at the station, or is interacted with someone/something.
-/obj/structure/closet/crate/market/proc/pop_crate()
-	do_sparks(1, TRUE, get_turf(src))
-	dump_contents()
-	qdel(src)

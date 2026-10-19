@@ -6,6 +6,8 @@
 	var/atom/result_typepath
 	/// Reagents that should be added to the result
 	var/list/added_reagents
+	/// Whether this is a bad recipe or not. It affects some checks.
+	var/bad_recipe
 
 /datum/element/microwavable/Attach(obj/item/target, microwave_type, list/reagents, bad_recipe = FALSE)
 	. = ..()
@@ -16,11 +18,12 @@
 
 	result_typepath = microwave_type
 	added_reagents = reagents
-	if(!bad_recipe)
-		ADD_TRAIT(target, TRAIT_MICROWAVABLE, REF(src))
-		RegisterSignal(target, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
+	src.bad_recipe = bad_recipe
 
 	RegisterSignal(target, COMSIG_ITEM_MICROWAVE_ACT, PROC_REF(on_microwaved))
+
+	if(!bad_recipe)
+		RegisterSignal(target, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
 
 	if(!PERFORM_ALL_TESTS(focus_only/check_materials_when_processed) || bad_recipe || !target.custom_materials || isstack(target))
 		return
@@ -54,7 +57,7 @@
 
 	var/efficiency = istype(used_microwave) ? used_microwave.efficiency : 1
 
-	if(IS_EDIBLE(result) && HAS_TRAIT(source, TRAIT_MICROWAVABLE))
+	if(IS_EDIBLE(result) && !bad_recipe)
 		BLACKBOX_LOG_FOOD_MADE(result.type)
 
 		if(istype(source, /obj/item/food) && istype(result, /obj/item/food))
@@ -63,7 +66,7 @@
 			LAZYADD(microwaved_food.intrinsic_food_materials, original_food.intrinsic_food_materials)
 
 		if(microwaver && microwaver.mind)
-			ADD_TRAIT(result, TRAIT_HANDMADE, REF(microwaver.mind))
+			ADD_TRAIT(result, TRAIT_FOOD_CHEF_MADE, REF(microwaver.mind))
 
 	//make space and tranfer reagents if it has any, also let any bad result handle removing or converting the transferred reagents on its own terms
 	if(result.reagents && source.reagents)
@@ -72,14 +75,14 @@
 		if(added_reagents) // Add any new reagents that should be added
 			result.reagents.add_reagent_list(added_reagents)
 
-	SEND_SIGNAL(source, COMSIG_ITEM_MICROWAVE_COOKED, result, efficiency)
-	SEND_SIGNAL(result, COMSIG_ITEM_MICROWAVE_COOKED_RESULT, source, efficiency)
-
-	var/recipe_result = COMPONENT_MICROWAVE_SUCCESS
-	if(!HAS_TRAIT(source, TRAIT_MICROWAVABLE))
-		recipe_result |= COMPONENT_MICROWAVE_BAD_RECIPE
+	SEND_SIGNAL(result, COMSIG_ITEM_MICROWAVE_COOKED, source, efficiency)
+	SEND_SIGNAL(source, COMSIG_ITEM_MICROWAVE_COOKED_FROM, result, efficiency)
 
 	qdel(source)
+
+	var/recipe_result = COMPONENT_MICROWAVE_SUCCESS
+	if(bad_recipe)
+		recipe_result |= COMPONENT_MICROWAVE_BAD_RECIPE
 
 	if(randomize_pixel_offset && isitem(result))
 		var/obj/item/result_item = result

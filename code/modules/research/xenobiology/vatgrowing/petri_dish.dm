@@ -5,7 +5,6 @@
 	icon = 'icons/obj/science/vatgrowing.dmi'
 	icon_state = "petri_dish"
 	w_class = WEIGHT_CLASS_TINY
-	custom_materials = list(/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 	///The sample stored on the dish
 	var/datum/biological_sample/sample
 
@@ -27,8 +26,11 @@
 		var/datum/micro_organism/MO = i
 		. += MO.get_details()
 
-/obj/item/petri_dish/wash(clean_types)
+/obj/item/petri_dish/pre_attack(atom/A, mob/living/user, list/modifiers, list/attack_modifiers)
 	. = ..()
+	if(!sample || !istype(A, /obj/structure/sink))
+		return FALSE
+	to_chat(user, span_notice("You wash the sample out of [src]."))
 	sample = null
 	update_appearance()
 

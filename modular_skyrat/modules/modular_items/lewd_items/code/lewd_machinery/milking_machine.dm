@@ -189,7 +189,7 @@
 		cuffs.parent_chair = WEAKREF(src)
 		current_mob.update_abstract_handcuffed()
 
-	update_overlays(UPDATE_OVERLAYS)
+	update_overlays()
 	affected_mob.layer = BELOW_MOB_LAYER
 	update_all_visuals()
 
@@ -247,6 +247,7 @@
 
 	update_mob_action_buttons() //some of our action buttons might be unusable when we're handcuffed.
 	update_worn_handcuffs()
+	update_hud_handcuffed()
 
 /obj/item/restraints/handcuffs/milker
 	name = "chair cuffs"
@@ -519,7 +520,7 @@
 
 	icon_state = "milking_[machine_color]_[current_mode]"
 
-	update_overlays(UPDATE_OVERLAYS)
+	update_overlays()
 	update_icon_state()
 	update_icon()
 

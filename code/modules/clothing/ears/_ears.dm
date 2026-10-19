@@ -22,7 +22,6 @@
 	resistance_flags = FLAMMABLE
 	custom_price = PAYCHECK_COMMAND * 1.5
 	flags_cover = EARS_COVERED
-	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/clothing/ears/earmuffs/Initialize(mapload)
 	. = ..()

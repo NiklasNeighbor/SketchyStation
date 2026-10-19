@@ -11,7 +11,7 @@
 	req_dna = 15
 	req_absorbs = 1
 	req_human = TRUE
-	req_stat = STABLE
+	req_stat = UNCONSCIOUS
 
 /datum/action/changeling/horror_form/sting_action(mob/living/carbon/human/user)
 	..()

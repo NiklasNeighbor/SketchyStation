@@ -14,9 +14,8 @@
 
 /datum/bodypart_overlay/mutant/fluff
 	feature_key = FEATURE_FLUFF
-	layers = list(EXTERNAL_FRONT = BODY_FRONT_LAYER, EXTERNAL_ADJACENT = BODY_ADJ_LAYER)
+	layers = EXTERNAL_FRONT | EXTERNAL_ADJACENT
 	color_source = ORGAN_COLOR_OVERRIDE
-	offset_location = UPPER_BODY
 
 /datum/bodypart_overlay/mutant/fluff/override_color(rgb_value)
 	return draw_color

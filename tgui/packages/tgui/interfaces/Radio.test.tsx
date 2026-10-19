@@ -18,6 +18,7 @@ store.set(gameDataAtom, {
   subspace: 0,
   subspaceSwitchable: 1,
   channels: {},
+  radio_noises: 0,
 });
 
 describe('Radio tests', () => {

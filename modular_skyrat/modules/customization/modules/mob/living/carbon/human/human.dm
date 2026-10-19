@@ -74,8 +74,12 @@
 /mob/living/carbon/human/species/serpentid
 	race = /datum/species/gas
 
-GAME_VERB_DESC(/mob/living/carbon/human, toggle_undies, "Toggle underwear visibility", "Allows you to toggle which underwear should show or be hidden. Underwear will obscure genitals.", "IC")
-	if(IS_UNCONSCIOUS_OR_CRIT(src))
+/mob/living/carbon/human/verb/toggle_undies()
+	set category = "IC"
+	set name = "Toggle underwear visibility"
+	set desc = "Allows you to toggle which underwear should show or be hidden. Underwear will obscure genitals."
+
+	if(stat != CONSCIOUS)
 		to_chat(usr, span_warning("You can't toggle underwear visibility right now..."))
 		return
 
@@ -110,7 +114,11 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_undies, "Toggle underwear visibi
 		if(dna && dna.species)
 			dna.species.spec_revival(src)
 
-GAME_VERB_DESC(/mob/living/carbon/human, toggle_mutant_part_visibility, "Show/Hide Mutant Parts", "Allows you to choose to try and hide your mutant bodyparts under your clothes.", "IC")
+/mob/living/carbon/human/verb/toggle_mutant_part_visibility()
+	set category = "IC"
+	set name = "Show/Hide Mutant Parts"
+	set desc = "Allows you to choose to try and hide your mutant bodyparts under your clothes."
+
 	mutant_part_visibility()
 
 /mob/living/carbon/human/proc/mutant_part_visibility(quick_toggle, re_do)
@@ -129,7 +137,7 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_mutant_part_visibility, "Show/Hi
 	)
 
 	// Stat check
-	if(IS_UNCONSCIOUS_OR_CRIT(usr))
+	if(stat != CONSCIOUS)
 		to_chat(usr, span_warning("You can't do this right now..."))
 		return
 
@@ -193,12 +201,17 @@ GAME_VERB_DESC(/mob/living/carbon/human, toggle_mutant_part_visibility, "Show/Hi
 	// automatically re-do the menu after making a selection
 	mutant_part_visibility(re_do = TRUE)
 
+
 // Feign impairment verb
 #define DEFAULT_TIME 30
 #define MAX_TIME 36000 // 10 hours
 
-GAME_VERB_DESC(/mob/living/carbon/human, acting, "Feign Impairment", "Pretend to be impaired for a defined duration.", "IC")
-	if(IS_UNCONSCIOUS_OR_CRIT(usr))
+/mob/living/carbon/human/verb/acting()
+	set category = "IC"
+	set name = "Feign Impairment"
+	set desc = "Pretend to be impaired for a defined duration."
+
+	if(stat != CONSCIOUS)
 		to_chat(usr, span_warning("You can't do this right now..."))
 		return
 

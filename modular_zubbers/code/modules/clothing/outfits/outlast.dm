@@ -1,12 +1,10 @@
 /obj/item/clothing/suit/leatherapron //Sprite by pacertest on discord
 	name = "leather apron"
-	desc = "An apron made from thick leather."
+	desc = "A somewhat sterile apron made from thick leather, perfect for sawing limbs off without getting your uniform bloody."
 	icon = 'modular_zubbers/icons/obj/clothing/outlast.dmi'
 	worn_icon = 'modular_zubbers/icons/mob/clothing/outlast.dmi'
 	worn_icon_digi = 'modular_zubbers/icons/mob/clothing/outlast.dmi'
-	worn_icon_teshari = 'modular_zubbers/icons/mob/clothing/suits/misc_teshari.dmi'
 	icon_state = "leatherapron"
-	body_parts_covered = CHEST|GROIN
 	allowed = list(
 		/obj/item/bonesetter,
 		/obj/item/cautery,
@@ -23,7 +21,6 @@
 		/obj/item/surgical_drapes,
 		/obj/item/storage/pill_bottle,
 		/obj/item/tank/internals/emergency_oxygen,
-		/obj/item/melee/forged_reagent_weapon,
 		/obj/item/forging/hammer,
 		/obj/item/forging/tongs,
 		/obj/item/forging/billow,

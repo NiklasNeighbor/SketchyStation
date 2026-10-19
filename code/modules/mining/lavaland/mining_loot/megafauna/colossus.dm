@@ -31,15 +31,11 @@
 			if (feedback)
 				owner.balloon_alert(owner, "can't speak!")
 			return FALSE
-	if((check_flags & AB_CHECK_CONSCIOUS) && IS_UNCONSCIOUS_OR_CRIT(owner))
-		if (feedback)
-			if(owner.stat == DEAD)
-				owner.balloon_alert(owner, "dead!")
-			else if(IS_UNCONSCIOUS(owner))
+	if(check_flags & AB_CHECK_CONSCIOUS)
+		if(owner.stat)
+			if (feedback)
 				owner.balloon_alert(owner, "unconscious!")
-			else
-				owner.balloon_alert(owner, "in critical!")
-		return FALSE
+			return FALSE
 	return TRUE
 
 /datum/action/item_action/organ_action/colossus/do_effect(trigger_flags)
@@ -387,6 +383,7 @@
 		possessor.mind.transfer_to(holder_animal)
 		var/datum/action/exit_possession/escape = new(holder_animal)
 		escape.Grant(holder_animal)
+		remove_verb(holder_animal, /mob/living/verb/pulled)
 
 /obj/structure/closet/stasis/dump_contents(kill = TRUE)
 	for(var/mob/living/possessor in src)

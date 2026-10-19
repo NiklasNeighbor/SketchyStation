@@ -148,7 +148,6 @@
 		/obj/machinery/atmospherics/miner/nitrogen,
 		/obj/machinery/atmospherics/miner/oxygen,
 		/obj/machinery/atmospherics/miner/plasma,
-		/obj/machinery/atmospherics/miner/water_vapor,
 	)
 
 	area_string = "atmospherics"

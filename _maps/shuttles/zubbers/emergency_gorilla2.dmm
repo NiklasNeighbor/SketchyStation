@@ -228,7 +228,7 @@
 /area/shuttle/escape)
 "oB" = (
 /obj/machinery/light/small/directional/west,
-/obj/effect/spawner/random/food_or_drink/keg,
+/obj/structure/reagent_dispensers/beerkeg,
 /turf/open/floor/plating,
 /area/shuttle/escape)
 "oY" = (

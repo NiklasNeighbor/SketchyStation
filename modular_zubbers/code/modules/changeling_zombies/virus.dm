@@ -32,7 +32,8 @@
 
 	required_organ = ORGAN_SLOT_BRAIN
 
-	symptom_delay = 100
+	symptom_delay_min = 100
+	symptom_delay_max = 100
 
 	threshold_descs = list(
 		"Stage Speed 8" = "Causes the transformation process to begin on stage 3 instead of 5.",
@@ -65,8 +66,8 @@
 		required_stage = 3
 	if(A.totalTransmittable() > 4)
 		toxic = TRUE
-		symptom_delay = 1
-
+		symptom_delay_min = 1
+		symptom_delay_max = 1
 	if(A.totalResistance() > 12)
 		should_cure_changeling_zombie = FALSE
 

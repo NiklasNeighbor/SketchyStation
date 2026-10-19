@@ -1,10 +1,8 @@
 /datum/species/abductor
 	name = "Abductor"
 	id = SPECIES_ABDUCTOR
-	sexes = TRUE // BUBBER EDIT: Lets abductors have pronouns. Abductors are asexual/agender, but they still can present however they wish for cosmetic purposes.
-	can_have_genitals = TRUE // BUBBER EDIT: Lets abductors have genitals.
+	sexes = FALSE
 	inherent_traits = list(
-		TRAIT_MUTANT_COLORS, //BUBBER EDIT: Lets abductors change their skin color
 		TRAIT_ABDUCTOR_HUD,
 		TRAIT_CHUNKYFINGERS_IGNORE_BATON,
 		TRAIT_NEVER_WOUNDED,
@@ -12,12 +10,11 @@
 		TRAIT_NOBREATH,
 		TRAIT_NODISMEMBER,
 		TRAIT_NOHUNGER,
-		//TRAIT_NO_UNDERWEAR, -- BUBBER EDIT: Allows abductors to wear underwear.
+		TRAIT_NO_UNDERWEAR,
 		TRAIT_VIRUSIMMUNE,
 	)
 	mutanttongue = /obj/item/organ/tongue/abductor
 	mutantstomach = null
-	mutanteyes = /obj/item/organ/eyes/abductor // BUBBER EDIT: Moves abductor eyes to their own separate thing
 	mutantheart = null
 	mutantlungs = null
 	mutantbrain = /obj/item/organ/brain/abductor

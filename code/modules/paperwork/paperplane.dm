@@ -91,16 +91,16 @@
 
 	user.put_in_hands(released_paper)
 
-/obj/item/paperplane/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(IS_WRITING_UTENSIL(tool))
+/obj/item/paperplane/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
+	if(IS_WRITING_UTENSIL(attacking_item))
 		to_chat(user, span_warning("You should unfold [src] before changing it!"))
-		return ITEM_INTERACT_BLOCKING
-	if(istype(tool, /obj/item/stamp)) //we don't randomize stamps on a paperplane
-		internal_paper.item_interaction(user, tool) //spoofed attack to update internal paper.
+		return
+	else if(istype(attacking_item, /obj/item/stamp)) //we don't randomize stamps on a paperplane
+		internal_paper.attackby(attacking_item, user) //spoofed attack to update internal paper.
 		update_appearance()
 		add_fingerprint(user)
-		return ITEM_INTERACT_SUCCESS
-	return NONE
+		return
+	return ..()
 
 /obj/item/paperplane/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
 	if(iscarbon(hit_atom) && HAS_TRAIT(hit_atom, TRAIT_PAPER_MASTER))

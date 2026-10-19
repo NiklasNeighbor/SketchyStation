@@ -2,12 +2,13 @@ import { useState } from 'react';
 import {
   Button,
   Divider,
-  DmIcon,
   Dropdown,
+  Image,
   Section,
   Stack,
 } from 'tgui-core/components';
 
+import { resolveAsset } from '../assets';
 import type { PowerInfo } from './AntagInfoBloodsucker';
 
 type PowerDetailsProps = {
@@ -51,11 +52,10 @@ export const PowerDetails = (props: PowerDetailsProps) => {
             }
           />
           {selectedPower && (
-            <DmIcon
+            <Image
               position="absolute"
               height="12rem"
-              icon={selectedPower.power_icon}
-              icon_state={selectedPower.power_icon_state}
+              src={resolveAsset(`bloodsucker.${selectedPower.power_icon}.png`)}
             />
           )}
           <Divider vertical />

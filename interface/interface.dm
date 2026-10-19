@@ -1,5 +1,8 @@
 //Please use mob or src (not usr) in these procs. This way they can be called in the same fashion as procs.
-GAME_VERB_HIDDEN(/client, wiki, "wiki")
+/client/verb/wiki()
+	set name = "wiki"
+	set desc = "Brings you to the Wiki"
+	set hidden = TRUE
 
 	var/wikiurl = CONFIG_GET(string/wikiurl)
 	if(!wikiurl)
@@ -18,7 +21,10 @@ GAME_VERB_HIDDEN(/client, wiki, "wiki")
 		output += "?title=Special%3ASearch&profile=default&search=[query]"
 	DIRECT_OUTPUT(src, link(output))
 
-GAME_VERB_HIDDEN(/client, forum, "forum")
+/client/verb/forum()
+	set name = "forum"
+	set desc = "Visit the forum."
+	set hidden = TRUE
 
 	var/forumurl = CONFIG_GET(string/forumurl)
 	if(!forumurl)
@@ -26,7 +32,10 @@ GAME_VERB_HIDDEN(/client, forum, "forum")
 		return
 	DIRECT_OUTPUT(src, link(forumurl))
 
-GAME_VERB_HIDDEN(/client, rules, "rules")
+/client/verb/rules()
+	set name = "rules"
+	set desc = "Show Server Rules."
+	set hidden = TRUE
 
 	var/rulesurl = CONFIG_GET(string/rulesurl)
 	if(!rulesurl)
@@ -34,7 +43,10 @@ GAME_VERB_HIDDEN(/client, rules, "rules")
 		return
 	DIRECT_OUTPUT(src, link(rulesurl))
 
-GAME_VERB_HIDDEN(/client, github, "github")
+/client/verb/github()
+	set name = "github"
+	set desc = "Visit Github"
+	set hidden = TRUE
 
 	var/githuburl = CONFIG_GET(string/githuburl)
 	if(!githuburl)
@@ -42,7 +54,10 @@ GAME_VERB_HIDDEN(/client, github, "github")
 		return
 	DIRECT_OUTPUT(src, link(githuburl))
 
-GAME_VERB_HIDDEN(/client, config, "config")
+/client/verb/config()
+	set name = "config"
+	set desc = "View the server configuration files."
+	set hidden = TRUE
 
 	var/configurl = CONFIG_GET(string/configurl)
 	if(!configurl)
@@ -50,7 +65,9 @@ GAME_VERB_HIDDEN(/client, config, "config")
 		return
 	DIRECT_OUTPUT(src, link(configurl))
 
-GAME_VERB_DESC(/client, reportissue, "report-issue", "Report an issue", null)
+/client/verb/reportissue()
+	set name = "report-issue"
+	set desc = "Report an issue"
 
 	var/githuburl = CONFIG_GET(string/githuburl)
 	if(!githuburl)
@@ -92,7 +109,9 @@ GAME_VERB_DESC(/client, reportissue, "report-issue", "Report an issue", null)
 
 	DIRECT_OUTPUT(src, link(jointext(concatable, "")))
 
-GAME_VERB(/client, changelog, "Changelog", "OOC")
+/client/verb/changelog()
+	set name = "Changelog"
+	set category = "OOC"
 
 	if(!GLOB.changelog_tgui)
 		GLOB.changelog_tgui = new /datum/changelog()
@@ -101,20 +120,13 @@ GAME_VERB(/client, changelog, "Changelog", "OOC")
 	if(prefs.lastchangelog != GLOB.changelog_hash)
 		prefs.lastchangelog = GLOB.changelog_hash
 		prefs.save_preferences()
+		winset(src, "infobuttons.changelog", "font-style=;")
 
-GAME_VERB_HIDDEN(/client, hotkeys_help, "Hotkeys Help")
+/client/verb/hotkeys_help()
+	set name = "Hotkeys Help"
+	set category = "OOC"
 
 	if(!GLOB.hotkeys_tgui)
 		GLOB.hotkeys_tgui = new /datum/hotkeys_help()
 
 	GLOB.hotkeys_tgui.ui_interact(mob)
-
-GAME_VERB_HIDDEN(/client, emote_panel, "Emote Panel")
-
-	if(!isliving(mob))
-		to_chat(mob, span_notice("You can only use this while you're alive!"))
-		return
-
-	if(!GLOB.emote_panel)
-		GLOB.emote_panel = new /datum/emote_panel()
-	GLOB.emote_panel.ui_interact(mob)

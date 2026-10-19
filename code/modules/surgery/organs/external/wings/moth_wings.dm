@@ -16,6 +16,7 @@
 	var/original_sprite_datum
 
 	var/drift_force = MOTH_WING_FORCE
+	var/stabilizer_force = MOTH_WING_FORCE
 
 /obj/item/organ/wings/moth/Initialize(mapload)
 	. = ..()
@@ -23,6 +24,7 @@
 		/datum/component/jetpack, \
 		TRUE, \
 		drift_force, \
+		stabilizer_force, \
 		COMSIG_ORGAN_IMPLANTED, \
 		COMSIG_ORGAN_REMOVED, \
 		null, \
@@ -94,19 +96,23 @@
 ///Moth wing bodypart overlay, including burn functionality!
 /datum/bodypart_overlay/mutant/wings/moth
 	feature_key = FEATURE_WINGS // BUBBER EDIT CHANGE - Customization - ORIGINAL: feature_key = FEATURE_MOTH_WINGS
-	layers = list(
-		EXTERNAL_FRONT = BODY_FRONT_LAYER,
-		EXTERNAL_BEHIND = BODY_BEHIND_LAYER,
-	)
-	slot_blocker = HIDEMUTWINGS
+	layers = EXTERNAL_BEHIND | EXTERNAL_FRONT
 	///Accessory datum of the burn sprite
 	var/datum/sprite_accessory/burn_datum = /datum/sprite_accessory/moth_wings/burnt_off
 	///Are we burned? If so we draw differently
 	var/burnt
 
 /datum/bodypart_overlay/mutant/wings/moth/New()
-	. = ..()
 	burn_datum = fetch_sprite_datum(burn_datum)
+	return ..()
+
+/datum/bodypart_overlay/mutant/wings/moth/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	// BUBBER EDIT ADDITION BEGIN - Customization
+	. = ..()
+	if(!.)
+		return
+	// BUBBER EDIT ADDITION END - Customization
+	return !(bodypart_owner.owner?.obscured_slots & HIDEMUTWINGS)
 
 /datum/bodypart_overlay/mutant/wings/moth/get_base_icon_state()
 	return burnt ? burn_datum.icon_state : sprite_datum.icon_state

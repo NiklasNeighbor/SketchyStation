@@ -151,13 +151,14 @@
 		ui = new(user, src, "PipeDispenser", name)
 		ui.open()
 
-/obj/machinery/pipedispenser/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/machinery/pipedispenser/attackby(obj/item/W, mob/user, list/modifiers, list/attack_modifiers)
 	add_fingerprint(user)
-	if (!istype(tool, /obj/item/pipe) && !istype(tool, /obj/item/pipe_meter))
-		return NONE
-	to_chat(usr, span_notice("You put [tool] back into [src]."))
-	qdel(tool)
-	return ITEM_INTERACT_SUCCESS
+	if (istype(W, /obj/item/pipe) || istype(W, /obj/item/pipe_meter))
+		to_chat(usr, span_notice("You put [W] back into [src]."))
+		qdel(W)
+		return
+	else
+		return ..()
 
 /obj/machinery/pipedispenser/proc/verify_recipe(recipes, path)
 	for(var/category in recipes)

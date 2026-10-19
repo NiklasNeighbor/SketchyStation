@@ -110,7 +110,7 @@
 	var/spent = FALSE
 
 /datum/nanite_program/sensor/crit/check_event()
-	if(IS_CRITICAL(host_mob))
+	if(HAS_TRAIT(host_mob, TRAIT_CRITICAL_CONDITION))
 		if(spent)
 			return FALSE
 		spent = TRUE

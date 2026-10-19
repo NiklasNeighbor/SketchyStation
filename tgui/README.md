@@ -46,7 +46,11 @@ free to skip this step.
 However, if you want finer control over the installation or build process, you
 will need these:
 
-- [Bun v1.2.16+](https://bun.com/docs/installation)
+- [Node v22.11+](https://nodejs.org/en/download/)
+  - **LTS** release is recommended instead of latest
+  - **DO NOT install Chocolatey if Node installer asks you to!**
+- [Yarn v4.8.1+](https://yarnpkg.com/getting-started/install)
+  - Yarn is normally installed with corepack.
 
 ## Usage
 
@@ -164,7 +168,7 @@ Inspection". You can then f12 to open the standard chrome dev tools.
 
 ## Project Structure
 
-- `/packages` - Each folder here represents a self-contained Bun module.
+- `/packages` - Each folder here represents a self-contained Node module.
 - `/packages/common` - Helper functions that are used throughout all packages.
 - `/packages/tgui/index.ts` - Application entry point.
 - `/packages/tgui/interfaces` - Actual in-game interfaces.

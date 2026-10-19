@@ -123,7 +123,8 @@
 
 	if(isfloorturf(T) && T.overfloor_placed) // pop the tile if present
 		floorturf = T
-		floorturf.spawn_tile()
+		if(floorturf.floor_tile)
+			new floorturf.floor_tile(T)
 		floorturf.make_plating(TRUE)
 
 	if(direction) // direction is specified

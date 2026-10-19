@@ -3,7 +3,7 @@
 /obj/projectile/bullet/junk
 	name = "junk bullet"
 	icon_state = "trashball"
-	damage = 40
+	damage = 30
 	embed_type = /datum/embedding/bullet/junk
 	/// What biotype does our junk projectile especially harm?
 	var/extra_damage_mob_biotypes = MOB_ROBOTIC
@@ -29,7 +29,7 @@
 			living_target.apply_damage(finalized_damage, damagetype = extra_damage_type, def_zone = BODY_ZONE_CHEST, wound_bonus = wound_bonus)
 
 /datum/embedding/bullet/junk
-	embed_chance = 30
+	embed_chance = 15
 	fall_chance = 3
 	jostle_chance = 4
 	ignore_throwspeed_threshold = TRUE
@@ -41,19 +41,9 @@
 
 /obj/projectile/bullet/incendiary/fire/junk
 	name = "burning oil"
-	damage = 40
+	damage = 30
 	fire_stacks = 5
 	suppressed = SUPPRESSED_NONE
-
-/obj/projectile/bullet/dart/ants
-	name = "a ball of ants"
-	icon_state = "trashball"
-	damage = 40 // Fuck your life.
-	inject_flags = INJECT_CHECK_PENETRATE_THICK // Fuck your modsuit.
-
-/obj/projectile/bullet/dart/ants/Initialize(mapload)
-	. = ..()
-	reagents.add_reagent(/datum/reagent/ants, damage) // Get fucked, asshole. Ants.
 
 /obj/projectile/bullet/junk/phasic
 	name = "junk phasic bullet"
@@ -63,7 +53,7 @@
 /obj/projectile/bullet/junk/shock
 	name = "bundle of live electrical parts"
 	icon_state = "tesla_projectile"
-	damage = 20
+	damage = 15
 	embed_type = null
 	shrapnel_type = null
 	extra_damage_added_damage = 30
@@ -80,14 +70,14 @@
 	icon_state = "gauss"
 	extra_damage_mob_biotypes = MOB_ROBOTIC | MOB_BEAST | MOB_SPECIAL | MOB_MINING
 	extra_damage_multiplier = 0
-	extra_damage_added_damage = 80
+	extra_damage_added_damage = 50
 
 /obj/projectile/bullet/junk/ripper
 	name = "junk ripper bullet"
 	icon_state = "redtrac"
-	damage = 20
+	damage = 10
 	embed_type = /datum/embedding/bullet/junk/ripper
-	wound_bonus = 20
+	wound_bonus = 10
 	exposed_wound_bonus = 30
 
 /datum/embedding/bullet/junk/ripper

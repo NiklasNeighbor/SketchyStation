@@ -1,16 +1,26 @@
-GAME_VERB_DESC(/client, open_character_preferences, "Open Character Preferences", "Open Character Preferences", "OOC")
+/datum/verbs/menu/Preferences/verb/open_character_preferences()
+	set category = "OOC"
+	set name = "Open Character Preferences"
+	set desc = "Open Character Preferences"
 
-	if(!prefs)
+	var/datum/preferences/preferences = usr?.client?.prefs
+	if (!preferences)
 		return
-	prefs.current_window = PREFERENCE_TAB_CHARACTER_PREFERENCES
-	prefs.update_static_data(usr)
-	prefs.ui_interact(usr)
 
-GAME_VERB_DESC(/client, open_game_preferences, "Open Game Preferences", "Open Game Preferences", "OOC")
+	preferences.current_window = PREFERENCE_TAB_CHARACTER_PREFERENCES
+	preferences.update_static_data(usr)
+	preferences.ui_interact(usr)
 
-	if(!prefs)
+/datum/verbs/menu/Preferences/verb/open_game_preferences()
+	set category = "OOC"
+	set name = "Open Game Preferences"
+	set desc = "Open Game Preferences"
+
+	var/datum/preferences/preferences = usr?.client?.prefs
+	if (!preferences)
 		return
-	prefs.current_window = PREFERENCE_TAB_GAME_PREFERENCES
-	prefs.update_static_data(usr)
-	prefs.ui_interact(usr)
+
+	preferences.current_window = PREFERENCE_TAB_GAME_PREFERENCES
+	preferences.update_static_data(usr)
+	preferences.ui_interact(usr)
 

@@ -2,7 +2,7 @@
 
 SUBSYSTEM_DEF(map_vote)
 	name = "Map Vote"
-	ss_flags = SS_NO_FIRE
+	flags = SS_NO_FIRE
 
 	/// Has an admin specifically set a map.
 	var/admin_override = FALSE
@@ -21,9 +21,6 @@ SUBSYSTEM_DEF(map_vote)
 
 	/// Stores the last amount of potential players to compare next time we're called
 	var/player_cache = -1
-
-	/// Cached list of votable maps
-	var/list/votable_map_cache
 
 	/// Stores a formatted html string of the tally counts
 	var/tally_printout = span_red("Loading...")
@@ -116,38 +113,24 @@ SUBSYSTEM_DEF(map_vote)
 	else
 		filter_threshold = length(GLOB.clients)
 
-	// Cached because it's called off ui_data, I really don't think this is worth it but whatever
-	if(filter_threshold == player_cache && !isnull(votable_map_cache))
-		return votable_map_cache.Copy()
+	if(filter_threshold == player_cache)
+		return null
 
 	player_cache = filter_threshold
-	var/list/pop_valid_maps = list()
+	var/list/valid_maps = list()
 	// Fill in our default choices with all of the maps in our map config, if they are votable and not blocked.
 	var/list/maps = shuffle(global.config.maplist)
 	for(var/map in maps)
 		var/datum/map_config/possible_config = config.maplist[map]
-		if(!possible_config.votable)
+		if(!possible_config.votable || (possible_config.map_name in SSpersistence.blocked_maps))
 			continue
 		if(possible_config.config_min_users > 0 && filter_threshold < possible_config.config_min_users)
 			continue
 		if(possible_config.config_max_users > 0 && filter_threshold > possible_config.config_max_users)
 			continue
-		pop_valid_maps += possible_config.map_name
+		valid_maps += possible_config.map_name
 
-	// Remove stale (played twice in the past KEEP_ROUNDS_MAP + 1 rounds (including this one as the + 1)) maps
-	var/list/freshened_valid_maps = list()
-	for(var/map_name in pop_valid_maps)
-		if(map_name in SSpersistence.blocked_maps)
-			continue
-		freshened_valid_maps += map_name
-
-	// We might stale out all valid maps, in that case just ignore the stale system
-	if(!length(freshened_valid_maps))
-		votable_map_cache = pop_valid_maps.Copy()
-		return pop_valid_maps
-
-	votable_map_cache = freshened_valid_maps.Copy()
-	return freshened_valid_maps
+	return valid_maps
 
 /datum/controller/subsystem/map_vote/proc/filter_cache_to_valid_maps()
 	var/connected_players = length(GLOB.player_list)

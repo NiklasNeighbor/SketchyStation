@@ -5,8 +5,7 @@
 
 /datum/crafting_recipe/food/pizza
 	added_foodtypes = RAW
-	cuisine_category = CUISINE_ITALIAN
-	dish_category = DISH_PIZZA
+	category = CAT_PIZZA
 
 /datum/crafting_recipe/food/pizza/margherita
 	reqs = list(
@@ -42,13 +41,12 @@
 		/obj/item/food/cheese/wedge = 1,
 	)
 	result = /obj/item/food/pizza/mushroom/raw
-	unit_test_spawn_extras = list(/obj/item/food/grown/mushroom/chanterelle = 5) //generic mushrooms
 
 /datum/crafting_recipe/food/pizza/vegetable
 	reqs = list(
 		/obj/item/food/flatdough = 1,
 		/obj/item/food/grown/eggplant = 1,
-		/obj/item/food/grown/carrotlike/carrot = 1,
+		/obj/item/food/grown/carrot = 1,
 		/obj/item/food/grown/corn = 1,
 		/obj/item/food/grown/tomato = 1,
 		/obj/item/food/cheese/wedge = 1,

@@ -4,7 +4,7 @@
 	quickicspawn(target, src)
 
 /mob/dead/observer/proc/quickicspawn(mob/target, mob/user)
-	if(!isobserver(target) || !check_rights(R_SPAWN, FALSE))
+	if(!isobserver(target) || !check_rights(R_SPAWN))
 		return
 
 	/// Whether to spawn in with sparks or in a pod
@@ -23,8 +23,7 @@
 	var/outfit_option
 	/// Initial list of outfits
 	var/list/outfit_options = list(
-		"Bluespace Tech (Admin)" = /datum/outfit/admin/bst,
-		"Bluespace Tech (Admin) (MODSuit)" = /datum/outfit/admin/bst/mod,
+		"Bluespace Tech" = /datum/outfit/admin/bst,
 		"Naked" = /datum/outfit,
 		"Show All" = "Show All",
 	)
@@ -55,7 +54,7 @@
 		return
 
 	outfit_option = tgui_input_list(user, "Which outfit to use?", "IC Quick Spawn", outfit_options)
-	if(outfit_option == outfit_options[4])
+	if(outfit_option == outfit_options[3])
 		outfit_option = user.client.robust_dress_shop_skyrat()
 	else
 		outfit_option = outfit_options[outfit_option]

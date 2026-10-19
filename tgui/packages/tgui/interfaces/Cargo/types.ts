@@ -20,8 +20,6 @@ export type CargoData = {
   requests: Request[];
   requestonly: BooleanLike;
   self_paid: BooleanLike;
-  // BUBBER EDIT ADDITION
-  allow_private_purchases?: BooleanLike;
   supplies: Record<string, SupplyCategory>;
 };
 
@@ -41,7 +39,6 @@ export type Supply = {
   name: string;
   small_item: BooleanLike;
   contraband: BooleanLike;
-  subcategory: string; // BUBBER EDIT
   contains: SupplyItem[];
 };
 

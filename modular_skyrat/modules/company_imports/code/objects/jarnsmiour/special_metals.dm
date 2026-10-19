@@ -6,11 +6,10 @@
 	name = "cobolterium"
 	desc = "Cobolterium"
 	color = "#264d61"
-	mat_flags = MATERIAL_CLASS_RIGID | MATERIAL_CLASS_METAL | MATERIAL_BASIC_RECIPES
+	categories = list(MAT_CATEGORY_RIGID = TRUE, MAT_CATEGORY_BASE_RECIPES = TRUE, MAT_CATEGORY_ITEM_MATERIAL = TRUE)
 	sheet_type = /obj/item/stack/sheet/cobolterium
 
 /datum/material/cobolterium/on_accidental_mat_consumption(mob/living/carbon/victim, obj/item/source_item)
-	..()
 	victim.apply_damage(10, BRUTE, BODY_ZONE_HEAD, wound_bonus = 5)
 	return TRUE
 
@@ -35,11 +34,10 @@
 	name = "copporcitite"
 	desc = "Copporcitite"
 	color = "#c55a1d"
-	mat_flags = MATERIAL_CLASS_RIGID | MATERIAL_CLASS_METAL | MATERIAL_BASIC_RECIPES
+	categories = list(MAT_CATEGORY_RIGID = TRUE, MAT_CATEGORY_BASE_RECIPES = TRUE, MAT_CATEGORY_ITEM_MATERIAL = TRUE)
 	sheet_type = /obj/item/stack/sheet/copporcitite
 
 /datum/material/copporcitite/on_accidental_mat_consumption(mob/living/carbon/victim, obj/item/source_item)
-	..()
 	victim.apply_damage(10, BRUTE, BODY_ZONE_HEAD, wound_bonus = 5)
 	return TRUE
 
@@ -64,11 +62,10 @@
 	name = "tinumium"
 	desc = "Tinumium"
 	color = "#717e97"
-	mat_flags = MATERIAL_CLASS_RIGID | MATERIAL_CLASS_METAL | MATERIAL_BASIC_RECIPES
+	categories = list(MAT_CATEGORY_RIGID = TRUE, MAT_CATEGORY_BASE_RECIPES = TRUE, MAT_CATEGORY_ITEM_MATERIAL = TRUE)
 	sheet_type = /obj/item/stack/sheet/tinumium
 
 /datum/material/tinumium/on_accidental_mat_consumption(mob/living/carbon/victim, obj/item/source_item)
-	..()
 	victim.apply_damage(10, BRUTE, BODY_ZONE_HEAD, wound_bonus = 5)
 	return TRUE
 
@@ -93,11 +90,10 @@
 	name = "brussite"
 	desc = "Brussite"
 	color = "#E1C16E"
-	mat_flags = MATERIAL_CLASS_RIGID | MATERIAL_CLASS_METAL | MATERIAL_BASIC_RECIPES
+	categories = list(MAT_CATEGORY_RIGID = TRUE, MAT_CATEGORY_BASE_RECIPES = TRUE, MAT_CATEGORY_ITEM_MATERIAL = TRUE)
 	sheet_type = /obj/item/stack/sheet/brussite
 
 /datum/material/brussite/on_accidental_mat_consumption(mob/living/carbon/victim, obj/item/source_item)
-	..()
 	victim.apply_damage(10, BRUTE, BODY_ZONE_HEAD, wound_bonus = 5)
 	return TRUE
 

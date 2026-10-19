@@ -62,7 +62,8 @@
 /obj/machinery/shower/directional/east{
 	refill_rate = 5
 	},
-/obj/structure/window/spawner/directional/west{
+/obj/structure/window/reinforced{
+	dir = 8;
 	pixel_x = -4
 	},
 /obj/structure/fluff/shower_drain{
@@ -87,7 +88,8 @@
 /obj/machinery/shower/directional/west{
 	refill_rate = 5
 	},
-/obj/structure/window/spawner/directional/east{
+/obj/structure/window/reinforced{
+	dir = 4;
 	pixel_x = 3
 	},
 /obj/structure/fluff/shower_drain{
@@ -295,7 +297,8 @@
 /obj/machinery/shower/directional/west{
 	refill_rate = 5
 	},
-/obj/structure/window/spawner/directional/east{
+/obj/structure/window/reinforced{
+	dir = 4;
 	pixel_x = 3
 	},
 /obj/structure/fluff/shower_drain{
@@ -353,7 +356,8 @@
 /obj/machinery/shower/directional/east{
 	refill_rate = 5
 	},
-/obj/structure/window/spawner/directional/west{
+/obj/structure/window/reinforced{
+	dir = 8;
 	pixel_x = -4
 	},
 /obj/structure/fluff/shower_drain{

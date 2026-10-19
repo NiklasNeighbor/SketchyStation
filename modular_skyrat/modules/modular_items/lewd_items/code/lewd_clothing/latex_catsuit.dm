@@ -50,25 +50,26 @@
 			if("pair")
 				breasts_overlay.icon_state = "breasts_double"
 				breasts_icon_overlay.icon_state = "iconbreasts_double"
-				breasts_overlay = get_accessory_overlays()
+				accessory_overlay = breasts_overlay
 				add_overlay(breasts_icon_overlay)
 			if("quad")
 				breasts_overlay.icon_state = "breasts_quad"
 				breasts_icon_overlay.icon_state = "iconbreasts_quad"
-				breasts_overlay = get_accessory_overlays()
+				accessory_overlay = breasts_overlay
 				add_overlay(breasts_icon_overlay)
 			if("sextuple")
 				breasts_overlay.icon_state = "breasts_sextuple"
 				breasts_icon_overlay.icon_state = "iconbreasts_sextuple"
-				breasts_overlay = get_accessory_overlays()
+				accessory_overlay = breasts_overlay
 				add_overlay(breasts_icon_overlay)
 
-	update_overlays(UPDATE_OVERLAYS)
+	update_overlays()
 
 	affected_human.regenerate_icons()
 
 /obj/item/clothing/under/misc/latex_catsuit/dropped(mob/living/affected_mob)
 	. = ..()
+	accessory_overlay = null
 	breasts_overlay.icon_state = "none"
 	cut_overlay(breasts_icon_overlay)
 	breasts_icon_overlay.icon_state = "none"

@@ -10,7 +10,6 @@
 	base_icon_state = "pandemic"
 	resistance_flags = ACID_PROOF
 	circuit = /obj/item/circuitboard/computer/pandemic
-	generate_map_preview = FALSE
 
 	/// Whether the pandemic is ready to make another culture/vaccine
 	var/wait = FALSE
@@ -81,33 +80,33 @@
 		update_appearance()
 		SStgui.update_uis(src)
 
-/obj/machinery/computer/pandemic/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/machinery/computer/pandemic/attackby(obj/item/held_item, mob/user, list/modifiers, list/attack_modifiers)
 	//Advanced science! Precision instruments (eg droppers and syringes) are precise enough to modify the loaded sample!
-	if(istype(tool, /obj/item/reagent_containers/dropper) || istype(tool, /obj/item/reagent_containers/syringe))
+	if(istype(held_item, /obj/item/reagent_containers/dropper) || istype(held_item, /obj/item/reagent_containers/syringe))
 		if(!beaker)
 			balloon_alert(user, "no beaker!")
-			return ITEM_INTERACT_BLOCKING
-		if(istype(tool, /obj/item/reagent_containers/syringe) && LAZYACCESS(modifiers, RIGHT_CLICK))
-			tool.interact_with_atom_secondary(beaker, user)
+			return ..()
+		if(istype(held_item, /obj/item/reagent_containers/syringe) && LAZYACCESS(modifiers, RIGHT_CLICK))
+			held_item.interact_with_atom_secondary(beaker, user)
 		else
-			tool.interact_with_atom(beaker, user)
+			held_item.interact_with_atom(beaker, user)
 		SStgui.update_uis(src)
-		return ITEM_INTERACT_SUCCESS
+		return TRUE
 
-	if(!is_reagent_container(tool) || tool.item_flags & ABSTRACT || !tool.is_open_container())
-		return NONE
+	if(!is_reagent_container(held_item) || held_item.item_flags & ABSTRACT || !held_item.is_open_container())
+		return ..()
+	. = TRUE //no afterattack
 	if(machine_stat & (NOPOWER|BROKEN))
-		return ITEM_INTERACT_BLOCKING
+		return ..()
 	if(beaker)
 		balloon_alert(user, "beaker swapped")
 		try_put_in_hand(beaker, usr)
 	else
 		balloon_alert(user, "beaker loaded")
-	user.transferItemToLoc(tool, src)
-	beaker = tool
+	user.transferItemToLoc(held_item, src)
+	beaker = held_item
 	update_appearance()
 	SStgui.update_uis(src)
-	return ITEM_INTERACT_SUCCESS
 
 /obj/machinery/computer/pandemic/on_deconstruction(disassembled)
 	eject_beaker()
@@ -148,8 +147,8 @@
 		return data
 	data["has_blood"] = TRUE
 	data["blood"] = list()
-	data["blood"]["dna"] = blood.data[BLOOD_DATA_DNA] || "none"
-	data["blood"]["type"] = blood.data[BLOOD_DATA_TYPE] || "none"
+	data["blood"]["dna"] = blood.data["blood_DNA"] || "none"
+	data["blood"]["type"] = blood.data["blood_type"] || "none"
 	data["viruses"] = get_viruses_data(blood)
 	data["resistances"] = get_resistance_data(blood)
 	return data
@@ -218,7 +217,7 @@
 /// Tries to locate a reagent with valid blood_type data
 /obj/machinery/computer/pandemic/proc/get_blood_reagent()
 	for (var/datum/reagent/reagent as anything in beaker?.reagents?.reagent_list)
-		if (reagent.data?[BLOOD_DATA_TYPE])
+		if (reagent.data?["blood_type"])
 			return reagent
 
 /**

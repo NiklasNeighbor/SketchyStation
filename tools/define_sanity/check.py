@@ -4,7 +4,11 @@ import os
 import re
 import sys
 
-parent_directory = "*/**/*.dm"
+parent_directory = "code/**/*.dm"
+# BUBBER EDIT BEGIN
+parent_directory_skyrat = "modular_skyrat/**/**.dm"
+parent_directory_zubbers = "modular_zubbers/**/**.dm"
+# BUBBER EDIT END
 
 output_file_name = "define_sanity_output.txt"
 how_to_fix_message = "Please #undef the above defines or remake them as global defines in the code/__DEFINES directory."
@@ -36,8 +40,6 @@ excluded_files = [
     "code/_globalvars/*.dm",
     # TGS files come from another repository so lets not worry about them.
     "code/modules/tgs/**/*.dm",
-    # Doesn't come with the repo, but is in CI.
-    "DMCompiler_linux-x64/*.dm",
     # BUBBER EDIT - Modular files
     "modular_zubbers/code/__DEFINES/*.dm"
 ]
@@ -51,7 +53,7 @@ number_of_defines = 0
 if not on_github:
     print(blue(f"Running define sanity check outside of Github Actions.\nFor assistance, a '{output_file_name}' file will be generated at the root of your directory if any errors are detected."))
 
-for code_file in glob.glob(parent_directory, recursive=True):
+for code_file in (glob.glob(parent_directory, recursive=True) + glob.glob(parent_directory_skyrat, recursive=True) + glob.glob(parent_directory_zubbers, recursive=True)): # BUBBER EDIT - Adds modular folders to check
     exempt_file = False
     for exempt_directory in excluded_files:
         if fnmatch.fnmatch(code_file, exempt_directory):

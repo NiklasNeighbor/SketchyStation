@@ -3,7 +3,6 @@
 	desc = "Retracts stuff."
 	icon = 'icons/obj/medical/surgery_tools.dmi'
 	icon_state = "retractor"
-	worn_icon = "retractor"
 	inhand_icon_state = "retractor"
 	icon_angle = 45
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
@@ -34,7 +33,6 @@
 	desc = "You think you have seen this before."
 	icon = 'icons/obj/medical/surgery_tools.dmi'
 	icon_state = "hemostat"
-	worn_icon = "hemostat"
 	inhand_icon_state = "hemostat"
 	icon_angle = 135
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
@@ -67,7 +65,6 @@
 	desc = "This stops bleeding."
 	icon = 'icons/obj/medical/surgery_tools.dmi'
 	icon_state = "cautery"
-	worn_icon = "cautery"
 	inhand_icon_state = "cautery"
 	icon_angle = 135
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
@@ -163,8 +160,7 @@
 	inhand_icon_state = "drill"
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
-	hitsound = 'sound/items/tools/drill_hit.ogg'
-	usesound = 'sound/items/tools/drill_use.ogg'
+	hitsound = 'sound/items/weapons/circsawhit.ogg'
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT*5, /datum/material/glass = SHEET_MATERIAL_AMOUNT*3)
 	obj_flags = CONDUCTS_ELECTRICITY
 	item_flags = SURGICAL_TOOL
@@ -210,7 +206,6 @@
 	desc = "Cut, cut, and once more cut."
 	icon = 'icons/obj/medical/surgery_tools.dmi'
 	icon_state = "scalpel"
-	worn_icon = "scalpel"
 	inhand_icon_state = "scalpel"
 	icon_angle = 180
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
@@ -329,7 +324,6 @@
 	desc = "Nanotrasen brand surgical drapes provide optimal safety and infection control."
 	icon = 'icons/obj/medical/surgery_tools.dmi'
 	icon_state = "surgical_drapes"
-	worn_icon = "drapes"
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
 	inhand_icon_state = "drapes"
@@ -339,7 +333,6 @@
 	drop_sound = SFX_CLOTH_DROP
 	pickup_sound = SFX_CLOTH_PICKUP
 	gender = PLURAL
-	custom_materials = list(/datum/material/plastic = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/surgical_drapes/Initialize(mapload)
 	. = ..()
@@ -574,7 +567,7 @@
 
 	patient.visible_message(span_danger("[user] begins to secure [src] around [patient]'s [candidate_name]."), span_userdanger("[user] begins to secure [src] around your [candidate_name]!"))
 	playsound(get_turf(patient), 'sound/items/tools/ratchet.ogg', 20, TRUE)
-	if(IS_UNCONSCIOUS(patient) || HAS_TRAIT(patient, TRAIT_INCAPACITATED)) //if you're incapacitated (due to paralysis, a stun, being in staminacrit, etc.), critted, unconscious, or dead, it's much easier to properly line up a snip
+	if(patient.stat >= UNCONSCIOUS || HAS_TRAIT(patient, TRAIT_INCAPACITATED)) //if you're incapacitated (due to paralysis, a stun, being in staminacrit, etc.), critted, unconscious, or dead, it's much easier to properly line up a snip
 		amputation_speed_mod *= 0.5
 	if(patient.stat != DEAD && patient.has_status_effect(/datum/status_effect/jitter)) //jittering will make it harder to secure the shears, even if you can't otherwise move
 		amputation_speed_mod *= 1.5 //15*0.5*1.5=11.25, so staminacritting someone who's jittering (from, say, a stun baton) won't give you enough time to snip their head off, but staminacritting someone who isn't jittering will
@@ -595,10 +588,10 @@
 	if(HAS_MIND_TRAIT(user, TRAIT_MORBID)) //Freak
 		user.add_mood_event("morbid_dismemberment", /datum/mood_event/morbid_dismemberment)
 
-/obj/item/shears/suicide_act(mob/living/user)
+/obj/item/shears/suicide_act(mob/living/carbon/user)
 	user.visible_message(span_suicide("[user] is pinching [user.p_them()]self with \the [src]! It looks like [user.p_theyre()] trying to commit suicide!"))
 	var/timer = 1 SECONDS
-	for(var/obj/item/bodypart/thing in user.get_bodyparts())
+	for(var/obj/item/bodypart/thing in user.bodyparts)
 		if(thing.body_part == CHEST)
 			continue
 		addtimer(CALLBACK(thing, TYPE_PROC_REF(/obj/item/bodypart/, dismember)), timer)
@@ -615,7 +608,7 @@
 	icon_angle = 135
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 1.25)
+	custom_materials = list(/datum/material/iron =SHEET_MATERIAL_AMOUNT * 2.5,  /datum/material/glass = SHEET_MATERIAL_AMOUNT*1.25, /datum/material/silver = SHEET_MATERIAL_AMOUNT*1.25)
 	obj_flags = CONDUCTS_ELECTRICITY
 	item_flags = SURGICAL_TOOL
 	w_class = WEIGHT_CLASS_SMALL
@@ -640,7 +633,7 @@
 	icon_state = "bloodfilter"
 	lefthand_file = 'icons/mob/inhands/equipment/medical_lefthand.dmi'
 	righthand_file = 'icons/mob/inhands/equipment/medical_righthand.dmi'
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 0.75, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
+	custom_materials = list(/datum/material/iron=SHEET_MATERIAL_AMOUNT, /datum/material/glass=HALF_SHEET_MATERIAL_AMOUNT * 1.5, /datum/material/silver=SMALL_MATERIAL_AMOUNT*5)
 	item_flags = SURGICAL_TOOL
 	w_class = WEIGHT_CLASS_NORMAL
 	attack_verb_continuous = list("pumps", "siphons")
@@ -736,7 +729,7 @@
 
 /obj/item/scalpel/cruel/Initialize(mapload)
 	. = ..()
-	AddComponent(/datum/component/bane, affected_biotypes = MOB_UNDEAD, damage_multiplier = 2) //Just in case one of the tennants get uppity
+	AddElement(/datum/element/bane, mob_biotypes = MOB_UNDEAD, damage_multiplier = 1) //Just in case one of the tennants get uppity
 
 /obj/item/surgicaldrill/cruel
 	name = "tearing drill"

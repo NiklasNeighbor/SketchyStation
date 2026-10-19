@@ -71,9 +71,6 @@
 	item_path = /obj/item/clothing/accessory/badge/holo/jade
 	//ckeywhitelist = list("konstyantyn")
 
-/datum/loadout_item/accessory/heirloom/syntech
-	name = "Normalizer Safety Pin"
-	item_path = /obj/item/clothing/accessory/syntech
 /*
 *
 * Accessory Medals

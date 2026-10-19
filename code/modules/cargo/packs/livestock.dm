@@ -2,14 +2,6 @@
 	group = "Livestock"
 	crate_type = /obj/structure/closet/crate/critter
 
-/datum/supply_pack/critter/stasis
-	crate_type = /obj/structure/closet/crate/critter/stasis
-
-/datum/supply_pack/critter/stasis/fill(obj/container)
-	. = ..()
-	for(var/mob/living/stasis_mob in container)
-		stasis_mob.apply_status_effect(/datum/status_effect/grouped/stasis, STASIS_CRATE_EFFECT)
-
 /datum/supply_pack/critter/parrot
 	name = "Bird Crate"
 	desc = "Contains five expert telecommunication birds."
@@ -17,7 +9,7 @@
 	contains = list(/mob/living/basic/parrot)
 	crate_name = "parrot crate"
 
-/datum/supply_pack/critter/parrot/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/parrot/generate()
 	. = ..()
 	for(var/i in 1 to 4)
 		new /mob/living/basic/parrot(.)
@@ -30,7 +22,7 @@
 	contains = list(/mob/living/basic/butterfly)
 	crate_name = "entomology samples crate"
 
-/datum/supply_pack/critter/butterfly/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/butterfly/generate()
 	. = ..()
 	for(var/i in 1 to 49)
 		new /mob/living/basic/butterfly(.)
@@ -46,7 +38,7 @@
 	)
 	crate_name = "cat crate"
 
-/datum/supply_pack/critter/cat/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/cat/generate()
 	. = ..()
 	if(!prob(50))
 		return
@@ -73,7 +65,7 @@
 				)
 	crate_name = "corgi crate"
 
-/datum/supply_pack/critter/corgi/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/corgi/generate()
 	. = ..()
 	if(prob(50))
 		var/mob/living/basic/pet/dog/corgi/D = locate() in .
@@ -123,7 +115,7 @@
 	crate_name = "look sir free crabs"
 	order_flags = ORDER_POD_ONLY
 
-/datum/supply_pack/critter/crab/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/crab/generate()
 	. = ..()
 	for(var/i in 1 to 49)
 		new /mob/living/basic/crab(.)
@@ -232,7 +224,7 @@
 	crate_name = "garden gnome crate"
 	discountable = SUPPLY_PACK_RARE_DISCOUNTABLE
 
-/datum/supply_pack/critter/garden_gnome/generate(atom/A, datum/bank_account/paying_account, crate_override)
+/datum/supply_pack/critter/garden_gnome/generate()
 	. = ..()
 	for(var/i in 1 to 2)
 		new /mob/living/basic/garden_gnome(.)
@@ -268,9 +260,9 @@
 	contains = list(/obj/item/storage/fish_case/tiziran = 2)
 	crate_name = "tiziran fish crate"
 
-/datum/supply_pack/critter/stasis/turtle
+/datum/supply_pack/critter/turtle
 	name = "Turtle Crate"
 	desc = "Cute flora turtles that'll emit good vibes to nearby plants!"
 	cost = CARGO_CRATE_VALUE * 2
 	contains = list(/mob/living/basic/turtle)
-	crate_name = "flora-turtle stasis crate"
+	crate_name = "flora-turtle crate"

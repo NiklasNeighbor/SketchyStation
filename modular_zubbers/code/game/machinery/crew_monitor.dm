@@ -25,25 +25,14 @@
 		var/turf/pos = get_turf(mob)
 
 		if(!istype(mob))
-			GLOB.suit_sensors_list -= mob
 			continue
 
 		if(pos.z != z && (!is_station_level(pos.z) || !is_station_level(z)) && !HAS_TRAIT(mob, TRAIT_MULTIZ_SUIT_SENSORS))
 			continue
 
 		var/obj/item/clothing/under/uniform = mob.w_uniform
-		if(!istype(uniform) || uniform.has_sensor <= NO_SENSORS || !uniform.sensor_mode)
-			GLOB.suit_sensors_list -= mob
-			continue
-
-		if(uniform.sensor_mode == SENSOR_COORDS && (uniform.has_sensor != BROKEN_SENSORS) && IS_CRITICAL(mob) || mob.stat == DEAD || isprotean(mob))
+		if(uniform.sensor_mode == SENSOR_COORDS && (uniform.has_sensor != BROKEN_SENSORS) && (HAS_TRAIT(mob, TRAIT_CRITICAL_CONDITION) || mob.stat == DEAD))
 			if(mob.get_dnr()) // DNR won't beep anymore
-				continue
-			if(isprotean(mob))
-				var/obj/item/organ/brain/protean/protean_brain = mob.get_organ_slot(ORGAN_SLOT_BRAIN)
-				if(protean_brain?.dead)
-					canalarm = TRUE
-					break
 				continue
 			canalarm = TRUE
 			break // Why wasn't this here?
@@ -57,7 +46,7 @@
 			spasm_animation(1 SECONDS)
 			COOLDOWN_START(src, alarm_cooldown, ALARM_PERIOD)
 	else
-		icon_keyboard = initial(icon_keyboard)
+		icon_keyboard = "med_key"
 		update_appearance()
 		set_light(l_range = initial(brightness_on), l_power = initial(light_power), l_color = initial(light_color), l_on = TRUE)
 	alarm_timer = addtimer(CALLBACK(src, PROC_REF(alarm)), SENSORS_UPDATE_PERIOD)

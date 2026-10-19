@@ -125,7 +125,11 @@
 	volume = 100
 	extra_range = 25
 
-ADMIN_VERB(spawn_sunbeam, R_FUN, "Spawn Sunbeam", "Spawns an ICARUS sunbeam at your location and sends it towards a target.", ADMIN_CATEGORY_FUN)
+/client/proc/spawn_sunbeam()
+	set category = "Admin.Fun"
+	set name = "Spawn Sunbeam"
+	set desc = "Spawns an ICARUS sunbeam at your location and sends it towards a target."
+
 	var/mob/living/target_mob = tgui_input_list(usr, "Select a mob", "Mob", GLOB.mob_living_list)
 
 	if(!target_mob)

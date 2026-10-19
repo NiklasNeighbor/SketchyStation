@@ -4,11 +4,6 @@
 	icon = 'modular_skyrat/modules/huds/icons/huds.dmi'
 	icon_state = "glasses_healthhud"
 	worn_icon = 'modular_skyrat/modules/huds/icons/hudeyes.dmi'
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/clothing/glasses/hud/health/prescription/Initialize(mapload)
 	. = ..()
@@ -20,11 +15,6 @@
 	icon = 'modular_skyrat/modules/huds/icons/huds.dmi'
 	icon_state = "glasses_diagnostichud"
 	worn_icon = 'modular_skyrat/modules/huds/icons/hudeyes.dmi'
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/clothing/glasses/hud/diagnostic/prescription/Initialize(mapload)
 	. = ..()
@@ -36,11 +26,6 @@
 	icon = 'modular_skyrat/modules/huds/icons/huds.dmi'
 	icon_state = "glasses_securityhud"
 	worn_icon = 'modular_skyrat/modules/huds/icons/hudeyes.dmi'
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/clothing/glasses/hud/security/prescription/Initialize(mapload)
 	. = ..()
@@ -52,11 +37,6 @@
 	icon = 'modular_skyrat/modules/huds/icons/huds.dmi'
 	icon_state = "glasses_sciencehud"
 	worn_icon = 'modular_skyrat/modules/huds/icons/hudeyes.dmi'
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/gold = SMALL_MATERIAL_AMOUNT * 4,
-	)
 	glass_colour_type = /datum/client_colour/glass_colour/purple
 	armor_type = /datum/armor/prescription_science
 
@@ -71,11 +51,6 @@
 /obj/item/clothing/glasses/meson/prescription
 	name = "prescription optical meson scanner"
 	desc = "Used by engineering and mining staff to see basic structural and terrain layouts through walls, regardless of lighting conditions. This one has prescription lens fitted in."
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/clothing/glasses/meson/prescription/Initialize(mapload)
 	. = ..()
@@ -84,12 +59,6 @@
 /obj/item/clothing/glasses/meson/engine/prescription
 	name = "prescription engineering scanner goggles"
 	desc = "Goggles used by engineers. The Meson Scanner mode lets you see basic structural and terrain layouts through walls, the T-ray Scanner mode lets you see underfloor objects such as cables and pipes, and the Radiation Scanner mode let's you see objects contaminated by radiation. Each lens has been replaced with a corrective lens."
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/plasma = SMALL_MATERIAL_AMOUNT,
-		/datum/material/silver = SMALL_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/clothing/glasses/meson/engine/prescription/Initialize(mapload)
 	. = ..()
@@ -98,11 +67,6 @@
 /obj/item/clothing/glasses/meson/engine/tray/prescription
 	name = "prescription optical t-ray scanner"
 	desc = "Goggles used by engineers. The Meson Scanner mode lets you see basic structural and terrain layouts through walls, the T-ray Scanner mode lets you see underfloor objects such as cables and pipes, and the Radiation Scanner mode let's you see objects contaminated by radiation. This one has a lens that help correct eye sight."
-	custom_materials = list(
-		/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT,
-		/datum/material/silver = SMALL_MATERIAL_AMOUNT,
-	)
 
 /obj/item/clothing/glasses/meson/engine/tray/prescription/Initialize(mapload)
 	. = ..()

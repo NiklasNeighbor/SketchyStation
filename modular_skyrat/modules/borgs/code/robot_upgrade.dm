@@ -12,15 +12,6 @@
 	require_model = TRUE
 	model_type = list(/obj/item/robot_model/medical)
 	model_flags = BORG_MODEL_MEDICAL
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 7,
-		/datum/material/glass = SHEET_MATERIAL_AMOUNT * 3,
-		/datum/material/silver = SHEET_MATERIAL_AMOUNT * 3,
-		/datum/material/gold = SHEET_MATERIAL_AMOUNT,
-		/datum/material/diamond = SMALL_MATERIAL_AMOUNT,
-		/datum/material/titanium = SHEET_MATERIAL_AMOUNT * 4,
-		/datum/material/plasma = SHEET_MATERIAL_AMOUNT,
-	)
 
 	items_to_add = list(/obj/item/scalpel/advanced,
 						/obj/item/retractor/advanced,
@@ -56,13 +47,6 @@
 	cost = ENGINEERING_CYBORG_CHARGE_PER_STACK
 	is_cyborg = TRUE
 	source = /datum/robot_energy_storage/plasteel
-	custom_materials = list(
-		/datum/material/titanium=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/iron=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/uranium=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/glass=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/plasma=SHEET_MATERIAL_AMOUNT * 3,
-	)
 
 /obj/item/stack/sheet/titaniumglass/cyborg
 	cost = ENGINEERING_CYBORG_CHARGE_PER_STACK
@@ -77,13 +61,6 @@
 	icon_state = "module_engineer"
 	model_type = list(/obj/item/robot_model/engineering)
 	model_flags = BORG_MODEL_ENGINEERING
-	custom_materials = list(
-		/datum/material/titanium=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/iron=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/uranium=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/glass=SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/plasma=SHEET_MATERIAL_AMOUNT * 3,
-	)
 
 	items_to_add = list(/obj/item/stack/sheet/plasteel/cyborg,
 						/obj/item/stack/sheet/titaniumglass/cyborg,
@@ -108,10 +85,6 @@
 	require_model = TRUE
 	model_type = list(/obj/item/robot_model/miner)
 	model_flags = BORG_MODEL_MINER
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/plasma = SHEET_MATERIAL_AMOUNT * 1,
-	)
 
 	items_to_add = list(/obj/item/weldingtool/largetank/cyborg)
 
@@ -140,10 +113,6 @@
 	require_model = TRUE
 	model_type = list(/obj/item/robot_model/cargo)
 	model_flags = BORG_MODEL_CARGO
-	custom_materials = list(
-		/datum/material/titanium = SHEET_MATERIAL_AMOUNT * 2,
-		/datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT,
-	)
 
 	items_to_add = list(/obj/item/borg/hydraulic_clamp/better)
 
@@ -166,7 +135,6 @@
 	require_model = TRUE
 	model_type = list(/obj/item/robot_model/cargo)
 	model_flags = BORG_MODEL_CARGO
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5, /datum/material/plastic = SMALL_MATERIAL_AMOUNT * 5, /datum/material/uranium = SMALL_MATERIAL_AMOUNT * 5)
 
 	items_to_add = list(/obj/item/cargo_teleporter)
 
@@ -189,7 +157,6 @@
 	require_model = TRUE
 	model_type = list(/obj/item/robot_model/cargo)
 	model_flags = BORG_MODEL_CARGO
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5, /datum/material/uranium = SMALL_MATERIAL_AMOUNT * 5)
 
 	items_to_add = list(/obj/item/forging/hammer,
 						/obj/item/forging/billow,
@@ -217,7 +184,6 @@
 	name = "borg artistic module"
 	desc = "Allows you to upgrade a cyborg with tools for creating art."
 	icon_state = "module_general"
-	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 2, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 	items_to_add = list(
 			/obj/item/pen,
 			/obj/item/toy/crayon/spraycan/borg,
@@ -236,11 +202,6 @@
 	name = "cyborg shapeshifter module"
 	desc = "An experimental device which allows a cyborg to disguise themself into another type of cyborg."
 	icon_state = "module_general"
-	custom_materials = list(
-		/datum/material/silver = SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/plasma = SHEET_MATERIAL_AMOUNT * 5,
-		/datum/material/diamond = SHEET_MATERIAL_AMOUNT * 2,
-	)
 
 	items_to_add = list(/obj/item/borg_shapeshifter)
 
@@ -252,7 +213,6 @@
 
 	items_to_add = list(/obj/item/quadborg_tongue,
 						/obj/item/quadborg_nose)
-	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/quadborg_tongue/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
 	var/mob/living/silicon/robot/borg = user
@@ -298,10 +258,6 @@
 	name = "borg shrinker"
 	desc = "A cyborg resizer, it makes a cyborg small."
 	icon_state = "module_general"
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 10,
-		/datum/material/glass = SHEET_MATERIAL_AMOUNT * 4,
-	)
 
 /obj/item/borg/upgrade/shrink/action(mob/living/silicon/robot/borg, user = usr)
 	. = ..()
@@ -366,10 +322,6 @@
 	desc = "A module that greatly upgrades the ability of borgs to display affection."
 	icon = 'modular_skyrat/modules/borgs/icons/robot_items.dmi'
 	icon_state = "module_lust"
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = SHEET_MATERIAL_AMOUNT,
-	)
 	custom_price = 0
 
 	items_to_add = list(/obj/item/kinky_shocker,
@@ -379,22 +331,3 @@
 						/obj/item/clothing/erp_leash,
 						/obj/item/clicker
 						)
-
-/// Cyborgs are bad at dancing too
-/obj/item/borg/upgrade/waddle_module
-	name = "borg waddle module"
-	desc = "A module that puts a little spring in each borg's step"
-	custom_materials = list(
-		/datum/material/iron = SHEET_MATERIAL_AMOUNT,
-		/datum/material/glass = SHEET_MATERIAL_AMOUNT,
-	)
-
-/obj/item/borg/upgrade/waddle_module/action(mob/living/silicon/robot/borg, mob/living/user)
-	. = ..()
-	if(.)
-		borg.add_quirk(/datum/quirk/waddle)
-
-/obj/item/borg/upgrade/waddle_module/deactivate(mob/living/silicon/robot/borg, mob/living/user)
-	. = ..()
-	if(.)
-		borg.remove_quirk(/datum/quirk/waddle)

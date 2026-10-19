@@ -194,6 +194,7 @@
 
 /datum/deathmatch_modifier/xray/apply(mob/living/carbon/player, datum/deathmatch_lobby/lobby)
 	ADD_TRAIT(player, TRAIT_XRAY_VISION, DEATHMATCH_TRAIT)
+	player.update_sight()
 
 /datum/deathmatch_modifier/thermal
 	name = "Thermal Vision"
@@ -202,6 +203,7 @@
 
 /datum/deathmatch_modifier/thermal/apply(mob/living/carbon/player, datum/deathmatch_lobby/lobby)
 	ADD_TRAIT(player, TRAIT_THERMAL_VISION, DEATHMATCH_TRAIT)
+	player.update_sight()
 
 /datum/deathmatch_modifier/regen
 	name = "Health Regen"
@@ -528,7 +530,7 @@
 		var/datum/deathmatch_modifier/modifier = GLOB.deathmatch_game.modifiers[pick_n_take(modifiers_pool)]
 		modifier.on_select(lobby)
 		modifier.on_start_game(lobby)
-		lobby.modifiers += modifier.type
+		lobby += modifier.type
 		modifiers_pool -= modifier.blacklisted_modifiers
 		if(!length(modifiers_pool))
 			return

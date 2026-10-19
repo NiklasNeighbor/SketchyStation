@@ -110,12 +110,10 @@
 		/obj/item/stamp/head/hop,
 		)
 
-	wintercoat = /obj/item/clothing/suit/hooded/wintercoat/hop
-
 /datum/outfit/job/hop/pre_equip(mob/living/carbon/human/H)
 	..()
 	if(check_holidays(IAN_HOLIDAY))
-		undershirt = /datum/sprite_accessory/clothing/undershirt/ian
+		undershirt = /datum/sprite_accessory/undershirt/ian
 
 //only pet worth reviving
 /datum/job/head_of_personnel/get_mail_goodies(mob/recipient)

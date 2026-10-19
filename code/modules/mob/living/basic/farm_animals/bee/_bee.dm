@@ -36,6 +36,7 @@
 	mob_biotypes = MOB_ORGANIC|MOB_BUG
 	density = FALSE
 	gold_core_spawnable = FRIENDLY_SPAWN
+	can_be_held = TRUE
 	held_w_class = WEIGHT_CLASS_TINY
 	environment_smash  = ENVIRONMENT_SMASH_NONE
 	habitable_atmos = null
@@ -55,7 +56,7 @@
 		/datum/pet_command/free,
 		/datum/pet_command/beehive/enter,
 		/datum/pet_command/beehive/exit,
-		/datum/pet_command/follow,
+		/datum/pet_command/follow/bee,
 		/datum/pet_command/attack/swirl,
 		/datum/pet_command/scatter,
 	)
@@ -70,7 +71,6 @@
 	AddComponent(/datum/component/obeys_commands, pet_commands)
 	AddElement(/datum/element/swabable, CELL_LINE_TABLE_QUEEN_BEE, CELL_VIRUS_TABLE_GENERIC_MOB, 1, 5)
 	AddElement(/datum/element/basic_allergenic_attack, allergen = BUGS, allergen_chance = 33, histamine_add = 5)
-	AddElement(/datum/element/can_be_held)
 
 /mob/living/basic/bee/mob_pickup(mob/living/picker)
 	if(flags_1 & HOLOGRAM_1)
@@ -111,18 +111,18 @@
 
 /mob/living/basic/bee/early_melee_attack(atom/target, list/modifiers)
 	. = ..()
-	if(.)
-		return
+	if(!.)
+		return FALSE
 
 	if(istype(target, /obj/machinery/hydroponics))
 		var/obj/machinery/hydroponics/hydro = target
 		pollinate(hydro)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(istype(target, /obj/structure/beebox))
 		var/obj/structure/beebox/hive = target
 		handle_habitation(hive)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 /mob/living/basic/bee/proc/handle_habitation(obj/structure/beebox/hive)
 	if(hive == beehome) //if its our home, we enter or exit it
@@ -197,16 +197,6 @@
 	AddElement(/datum/element/venomous, beegent.type, injection_range, thrown_effect = TRUE)
 	generate_bee_visuals()
 
-/// Picks a random toxin and assigns it to the bee
-/mob/living/basic/bee/proc/assign_random_toxin_reagent()
-	assign_reagent(GLOB.chemical_reagents_list[get_random_reagent_id(whitelist = subtypesof(/datum/reagent/toxin))])
-
-/mob/living/basic/bee/mutate()
-	. = ..()
-	if(!.)
-		assign_random_toxin_reagent()
-		. = TRUE
-
 /mob/living/basic/bee/queen
 	name = "queen bee"
 	desc = "She's the queen of bees, BZZ BZZ!"
@@ -222,7 +212,8 @@
 
 /mob/living/basic/bee/toxin/Initialize(mapload)
 	. = ..()
-	assign_random_toxin_reagent()
+	var/datum/reagent/toxin = pick(typesof(/datum/reagent/toxin))
+	assign_reagent(GLOB.chemical_reagents_list[toxin])
 
 /// A bee which despawns after a short amount of time (beespawns?)
 /mob/living/basic/bee/timed

@@ -77,8 +77,6 @@
 	var/minor_disabilities_desc
 	/// Physical status of this person in medical records.
 	var/physical_status
-	/// If declared dead, this is set as the cause of death, wiped once declared alive again.
-	var/cause_of_death
 	/// Mental status of this person in medical records.
 	var/mental_status
 	/// Positive and neutral quirk strings
@@ -113,7 +111,6 @@
 	physical_status = PHYSICAL_ACTIVE,
 	mental_status = MENTAL_STABLE,
 	quirk_notes,
-	security_note, // BUBBER EDIT
 	// SKYRAT EDIT START - RP Records
 	past_general_records = "",
 	past_medical_records = "",
@@ -130,7 +127,6 @@
 	src.mental_status = mental_status
 	src.quirk_notes = quirk_notes
 	// SKYRAT EDIT START - RP Records
-	src.security_note = security_note
 	src.past_general_records = past_general_records
 	src.past_medical_records = past_medical_records
 	src.past_security_records = past_security_records
@@ -161,7 +157,7 @@
 	character_appearance,
 	dna_string = "Unknown",
 	fingerprint = "?????",
-	gender = "neuter",
+	gender = "Other",
 	initial_rank = "Unassigned",
 	name = "Unknown",
 	rank = "Unassigned",
@@ -172,7 +168,6 @@
 	datum/mind/mind_ref,
 	// BUBBER EDIT BEGIN - Records
 	exploitable_information = "",
-	background_information = "",
 )
 	. = ..()
 	src.locked_dna = locked_dna
@@ -181,8 +176,7 @@
 
 	GLOB.manifest.locked += src
 
-	// BUBBER EDIT BEGIn - Records
-	src.background_information = background_information
+	// BUBBER EDIT BEGIN - Records
 	src.exploitable_information = exploitable_information
 	// BUBBER EDIT END
 

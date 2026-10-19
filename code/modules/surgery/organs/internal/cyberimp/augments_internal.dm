@@ -5,7 +5,6 @@
 	abstract_type = /obj/item/organ/cyberimp
 	organ_flags = ORGAN_ROBOTIC
 	failing_desc = "seems to be broken."
-	visual = FALSE
 	/// icon of the bodypart overlay we're going to be applying to our owner
 	var/aug_icon = 'icons/mob/human/species/misc/bodypart_overlay_augmentations.dmi'
 	/// icon_state of the bodypart overlay we're going to be applying to our owner
@@ -18,12 +17,11 @@
 /obj/item/organ/cyberimp/Initialize(mapload)
 	. = ..()
 	if (aug_overlay)
-		visual = TRUE
 		bodypart_aug = new(src)
 
 /obj/item/organ/cyberimp/Destroy()
-	. = ..()
-	QDEL_NULL(bodypart_aug) // Do this after Remove() has done its thing, otherwise on_bodypart_remove() will not properly remove the overlay
+	QDEL_NULL(bodypart_aug)
+	return ..()
 
 /obj/item/organ/cyberimp/proc/get_overlay_state()
 	return aug_overlay
@@ -45,9 +43,7 @@
 		limb.remove_bodypart_overlay(bodypart_aug)
 
 /datum/bodypart_overlay/augment
-	layers = list(EXTERNAL_ADJACENT = BODY_ADJ_LAYER)
-	draw_on_husks = HUSK_OVERLAY_NORMAL
-	offset_location = ENTIRE_BODY
+	layers = EXTERNAL_ADJACENT
 	/// Implant that owns this overlay
 	var/obj/item/organ/cyberimp/implant
 
@@ -59,12 +55,13 @@
 	implant = null
 	return ..()
 
-/datum/bodypart_overlay/augment/icon_render_key(obj/item/bodypart/limb)
+/datum/bodypart_overlay/augment/generate_icon_cache()
 	. = ..()
 	. += implant.get_overlay_state()
 
-/datum/bodypart_overlay/augment/get_overlay(obj/item/bodypart/limb, layer_index, layer_real)
-	var/list/imageset = implant.get_overlay(layer_real, limb)
+/datum/bodypart_overlay/augment/get_overlay(layer, obj/item/bodypart/limb)
+	layer = bitflag_to_layer(layer)
+	var/list/imageset = implant.get_overlay(layer, limb)
 	if(blocks_emissive == EMISSIVE_BLOCK_NONE || !limb)
 		return imageset
 
@@ -105,7 +102,6 @@
 	name = "anti-drop implant"
 	desc = "This cybernetic brain implant will allow you to force your hand muscles to contract, preventing item dropping. Twitch ear to toggle."
 	icon_state = "brain_implant_antidrop"
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 4, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 4)
 	var/active = FALSE
 	var/list/stored_items = list()
 	slot = ORGAN_SLOT_BRAIN_CEREBELLUM
@@ -135,7 +131,7 @@
 	. = ..()
 	if(!owner || . & EMP_PROTECT_SELF)
 		return
-	var/range = 10 / severity
+	var/range = severity ? 10 : 5
 	var/atom/throw_target
 	if(active)
 		release_items()
@@ -169,7 +165,6 @@
 	desc = "This implant will automatically give you back control over your central nervous system, reducing downtime when stunned."
 	icon_state = "brain_implant_rebooter"
 	slot = ORGAN_SLOT_BRAIN_CNS
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT)
 
 	var/static/list/signalCache = list(
 		COMSIG_LIVING_STATUS_STUN,
@@ -240,7 +235,7 @@
 	if((organ_flags & ORGAN_FAILING) || . & EMP_PROTECT_SELF)
 		return
 	organ_flags |= ORGAN_FAILING
-	addtimer(CALLBACK(src, PROC_REF(reboot)), 9 SECONDS / severity)
+	addtimer(CALLBACK(src, PROC_REF(reboot)), 90 / severity)
 
 /obj/item/organ/cyberimp/brain/anti_stun/proc/reboot()
 	organ_flags &= ~ORGAN_FAILING
@@ -252,7 +247,6 @@
 	icon_state = "brain_implant_connector"
 	slot = ORGAN_SLOT_BRAIN_CNS
 	actions_types = list(/datum/action/item_action/organ_action/use)
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/titanium = SMALL_MATERIAL_AMOUNT * 3)
 
 /obj/item/organ/cyberimp/brain/connector/ui_action_click()
 
@@ -358,7 +352,6 @@
 	slot = ORGAN_SLOT_BRAIN_HIPPOCAMPUS
 	emp_stun_duration = 0 SECONDS
 	emp_immobilize_duration = 4 SECONDS
-	custom_materials = list(/datum/material/silver = SHEET_MATERIAL_AMOUNT * 0.75, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/titanium = SMALL_MATERIAL_AMOUNT * 2.5)
 	/// Lazylist of surgeries this implant provides
 	var/list/loaded_surgeries
 
@@ -486,7 +479,6 @@
 	slot = ORGAN_SLOT_BREATHING_TUBE
 	w_class = WEIGHT_CLASS_TINY
 	aug_overlay = "breathing_tube"
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 0.6, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2.5)
 
 /obj/item/organ/cyberimp/mouth/breathing_tube/emp_act(severity)
 	. = ..()

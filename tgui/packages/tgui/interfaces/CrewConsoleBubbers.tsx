@@ -24,7 +24,7 @@ const SORT_NAMES = {
 };
 
 const STAT_LIVING = 0;
-const STAT_DEAD = 3;
+const STAT_DEAD = 4;
 
 const SORT_OPTIONS = ['health', 'ijob', 'name', 'area'];
 
@@ -150,6 +150,7 @@ type CrewSensor = {
   brutedam: number;
   area: string | undefined;
   health: number;
+  can_track: BooleanLike;
   ref: string;
 };
 
@@ -249,6 +250,7 @@ const CrewTableEntry = (props: CrewTableEntryProps) => {
     burndam,
     brutedam,
     area,
+    can_track,
   } = sensor_data;
 
   return (
@@ -313,6 +315,7 @@ const CrewTableEntry = (props: CrewTableEntryProps) => {
       {!!link_allowed && (
         <Table.Cell collapsing>
           <Button
+            disabled={!can_track}
             onClick={() =>
               act('select_person', {
                 name: name,

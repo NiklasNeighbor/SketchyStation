@@ -155,7 +155,6 @@
  * force - TRUE if we should ignore buckled_mob.can_buckle_to
  */
 /atom/movable/proc/unbuckle_mob(mob/living/buckled_mob, force = FALSE, can_fall = TRUE)
-
 	if(!isliving(buckled_mob))
 		CRASH("Non-living [buckled_mob] thing called unbuckle_mob() for source.")
 	if(buckled_mob.buckled != src)
@@ -204,7 +203,7 @@
 	if(!has_buckled_mobs())
 		return
 	for(var/m in buckled_mobs)
-		INVOKE_ASYNC(src, PROC_REF(unbuckle_mob), m, force)
+		unbuckle_mob(m, force)
 
 //Handle any extras after buckling
 //Called on buckle_mob()
@@ -270,12 +269,7 @@
 	//If buckling is forbidden for the target, cancel
 	if(!target.can_buckle_to && !force)
 		return FALSE
-	//Bubber Addition
-	//If the target has the TRAIT_NO_BUCKLE, preventing buckling
-	if(HAS_TRAIT(target, TRAIT_NO_BUCKLE))
-		to_chat(target, span_danger("You are unable to do that."))
-		return FALSE
-	//Bubber Addition End
+
 	return TRUE
 
 /**

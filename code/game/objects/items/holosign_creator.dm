@@ -16,7 +16,6 @@
 	sound_vary = TRUE
 	pickup_sound = SFX_GENERIC_DEVICE_PICKUP
 	drop_sound = SFX_GENERIC_DEVICE_DROP
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT)
 	var/list/signs
 	var/max_signs = 10
 	//time to create a holosign in deciseconds.
@@ -120,7 +119,6 @@
 	holosign_type = /obj/structure/holosign/barrier/wetsign
 	creation_time = 1 SECONDS
 	max_signs = 12
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/holosign_creator/security
 	name = "security holobarrier projector"
@@ -129,7 +127,6 @@
 	holosign_type = /obj/structure/holosign/barrier
 	creation_time = 2 SECONDS
 	max_signs = 6
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/holosign_creator/engineering
 	name = "engineering holobarrier projector"
@@ -138,7 +135,6 @@
 	holosign_type = /obj/structure/holosign/barrier/engineering
 	creation_time = 1 SECONDS
 	max_signs = 12
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/holosign_creator/atmos
 	name = "ATMOS holofan projector"
@@ -153,7 +149,6 @@
 		/obj/structure/window,
 		/obj/structure/grille,
 	)
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/gold = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT)
 	/// Clearview holograms don't catch clicks and are more transparent
 	var/clearview = FALSE
 	/// Timer for auto-turning off clearview
@@ -212,7 +207,6 @@
 	holosign_type = /obj/structure/holosign/barrier/medical
 	creation_time = 1 SECONDS
 	max_signs = 6
-	custom_materials = list(/datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/glass = HALF_SHEET_MATERIAL_AMOUNT, /datum/material/silver = SMALL_MATERIAL_AMOUNT)
 
 /obj/item/holosign_creator/cyborg
 	name = "Energy Barrier Projector"

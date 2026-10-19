@@ -10,7 +10,7 @@
 	between_word_space_chance = 75
 	additional_syllable_low = 0
 	additional_syllable_high = 0
-	flags = LANGUAGE_TONGUELESS_SPEECH
+	flags = TONGUELESS_SPEECH
 	syllables = list(
 		"v", "od", "noy", "ned", "ele", "dn", "ey", "da", "ny", "et", "mes", "yat",
 		"che", "bu", "pol", "ye", "eli", "nyy", "se", "god", "ya", "dom", "ash", "zav",

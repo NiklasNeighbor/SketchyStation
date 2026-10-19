@@ -91,7 +91,9 @@
 /**
  * Verb for opening the existing interview, or if relevant creating a new interview if possible.
  */
-GAME_VERB_PROC(/mob/dead/new_player, open_interview, "Open Interview", "Interview")
+/mob/dead/new_player/proc/open_interview()
+	set name = "Open Interview"
+	set category = "Interview"
 	var/mob/dead/new_player/M = usr
 	if (M?.client?.interviewee)
 		var/datum/interview/I = GLOB.interviews.interview_for_client(M.client)

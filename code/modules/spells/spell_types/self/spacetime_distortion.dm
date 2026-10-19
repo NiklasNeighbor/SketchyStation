@@ -27,6 +27,14 @@
 /datum/action/cooldown/spell/spacetime_dist/can_cast_spell(feedback = TRUE)
 	return ..() && ready
 
+/datum/action/cooldown/spell/spacetime_dist/set_statpanel_format()
+	. = ..()
+	if(!islist(.))
+		return
+
+	if(!ready)
+		.[PANEL_DISPLAY_STATUS] = "NOT READY"
+
 /datum/action/cooldown/spell/spacetime_dist/cast(atom/cast_on)
 	. = ..()
 	var/list/turf/to_switcharoo = get_targets_to_scramble(cast_on)
@@ -101,6 +109,7 @@
 	var/antimagic_flags = MAGIC_RESISTANCE
 	var/obj/effect/cross_action/spacetime_dist/linked_dist
 	var/busy = FALSE
+	var/sound
 	var/walks_left = 50 //prevents the game from hanging in extreme cases (such as minigun fire)
 
 /obj/effect/cross_action/singularity_act()
@@ -132,7 +141,7 @@
 	busy = TRUE
 	flick("purplesparkles", src)
 	AM.forceMove(get_turf(src))
-	playsound(src, SFX_PORTAL_ENTER, 50, TRUE, SHORT_RANGE_SOUND_EXTRARANGE)
+	playsound(get_turf(src),sound,70,FALSE)
 	busy = FALSE
 
 /obj/effect/cross_action/spacetime_dist/proc/on_entered(datum/source, atom/movable/AM)
@@ -140,12 +149,11 @@
 	if(!busy)
 		walk_link(AM)
 
-/obj/effect/cross_action/spacetime_dist/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(user.temporarilyRemoveItemFromInventory(tool))
-		walk_link(tool)
+/obj/effect/cross_action/spacetime_dist/attackby(obj/item/W, mob/user, list/modifiers, list/attack_modifiers)
+	if(user.temporarilyRemoveItemFromInventory(W))
+		walk_link(W)
 	else
 		walk_link(user)
-	return ITEM_INTERACT_SUCCESS
 
 //ATTACK HAND IGNORING PARENT RETURN VALUE
 /obj/effect/cross_action/spacetime_dist/attack_hand(mob/user, list/modifiers)

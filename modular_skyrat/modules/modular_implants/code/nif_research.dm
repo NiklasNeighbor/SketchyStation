@@ -25,7 +25,6 @@
 		/datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT,
 		/datum/material/plastic = SHEET_MATERIAL_AMOUNT,
 	)
-	inherit_materials = DESIGN_DONT_INHERIT_MATS
 	category = list(
 		RND_CATEGORY_TOOLS + RND_SUBCATEGORY_TOOLS_CARGO,
 	)
@@ -69,7 +68,6 @@
 		/datum/material/silver = HALF_SHEET_MATERIAL_AMOUNT,
 		/datum/material/plastic = SHEET_MATERIAL_AMOUNT,
 	)
-	inherit_materials = DESIGN_DONT_INHERIT_MATS
 	category = list(
 		RND_CATEGORY_EQUIPMENT,
 	)
@@ -127,7 +125,6 @@
 		/datum/material/glass = SHEET_MATERIAL_AMOUNT * 2,
 		/datum/material/plastic = SHEET_MATERIAL_AMOUNT,
 	)
-	inherit_materials = DESIGN_DONT_INHERIT_MATS
 	category = list(
 		RND_CATEGORY_EQUIPMENT,
 	)

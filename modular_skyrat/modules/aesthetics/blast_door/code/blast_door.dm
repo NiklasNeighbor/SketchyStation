@@ -10,5 +10,5 @@
 	switch(animation)
 		if(DOOR_OPENING_ANIMATION)
 			playsound(src, door_open_sound, 30, TRUE)
-		if(DOOR_CLOSING_ANIMATION)
+		if(DOOR_OPENING_ANIMATION)
 			playsound(src, door_close_sound, 30, TRUE)

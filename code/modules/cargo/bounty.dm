@@ -1,24 +1,8 @@
-// The list of all current global, shared crew bounties, does not contain any personal bounties however.
-GLOBAL_LIST_EMPTY(shared_crew_bounties)
-
 /datum/bounty
-	/// A name for the bounty. Displayed on the bounty console/Paper sheets.
 	var/name
-	/// A description for the bounty.
 	var/description
-	/// Whether or not the bounty has been claimed by cargo. Only applies to cargo list bounties.
-	var/claimed = FALSE
-	/// Whether or not the bounty is high priority. High priority bounties appear at the top of the list.
-	var/high_priority = FALSE
-	/// The reward for completing the bounty in credits, before being split by cargo/the player.
 	VAR_PROTECTED/reward = CARGO_CRATE_VALUE * 5 // In credits.
 	var/allow_duplicate = FALSE
-	/// Can this bounty be selected got a new global bounty?
-	var/global_exempt = FALSE
-	///A list consisting of the accounts who sent several of the items required for a bounty payout. Used for distributing payout with the payment component.
-	var/list/contribution = list()
-	/// Is this bounty considered unique? This is for weird, singleton bounties that we don't want to roll into randomly, and we provide one of these
-	var/unique = FALSE
 
 /// Can this bounty be claimed right now?
 /datum/bounty/proc/can_claim()
@@ -27,10 +11,6 @@ GLOBAL_LIST_EMPTY(shared_crew_bounties)
 /// If an item in question can satisfy the bounty.
 /datum/bounty/proc/applies_to(obj/shipped)
 	return FALSE
-
-/// When calculating the contribution breakdown of an object shipped, how much does that object increase that account's cut?
-/datum/bounty/proc/contribution_amount(obj/shipped)
-	return 1
 
 /// Called when an object is sent on the bounty pad.
 /datum/bounty/proc/ship(obj/shipped)
@@ -42,8 +22,7 @@ GLOBAL_LIST_EMPTY(shared_crew_bounties)
 
 /// Returns the adjusted reward for this bounty, taking into account any global modifiers.
 /datum/bounty/proc/get_bounty_reward()
-	var/high_priority_mult = high_priority ? 1.5 : 1
-	return reward * SSeconomy.bounty_modifier * high_priority_mult
+	return reward * SSeconomy.bounty_modifier
 
 /// Called when this bounty is selected by the passed ID card
 /datum/bounty/proc/on_selected(obj/item/card/id/id_card)
@@ -57,19 +36,7 @@ GLOBAL_LIST_EMPTY(shared_crew_bounties)
 /datum/bounty/proc/on_reset(obj/item/card/id/id_card)
 	return
 
-/// Proc that returns the current quantity of this bounty.
-/datum/bounty/proc/get_total()
-	return
-
-/// Proc that returns the current maximum quantity of this bounty.
-/datum/bounty/proc/get_max()
-	return
-
-/// If the user can actually get this bounty as a selection.
-/datum/bounty/proc/can_get()
-	return TRUE
-
-/** Returns a new bounty of random type.
+/** Returns a new bounty of random type, but does not add it to GLOB.bounties_list.
  *
  * * Category determines what specific catagory of bounty should be chosen.
  */
@@ -105,11 +72,8 @@ GLOBAL_LIST_EMPTY(shared_crew_bounties)
 					chosen_type = /datum/bounty/reagent/chemical_simple
 				else
 					chosen_type = /datum/bounty/reagent/chemical_complex
-			if(CIV_JOB_MED_VIRO)
-				if(prob(75))
-					chosen_type = pick(subtypesof(/datum/bounty/item/medical))
-				else
-					chosen_type = pick(subtypesof(/datum/bounty/virus))
+			if(CIV_JOB_VIRO)
+				chosen_type = pick(subtypesof(/datum/bounty/virus))
 			if(CIV_JOB_SCI)
 				if(prob(50))
 					chosen_type = pick(subtypesof(/datum/bounty/item/science))

@@ -1,5 +1,6 @@
 //Cyborg
 
+/* //SKYRAT EDIT REMOVAL BEGIN - Costs lowered and time reduced -
 /datum/design/borg_suit
 	name = "Cyborg Endoskeleton"
 	id = "borg_suit"
@@ -76,6 +77,7 @@
 	category = list(
 		RND_CATEGORY_MECHFAB_CYBORG + RND_SUBCATEGORY_MECHFAB_CYBORG_CHASSIS
 	)
+*///SKYRAT EDIT REMOVAL END
 
 //Advanced Robotic Limbs
 
@@ -1078,12 +1080,12 @@
 	name = "Plasma Generator"
 	id = "mech_generator"
 	build_type = MECHFAB
-	build_path = /obj/item/mecha_parts/mecha_equipment/generator/printed
+	build_path = /obj/item/mecha_parts/mecha_equipment/generator
 	materials = list(
 		/datum/material/iron=SHEET_MATERIAL_AMOUNT*5,
 		/datum/material/glass =HALF_SHEET_MATERIAL_AMOUNT,
 		/datum/material/silver=SHEET_MATERIAL_AMOUNT,
-		/datum/material/plasma=SHEET_MATERIAL_AMOUNT * 1.5,
+		/datum/material/plasma=SHEET_MATERIAL_AMOUNT * 2.5,
 	)
 	construction_time = 10 SECONDS
 	category = list(
@@ -1831,6 +1833,7 @@
 	construction_time = 5 SECONDS
 	category = list(
 		RND_CATEGORY_MECHFAB_EQUIPMENT + RND_SUBCATEGORY_MECHFAB_EQUIPMENT_CONTROL_INTERFACES,
+		RND_CATEGORY_MECHFAB_RIPLEY + RND_SUBCATEGORY_MECHFAB_CONTROL_INTERFACES,
 		RND_CATEGORY_MECHFAB_GYGAX + RND_SUBCATEGORY_MECHFAB_CONTROL_INTERFACES,
 		RND_CATEGORY_MECHFAB_DURAND + RND_SUBCATEGORY_MECHFAB_CONTROL_INTERFACES,
 		RND_CATEGORY_MECHFAB_HONK + RND_SUBCATEGORY_MECHFAB_CONTROL_INTERFACES,

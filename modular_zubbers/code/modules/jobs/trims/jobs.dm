@@ -11,14 +11,12 @@
 		ACCESS_BLACKSMITH,
 	)
 
-/datum/id_trim/job/blacksmith
+/datum/id_trim/job/blacksmith //Place Holder. You'll probably wanna come by and set these up correctly.
 	assignment = "Blacksmith"
-	trim_icon = 'modular_skyrat/master_files/icons/obj/card.dmi'
-	trim_state = "trim_blacksmith"
-
+	trim_state = "trim_cargotechnician"
 	department_color = COLOR_CARGO_BROWN
 	subdepartment_color = COLOR_CARGO_BROWN
-	sechud_icon_state = SECHUD_BLACKSMITH
+	sechud_icon_state = SECHUD_CARGO_TECHNICIAN
 	minimal_access = list(
 		ACCESS_BLACKSMITH,
 		ACCESS_CARGO,
@@ -26,7 +24,6 @@
 		ACCESS_MECH_MINING,
 		ACCESS_MINERAL_STOREROOM,
 		ACCESS_SHIPPING,
-		ACCESS_WEAPONS,
 		)
 	extra_access = list(
 		ACCESS_MINING,

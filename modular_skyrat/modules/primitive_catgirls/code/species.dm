@@ -14,7 +14,6 @@
 
 /datum/species/human/felinid/primitive
 	name = "Hearthkin"
-	plural_form = "Hearthkin"
 	id = SPECIES_FELINE_PRIMITIVE
 
 	mutantlungs = /obj/item/organ/lungs/icebox_adapted

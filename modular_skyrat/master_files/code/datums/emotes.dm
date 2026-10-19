@@ -1,6 +1,6 @@
 /datum/emote
 	/// Emote volume
-	sound_volume = 25
+	var/sound_volume = 25
 	/// What species can use this emote?
 	var/list/allowed_species
 

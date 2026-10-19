@@ -108,21 +108,17 @@
  * Meant for attaching an item to the machine, should only be a training toolbox or target. If emagged, the
  * machine will gain an auto-attached syndicate toolbox, so in that case we shouldn't be able to swap it out
  */
-/obj/structure/training_machine/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/structure/training_machine/attackby(obj/item/target, mob/living/user)
 	if (user.combat_mode)
-		return NONE
-
-	if (!istype(tool, /obj/item/training_toolbox) && !istype(tool, /obj/item/target))
-		return NONE
-
+		return ..()
+	if (!istype(target, /obj/item/training_toolbox) && !istype(target, /obj/item/target))
+		return ..()
 	if (obj_flags & EMAGGED)
 		to_chat(user, span_warning("The toolbox is somehow stuck on! It won't budge!"))
-		return ITEM_INTERACT_BLOCKING
-
-	attach_item(tool)
+		return
+	attach_item(target)
 	to_chat(user, span_notice("You attach \the [attached_item] to the training device."))
 	playsound(src, SFX_RUSTLE, 50, TRUE)
-	return ITEM_INTERACT_SUCCESS
 
 /**
  * Attach an item to the machine
@@ -281,7 +277,7 @@
 		return
 	var/list/targets
 	for(var/mob/living/carbon/target in oview(1, get_turf(src))) //Find adjacent target
-		if (!IS_UNCONSCIOUS_OR_CRIT(target) && target.Adjacent(src))
+		if (target.stat == CONSCIOUS && target.Adjacent(src))
 			LAZYADD(targets, target)
 	var/mob/living/carbon/target = pick(targets)
 	if (!target)

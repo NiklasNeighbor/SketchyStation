@@ -2,8 +2,7 @@
 	var/remove_features = FALSE
 
 /datum/species/abductor
-	remove_features = FALSE // BUBBER EDIT: Lets abductors keep their features.
-	can_have_genitals = TRUE // BUBBER EDIT: Lets abductors have genitals.
+	remove_features = TRUE
 
 /datum/species/skeleton
 	remove_features = TRUE

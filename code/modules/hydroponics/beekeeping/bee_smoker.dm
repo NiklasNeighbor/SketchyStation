@@ -75,23 +75,23 @@
 
 	return .
 
-/obj/item/bee_smoker/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!istype(tool, /obj/item/food/grown/cannabis))
-		return NONE
-
-	var/obj/item/food/grown/cannabis/weed = tool
+/obj/item/bee_smoker/attackby(obj/item/herb, mob/living/carbon/human/user, list/modifiers, list/attack_modifiers)
+	. = ..()
+	if(.)
+		return
+	if(!istype(herb, /obj/item/food/grown/cannabis))
+		return
+	var/obj/item/food/grown/cannabis/weed = herb
 	if(isnull(weed.wine_power))
-		return ITEM_INTERACT_BLOCKING
-
+		return TRUE
 	if(current_herb_fuel == max_herb_fuel)
 		user.balloon_alert(user, "already at maximum fuel!")
-		return ITEM_INTERACT_BLOCKING
-
+		return TRUE
 	var/fuel_worth = weed.wine_power * WEED_WINE_MULTIPLIER
 	current_herb_fuel = (current_herb_fuel + fuel_worth > max_herb_fuel) ? max_herb_fuel : current_herb_fuel + fuel_worth
 	user.balloon_alert(user, "fuel added")
 	qdel(weed)
-	return ITEM_INTERACT_SUCCESS
+	return TRUE
 
 /obj/item/bee_smoker/process(seconds_per_tick)
 	current_herb_fuel--

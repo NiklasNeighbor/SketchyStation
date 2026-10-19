@@ -30,7 +30,7 @@
 	maximum_survivable_temperature = T0C + 50
 
 	// AI behavior
-	ai_controller = /datum/ai_controller/basic_controller/simple/simple_fearful
+	ai_controller = /datum/ai_controller/basic_controller
 
 	// Death handling
 	/// The chance (0-100) to spawn a corpse instead of gibbing

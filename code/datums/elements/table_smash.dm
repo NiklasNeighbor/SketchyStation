@@ -143,13 +143,13 @@
 		return
 
 	var/passtable_key = REF(user)
-	ADD_TRAIT(pushed_mob, TRAIT_PASSTABLE, passtable_key)
+	passtable_on(pushed_mob, passtable_key)
 	for (var/obj/obj in user.loc.contents)
 		if (!obj.CanAllowThrough(pushed_mob))
 			return
 
 	pushed_mob.Move(table.loc)
-	REMOVE_TRAIT(pushed_mob, TRAIT_PASSTABLE, passtable_key)
+	passtable_off(pushed_mob, passtable_key)
 	if (pushed_mob.loc != table.loc) //Something prevented the tabling
 		return
 

@@ -29,14 +29,8 @@
 	item_path = /obj/item/storage/fancy/cigarettes/cigpack_mindbreaker
 
 /datum/loadout_item/pocket_items/paintingprinter
-	name = "Instant Painting Printer"
+	name = "instant painting printer"
 	item_path = /obj/item/modular_computer/mini_painting_printer
-
-/datum/loadout_item/pocket_items/protean_match
-	name = "Protean Match Tags"
-	item_path = /obj/item/clothing/accessory/dogtags/protean_match
-	blacklisted_species = list(SPECIES_SNAIL) //They can't wear proteans
-	blacklisted_roles = list(JOB_PRISONER) //no, prisoners do not get a spaceproof suit
 
 /*
 *	FLAGS

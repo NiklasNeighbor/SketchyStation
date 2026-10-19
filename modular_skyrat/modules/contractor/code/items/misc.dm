@@ -47,6 +47,7 @@
 	icon_state = "pinpointer_syndicate"
 	worn_icon_state = "pinpointer_black"
 	minimum_range = 15
+	has_owner = TRUE
 	ignore_suit_sensor_level = TRUE
 
 /obj/item/extraction_pack/contractor

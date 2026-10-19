@@ -222,9 +222,6 @@
 	button_icon_state = "car_removekey"
 
 /datum/action/vehicle/sealed/remove_key/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	vehicle_entered_target.remove_key(owner)
 
 //CLOWN CAR ACTION DATUMS
@@ -235,9 +232,6 @@
 	var/hornsound = 'sound/items/carhorn.ogg'
 
 /datum/action/vehicle/sealed/horn/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	if(TIMER_COOLDOWN_RUNNING(src, COOLDOWN_CAR_HONK))
 		return
 	TIMER_COOLDOWN_START(src, COOLDOWN_CAR_HONK, 2 SECONDS)
@@ -254,9 +248,6 @@
 	button_icon_state = "car_headlights"
 
 /datum/action/vehicle/sealed/headlights/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	to_chat(owner, span_notice("You flip the switch for the vehicle's headlights."))
 	vehicle_entered_target.headlights_toggle = !vehicle_entered_target.headlights_toggle
 	vehicle_entered_target.set_light_on(vehicle_entered_target.headlights_toggle)
@@ -269,9 +260,6 @@
 	button_icon_state = "car_dump"
 
 /datum/action/vehicle/sealed/dump_kidnapped_mobs/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	vehicle_entered_target.visible_message(span_danger("[vehicle_entered_target] starts dumping the people inside of it."))
 	vehicle_entered_target.dump_specific_mobs(VEHICLE_CONTROL_KIDNAPPED)
 
@@ -282,9 +270,6 @@
 	button_icon_state = "car_rtd"
 
 /datum/action/vehicle/sealed/roll_the_dice/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	if(!istype(vehicle_entered_target, /obj/vehicle/sealed/car/clowncar))
 		return
 	var/obj/vehicle/sealed/car/clowncar/C = vehicle_entered_target
@@ -296,9 +281,6 @@
 	button_icon_state = "car_cannon"
 
 /datum/action/vehicle/sealed/cannon/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	if(!istype(vehicle_entered_target, /obj/vehicle/sealed/car/clowncar))
 		return
 	var/obj/vehicle/sealed/car/clowncar/C = vehicle_entered_target
@@ -313,9 +295,6 @@
 
 
 /datum/action/vehicle/sealed/thank/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	if(!istype(vehicle_entered_target, /obj/vehicle/sealed/car/clowncar))
 		return
 	if(!COOLDOWN_FINISHED(src, thank_time_cooldown))
@@ -339,9 +318,6 @@
 	var/bell_cooldown
 
 /datum/action/vehicle/ridden/wheelchair/bell/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	if(TIMER_COOLDOWN_RUNNING(src, bell_cooldown))
 		return
 	TIMER_COOLDOWN_START(src, bell_cooldown, 0.5 SECONDS)
@@ -387,11 +363,11 @@
 	animate(vehicle, pixel_z = 6, time = 0.3 SECONDS, flags = ANIMATION_RELATIVE|ANIMATION_PARALLEL)
 	animate(pixel_z = -6, time = 0.1 SECONDS, flags = ANIMATION_RELATIVE)
 	playsound(vehicle, 'sound/vehicles/skateboard_ollie.ogg', 50, TRUE)
-	ADD_TRAIT(rider, TRAIT_PASSTABLE, VEHICLE_TRAIT)
-	vehicle.pass_flags |= PASSTABLE
+	passtable_on(rider, VEHICLE_TRAIT)
+	passtable_on(vehicle, VEHICLE_TRAIT)
 	rider.Move(landing_turf, vehicle_target.dir)
-	REMOVE_TRAIT(rider, TRAIT_PASSTABLE, VEHICLE_TRAIT)
-	vehicle.pass_flags &= ~PASSTABLE
+	passtable_off(rider, VEHICLE_TRAIT)
+	passtable_off(vehicle, VEHICLE_TRAIT)
 
 /datum/action/vehicle/ridden/scooter/skateboard/kickflip
 	name = "Kickflip"
@@ -400,9 +376,6 @@
 	check_flags = AB_CHECK_CONSCIOUS
 
 /datum/action/vehicle/ridden/scooter/skateboard/kickflip/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return
 	var/obj/vehicle/ridden/scooter/skateboard/board = vehicle_target
 	var/mob/living/rider = owner
 
@@ -440,8 +413,6 @@
 	addtimer(CALLBACK(board, TYPE_PROC_REF(/obj/vehicle/ridden/scooter/skateboard, pick_up_board), rider, TRUE), 0.5 SECONDS)  // so the board can still handle "picking it up"
 
 
-///cooldown between uses of the sound maker
-#define VIM_SOUND_COOLDOWN (1 SECONDS)
 
 //VIM ACTION DATUMS
 
@@ -455,10 +426,7 @@
 	var/sound_message = "makes a sound."
 
 /datum/action/vehicle/sealed/noise/Trigger(mob/clicker, trigger_flags)
-	. = ..()
-	if(!.)
-		return FALSE
-	var/obj/vehicle/sealed/mecha/vim/vim_mecha = vehicle_entered_target
+	var/obj/vehicle/sealed/car/vim/vim_mecha = vehicle_entered_target
 	if(!COOLDOWN_FINISHED(vim_mecha, sound_cooldown))
 		vim_mecha.balloon_alert(owner, "on cooldown!")
 		return FALSE
@@ -474,6 +442,10 @@
 	sound_path = 'sound/machines/chime.ogg'
 	sound_message = "chimes!"
 
+/datum/action/vehicle/sealed/noise/chime/Trigger(mob/clicker, trigger_flags)
+	if(..())
+		SEND_SIGNAL(vehicle_entered_target, COMSIG_VIM_CHIME_USED)
+
 /datum/action/vehicle/sealed/noise/buzz
 	name = "Buzz."
 	desc = "Negative!"
@@ -481,4 +453,13 @@
 	sound_path = 'sound/machines/buzz/buzz-sigh.ogg'
 	sound_message = "buzzes."
 
-#undef VIM_SOUND_COOLDOWN
+/datum/action/vehicle/sealed/noise/buzz/Trigger(mob/clicker, trigger_flags)
+	if(..())
+		SEND_SIGNAL(vehicle_entered_target, COMSIG_VIM_BUZZ_USED)
+
+/datum/action/vehicle/sealed/headlights/vim
+	button_icon_state = "vim_headlights"
+
+/datum/action/vehicle/sealed/headlights/vim/Trigger(mob/clicker, trigger_flags)
+	. = ..()
+	SEND_SIGNAL(vehicle_entered_target, COMSIG_VIM_HEADLIGHTS_TOGGLED, vehicle_entered_target.headlights_toggle)

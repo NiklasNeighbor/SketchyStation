@@ -1181,7 +1181,6 @@
 	assignment = JOB_SECURITY_OFFICER_SUPPLY
 	subdepartment_color = COLOR_CARGO_BROWN
 	department_access = list(
-		ACCESS_BLACKSMITH, //BUBBER EDIT
 		ACCESS_BIT_DEN,
 		ACCESS_CARGO,
 		ACCESS_MINING,

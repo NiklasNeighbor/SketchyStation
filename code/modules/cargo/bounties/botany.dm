@@ -149,12 +149,12 @@
 
 /datum/bounty/item/botany/watermelon
 	name = "Watermelons"
-	wanted_types = list(/obj/item/food/grown/melonlike/watermelon = TRUE)
+	wanted_types = list(/obj/item/food/grown/watermelon = TRUE)
 	foodtype = "dessert"
 
 /datum/bounty/item/botany/watermelon_holy
 	name = "Holy Melons"
-	wanted_types = list(/obj/item/food/grown/melonlike/holymelon = TRUE)
+	wanted_types = list(/obj/item/food/grown/holymelon = TRUE)
 	multiplier = 2
 	foodtype = "dessert"
 

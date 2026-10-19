@@ -5,7 +5,6 @@
 
 	icon = 'icons/obj/machines/floor.dmi'
 	icon_state = "navbeacon0"
-	base_icon_state = "navbeacon"
 	name = "navigation beacon"
 	desc = "A radio beacon used for bot navigation."
 	layer = LOW_OBJ_LAYER
@@ -107,35 +106,33 @@
 		GLOB.deliverybeacontags += location
 
 /obj/machinery/navbeacon/crowbar_act(mob/living/user, obj/item/I)
-	return default_deconstruction_crowbar(user, I)
+	if(default_deconstruction_crowbar(I))
+		return TRUE
 
 /obj/machinery/navbeacon/screwdriver_act(mob/living/user, obj/item/tool)
 	if(!panel_open && cover_locked)
 		balloon_alert(user, "hatch locked!")
-		return ITEM_INTERACT_BLOCKING
-	return default_deconstruction_screwdriver(user, tool)
+		return TRUE
+	return default_deconstruction_screwdriver(user, "navbeacon1","navbeacon0",tool)
 
-/obj/machinery/navbeacon/update_icon_state()
-	. = ..()
-	icon_state = "[base_icon_state][panel_open]"
-
-/obj/machinery/navbeacon/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
+/obj/machinery/navbeacon/attackby(obj/item/attacking_item, mob/user, list/modifiers, list/attack_modifiers)
 	var/turf/our_turf = loc
 	if(our_turf.underfloor_accessibility < UNDERFLOOR_INTERACTABLE)
-		return ITEM_INTERACT_BLOCKING// prevent interaction when T-scanner revealed
+		return // prevent intraction when T-scanner revealed
 
-	if(!tool.GetID())
-		return NONE
-	if(panel_open)
-		balloon_alert(user, "panel open!")
-		return ITEM_INTERACT_BLOCKING
-	if (!allowed(user))
-		balloon_alert(user, "access denied")
-		return ITEM_INTERACT_BLOCKING
-	controls_locked = !controls_locked
-	balloon_alert(user, "controls [controls_locked ? "locked" : "unlocked"]")
-	SStgui.update_uis(src)
-	return ITEM_INTERACT_SUCCESS
+	if (attacking_item.GetID())
+		if(!panel_open)
+			if (allowed(user))
+				controls_locked = !controls_locked
+				balloon_alert(user, "controls [controls_locked ? "locked" : "unlocked"]")
+				SStgui.update_uis(src)
+			else
+				balloon_alert(user, "access denied")
+		else
+			balloon_alert(user, "panel open!")
+		return
+
+	return ..()
 
 /obj/machinery/navbeacon/attack_ai(mob/user)
 	interact(user)

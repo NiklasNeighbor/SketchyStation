@@ -3,20 +3,20 @@
 	color = COLOR_ORANGE_BROWN
 
 /turf/open/water/jungle/biodome
-	name="biodome lake"
+	name="Biodome Lake"
 	fishing_datum = /datum/fish_source/ocean/beach
 	planetary_atmos = FALSE
 
 /turf/open/water/beach/biodome
-	name="biodome waters"
+	name="Biodome Waters"
 	planetary_atmos = FALSE
 
 /turf/open/misc/beach/sand/biodome
-	name="biodome beach"
+	name="Biodome Beach"
 	planetary_atmos = FALSE
 
 /turf/open/misc/ashplanet/wateryrock/biodome
-	name="biodome lake Rocks"
+	name="Biodome Lake Rocks"
 	initial_gas_mix = OPENTURF_DEFAULT_ATMOS
 	planetary_atmos = FALSE
 

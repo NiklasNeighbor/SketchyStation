@@ -100,7 +100,7 @@
 		else if(isliving(loc.loc)) // for the "worn as accessory" case
 			connect_kheiral_network(loc.loc)
 
-/obj/item/clothing/accessory/kheiral_cuffs/worn_overlays(mutable_appearance/standing, isinhands, icon_file, bodyshape = NONE)
+/obj/item/clothing/accessory/kheiral_cuffs/worn_overlays(mutable_appearance/standing, isinhands, icon_file)
 	. = ..()
 	if(!isinhands)
 		. += emissive_appearance(icon_file, "strandcuff_emissive", src, alpha = src.alpha)
@@ -109,10 +109,9 @@
 	. = ..()
 	. += emissive_appearance(icon, "strand_light", src, alpha = src.alpha)
 
-/obj/item/clothing/accessory/kheiral_cuffs/suicide_act(mob/living/user)
+/obj/item/clothing/accessory/kheiral_cuffs/suicide_act(mob/living/carbon/user)
 	if(!ishuman(user))
-		user.visible_message(span_suicide("[user] locks [src] around their neck, wrinkles forming across their face. It looks like [user.p_theyre()] trying to commit suicide!"))
-		return OXYLOSS
+		return
 
 	var/mob/living/carbon/human/victim = user
 	victim.visible_message(span_suicide("[user] locks [src] around their neck, wrinkles forming across their face. It looks like [user.p_theyre()] trying to commit suicide!"))

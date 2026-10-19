@@ -257,21 +257,20 @@
 			continue
 
 		if (preference.is_randomizable())
-			preference.apply_to_human(src, preference.create_random_value(preferences), preferences)
+			preference.apply_to_human(src, preference.create_random_value(preferences))
 
 	fully_replace_character_name(real_name, generate_random_mob_name())
 
 /**
  * Setter for mob height - updates the base height of the mob (which is then adjusted by traits or species)
  *
- * * new_height - The new base height for this mob, should be one of the HUMAN_HEIGHT defines
- * * update_dna - if TRUE (default), updates the mob's DNA with the new height value
+ * Exists so that the update is done immediately
+ *
+ * Returns TRUE if changed, FALSE otherwise
  */
-/mob/living/carbon/human/proc/set_mob_height(new_height = HUMAN_HEIGHT_MEDIUM, update_dna = TRUE)
+/mob/living/carbon/human/proc/set_mob_height(new_height)
 	base_mob_height = new_height
 	update_mob_height()
-	if(update_dna)
-		dna?.update_ui_block(/datum/dna_block/identity/height)
 
 /**
  * Updates the mob's height
@@ -282,19 +281,10 @@
  */
 /mob/living/carbon/human/proc/update_mob_height()
 	var/old_height = mob_height
-	var/obj/item/bodypart/chest/chest = get_bodypart(BODY_ZONE_CHEST)
-	mob_height = chest?.update_mob_heights(src) || base_mob_height
+	mob_height = dna?.species?.update_species_heights(src) || base_mob_height
 	if(old_height != mob_height)
 		regenerate_icons()
-		readjust_atom_huds()
 	SEND_SIGNAL(src, COMSIG_HUMAN_HEIGHT_UPDATED, old_height)
-
-/**
- * Gets the mob's base height, ignoring adjustments from traits or species
- * Necessary due to VAR_PRIVATE (it's not used in hot code anyways)
- */
-/mob/living/carbon/human/proc/get_base_mob_height()
-	return base_mob_height
 
 /**
  * Makes a full copy of src and returns it.

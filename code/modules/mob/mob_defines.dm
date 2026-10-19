@@ -70,7 +70,7 @@
 	var/mob_flags = NONE
 
 	/// Whether a mob is alive or dead. TODO: Move this to living - Nodrak (2019, still here)
-	var/stat = STABLE
+	var/stat = CONSCIOUS
 
 	/**
 	 * Whether and how a mob is incapacitated
@@ -194,7 +194,7 @@
 	var/list/client_colours = list()
 	/// List of filter names used in the past client color update for cleanup
 	var/list/color_filter_store = list()
-	var/datum/hud/hud_type = /datum/hud
+	var/hud_type = /datum/hud
 
 	var/datum/focus //What receives our keyboard inputs. src by default
 
@@ -219,7 +219,3 @@
 
 	/// A ref of the area we're taking our ambient loop from.
 	var/area/ambience_tracked_area
-
-	/// Sound tokens currently playing for this mob.
-	/// Managed by /datum/sound_token and the soundtoken subsystem
-	var/list/datum/sound_token/sound_tokens

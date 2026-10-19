@@ -6,7 +6,6 @@
 	main_feature_name = "Vampire status"
 	should_generate_icons = TRUE
 	relevant_inherent_trait = TRAIT_BLOOD_CLANS
-	should_update_preview = FALSE
 
 /datum/preference/choiced/vampire_status/create_default_value()
 	return "Inoculated" //eh, have em try out the mechanic first
@@ -24,7 +23,7 @@
 ///list that stores a vampire house name for each department
 GLOBAL_LIST_EMPTY(vampire_houses)
 
-/datum/preference/choiced/vampire_status/apply_to_human(mob/living/carbon/human/target, value, datum/preferences/preferences)
+/datum/preference/choiced/vampire_status/apply_to_human(mob/living/carbon/human/target, value)
 	if(!HAS_TRAIT(target, TRAIT_BLOOD_CLANS))
 		return
 

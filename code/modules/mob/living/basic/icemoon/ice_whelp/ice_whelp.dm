@@ -47,25 +47,26 @@
 
 	AddElement(/datum/element/footstep, FOOTSTEP_MOB_HEAVY)
 	grant_actions_by_list(innate_actions)
+	ai_controller.set_blackboard_key(BB_TARGETED_ACTION, ai_controller.blackboard[BB_WHELP_STRAIGHTLINE_FIRE])
 
 /mob/living/basic/mining/ice_whelp/early_melee_attack(atom/target, list/modifiers, ignore_cooldown)
 	. = ..()
-	if(.)
-		return
+	if(!.)
+		return FALSE
 
 	if(istype(target, /obj/structure/flora/rock/icy))
 		create_sculpture(target)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(!istype(target, type))
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 
 	var/mob/living/victim = target
 	if(victim.stat != DEAD)
-		return BASIC_MOB_CONTINUE_ATTACK_CHAIN
+		return TRUE
 
 	cannibalize_victim(victim)
-	return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+	return FALSE
 
 /// Carve a stone into a beautiful self-portrait
 /mob/living/basic/mining/ice_whelp/proc/create_sculpture(atom/target)

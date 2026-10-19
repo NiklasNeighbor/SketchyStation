@@ -137,7 +137,7 @@
 	AddComponent(\
 		/datum/component/butchering, \
 		speed = 1.5 SECONDS , \
-		effectiveness = 125, \
+		effectiveness = 110, \
 		bonus_modifier = 0, \
 	)
 
@@ -149,17 +149,11 @@
 	if(!istype(interacting_with, /obj/item/crusher_trophy))
 		return NONE
 	var/obj/item/crusher_trophy/trophy = interacting_with
-	if(!length(trophy.wildhunter_drops))
+	if(isnull(trophy.wildhunter_drop))
 		return NONE
 	balloon_alert(user, "cutting trophy...")
 	if(!do_after(user, 4 SECONDS, trophy))
 		return ITEM_INTERACT_BLOCKING
-	for (var/path, count in trophy.wildhunter_drops)
-		if (ispath(path, /obj/item/stack))
-			new path(trophy.drop_location(), count)
-			continue
-
-		for (var/i in 1 to count)
-			new path(trophy.drop_location())
+	new trophy.wildhunter_drop(trophy.drop_location())
 	qdel(trophy)
 	return ITEM_INTERACT_SUCCESS

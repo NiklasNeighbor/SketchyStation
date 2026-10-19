@@ -71,8 +71,11 @@
 
 		for(var/obj/item/food_type as anything in soup_recipe.required_ingredients)
 			var/num_needed = soup_recipe.required_ingredients[food_type]
-			// \s alone doesn't work well on item names along and we don't want "eyeballss" with two s.
-			all_needs_text += "[num_needed] [food_type::gender == PLURAL ? food_type::name : "[food_type::name]\s"]"
+			// Instantiating this so we can do plurality correctly.
+			// We can use initial but it'll give us stuff like "eyballss".
+			var/obj/item/food = new food_type()
+			all_needs_text += "[num_needed] [food.name]\s"
+			qdel(food)
 
 		all_needs_text += soup_recipe.describe_recipe_details()
 		all_needs_text += "At temperature [soup_recipe.required_temp]K"

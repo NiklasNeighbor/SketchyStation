@@ -7,6 +7,7 @@
 	background_icon_state = "bg_alien"
 	overlay_icon_state = "bg_alien_border"
 	antimagic_flags = MAGIC_RESISTANCE_MIND
+	panel = null
 	spell_requirements = NONE
 	cooldown_time = 25 SECONDS
 	cast_range = 9
@@ -23,7 +24,8 @@
 	var/unlit_tiles = 0
 
 	for(var/turf/open/turf_to_check in range(1, cast_on)) //We have to use range for this because fully darkened tiles get blocked by view()'s visibility checks
-		if(turf_to_check.check_lumcount_above(0.2))
+		var/light_amount = turf_to_check.get_lumcount()
+		if(light_amount > 0.2)
 			lit_tiles++
 		else
 			unlit_tiles++

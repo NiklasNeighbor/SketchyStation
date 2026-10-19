@@ -15,12 +15,7 @@
 	processing_speed = STATUS_EFFECT_PRIORITY
 	remove_on_fullheal = TRUE
 	heal_flag_necessary = HEAL_CC_STATUS
-	/// Chance of triggering a force_say
-	var/force_say_chance = 66
-	/// If TRUE we run update_stat on apply/remove
 	var/needs_update_stat = FALSE
-	/// Suffixes attached to the force_say when applied, uses the "hurt" suffixes by default
-	var/list/alter_phrases
 
 /datum/status_effect/incapacitating/on_creation(mob/living/new_owner, set_duration)
 	if(isnum(set_duration))
@@ -36,20 +31,6 @@
 		owner.update_stat()
 	return ..()
 
-/datum/status_effect/incapacitating/on_apply()
-	SHOULD_CALL_PARENT(TRUE)
-	. = ..()
-	if(!.)
-		return
-
-	try_force_say()
-
-/datum/status_effect/incapacitating/proc/try_force_say()
-	SHOULD_CALL_PARENT(TRUE)
-
-	var/mob/living/carbon/human/human = owner
-	if(istype(human) && prob(force_say_chance) && (duration >= 6 SECONDS || (duration >= 2 SECONDS && prob(66))) )
-		human.force_say(alter_phrases, immediate = TRUE, major = (duration >= 30 SECONDS))
 
 //STUN
 /datum/status_effect/incapacitating/stun
@@ -83,7 +64,6 @@
 //IMMOBILIZED
 /datum/status_effect/incapacitating/immobilized
 	id = "immobilized"
-	force_say_chance = 0
 
 /datum/status_effect/incapacitating/immobilized/on_apply()
 	. = ..()
@@ -99,7 +79,6 @@
 //PARALYZED
 /datum/status_effect/incapacitating/paralyzed
 	id = "paralyzed"
-	alter_phrases = list("") // "Why am I about to be froz-"
 
 /datum/status_effect/incapacitating/paralyzed/on_apply()
 	. = ..()
@@ -115,7 +94,6 @@
 /// This status effect represents anything that leaves a character unable to perform basic tasks (interrupting do-afters, for example), but doesn't incapacitate them further than that (no stuns etc..)
 /datum/status_effect/incapacitating/incapacitated
 	id = "incapacitated"
-	force_say_chance = 0
 
 // What happens when you get the incapacitated status. You get TRAIT_INCAPACITATED added to you for the duration of the status effect.
 /datum/status_effect/incapacitating/incapacitated/on_apply()
@@ -133,7 +111,7 @@
 //UNCONSCIOUS
 /datum/status_effect/incapacitating/unconscious
 	id = "unconscious"
-	force_say_chance = 100
+	needs_update_stat = TRUE
 
 /datum/status_effect/incapacitating/unconscious/on_apply()
 	. = ..()
@@ -145,60 +123,10 @@
 	REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
 	return ..()
 
-/// Handles the effects of being knocked out - don't apply directly, all you should be doing is using [TRAIT_KNOCKEDOUT]
-/datum/status_effect/knocked_out
-	id = "is_knocked_out"
-	alert_type = null
+/datum/status_effect/incapacitating/unconscious/tick(seconds_between_ticks)
+	if(owner.get_stamina_loss())
+		owner.adjust_stamina_loss(-0.3) //reduce stamina loss by 0.3 per tick, 6 per 2 seconds
 
-/datum/status_effect/knocked_out/on_apply()
-	owner.become_blind(TRAIT_STATUS_EFFECT(id))
-	owner.apply_status_effect(/datum/status_effect/grouped/see_no_names, TRAIT_STATUS_EFFECT(id))
-	owner.add_traits(list(TRAIT_HANDS_BLOCKED, TRAIT_IMMOBILIZED, TRAIT_BLOCK_SECHUD, TRAIT_BLOCK_MEDHUD, TRAIT_INCAPACITATED, TRAIT_FLOORED), TRAIT_STATUS_EFFECT(id))
-	owner.update_eyes() // updates eyelids
-	RegisterSignal(owner, COMSIG_MOB_STATCHANGE, PROC_REF(on_mob_statchange))
-	RegisterSignal(owner, COMSIG_MOB_CLIENT_LOGIN, PROC_REF(show_unconscious_hud))
-	if(GET_CLIENT(owner)) // let's not waste time giving the hud to non-player characters
-		show_unconscious_hud(owner)
-	return TRUE
-
-/datum/status_effect/knocked_out/on_creation(mob/living/new_owner, ...)
-	. = ..()
-	if(!.)
-		return
-	if(owner.stat == DEAD)
-		stop_ticking()
-
-/datum/status_effect/knocked_out/on_remove()
-	owner.cure_blind(TRAIT_STATUS_EFFECT(id))
-	owner.remove_status_effect(/datum/status_effect/grouped/see_no_names, TRAIT_STATUS_EFFECT(id))
-	owner.remove_traits(list(TRAIT_HANDS_BLOCKED, TRAIT_IMMOBILIZED, TRAIT_BLOCK_SECHUD, TRAIT_BLOCK_MEDHUD, TRAIT_INCAPACITATED, TRAIT_FLOORED), TRAIT_STATUS_EFFECT(id))
-	owner.update_eyes() // updates eyelids
-	UnregisterSignal(owner, list(COMSIG_MOB_CLIENT_LOGIN, COMSIG_MOB_STATCHANGE))
-	if(GET_CLIENT(owner))
-		hide_unconscious_hud(owner)
-
-/datum/status_effect/knocked_out/tick(seconds_between_ticks)
-	owner.adjust_stamina_loss(-3 * seconds_between_ticks)
-
-/// Global list of images that correspond to a mob's unconscious appearance
-GLOBAL_LIST_EMPTY(unconscious_appearances)
-
-/datum/status_effect/knocked_out/proc/show_unconscious_hud(mob/living/source)
-	SIGNAL_HANDLER
-
-	source.client?.images += (GLOB.unconscious_appearances - source.unconscious_appearance)
-
-/datum/status_effect/knocked_out/proc/hide_unconscious_hud(mob/living/source)
-	SIGNAL_HANDLER
-
-	source.client?.images -= GLOB.unconscious_appearances
-
-/datum/status_effect/knocked_out/proc/on_mob_statchange(mob/living/source, ...)
-	SIGNAL_HANDLER
-	if(owner.stat == DEAD)
-		stop_ticking()
-	else
-		start_ticking()
 
 //SLEEPING
 /datum/status_effect/incapacitating/sleeping
@@ -206,45 +134,36 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 	alert_type = /atom/movable/screen/alert/status_effect/asleep
 	needs_update_stat = TRUE
 	tick_interval = 2 SECONDS
-	alter_phrases = list("Zzz...", "ZZz...", "ZZZ...", "zzZ...", "zZZ...", "ZzZ...", "zzz...", "zZz...", "mimimimimimi...")
-	force_say_chance = 100
 
 /datum/status_effect/incapacitating/sleeping/on_apply()
 	. = ..()
 	if(!.)
 		return
-	if(!HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
+	if(HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
+		tick_interval = STATUS_EFFECT_NO_TICK
+	else
 		ADD_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
 	RegisterSignal(owner, SIGNAL_ADDTRAIT(TRAIT_SLEEPIMMUNE), PROC_REF(on_owner_insomniac))
 	RegisterSignal(owner, SIGNAL_REMOVETRAIT(TRAIT_SLEEPIMMUNE), PROC_REF(on_owner_sleepy))
 
-/datum/status_effect/incapacitating/sleeping/on_creation(mob/living/new_owner, set_duration)
-	. = ..()
-	if(!.)
-		return
-	if(HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
-		stop_ticking()
-
 /datum/status_effect/incapacitating/sleeping/on_remove()
 	UnregisterSignal(owner, list(SIGNAL_ADDTRAIT(TRAIT_SLEEPIMMUNE), SIGNAL_REMOVETRAIT(TRAIT_SLEEPIMMUNE)))
-	REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
-	return ..()
-
-/datum/status_effect/incapacitating/sleeping/try_force_say()
 	if(!HAS_TRAIT(owner, TRAIT_SLEEPIMMUNE))
-		return ..()
+		REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
+		tick_interval = initial(tick_interval)
+	return ..()
 
 ///If the mob is sleeping and gain the TRAIT_SLEEPIMMUNE we remove the TRAIT_KNOCKEDOUT and stop the tick() from happening
 /datum/status_effect/incapacitating/sleeping/proc/on_owner_insomniac(mob/living/source)
 	SIGNAL_HANDLER
 	REMOVE_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
-	stop_ticking()
+	tick_interval = STATUS_EFFECT_NO_TICK
 
 ///If the mob has the TRAIT_SLEEPIMMUNE but somehow looses it we make him sleep and restart the tick()
 /datum/status_effect/incapacitating/sleeping/proc/on_owner_sleepy(mob/living/source)
 	SIGNAL_HANDLER
 	ADD_TRAIT(owner, TRAIT_KNOCKEDOUT, TRAIT_STATUS_EFFECT(id))
-	start_ticking()
+	tick_interval = initial(tick_interval)
 
 /datum/status_effect/incapacitating/sleeping/tick(seconds_between_ticks)
 	if(owner.maxHealth)
@@ -268,7 +187,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 					sleep_quality = -0.2
 
 		var/turf/rest_turf = get_turf(owner)
-		var/is_sleeping_in_darkness = !rest_turf.check_lumcount_above(LIGHTING_TILE_IS_DARK)
+		var/is_sleeping_in_darkness = rest_turf.get_lumcount() <= LIGHTING_TILE_IS_DARK
 
 		// sleeping with a blindfold or in the dark helps us rest
 		if(owner.is_blind_from(EYES_COVERED) || is_sleeping_in_darkness)
@@ -333,7 +252,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/asleep
 	name = "Asleep"
 	desc = "You've fallen asleep. Wait a bit and you should wake up. Unless you don't, considering how helpless you are."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "asleep"
 
 //STASIS
@@ -348,7 +267,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 		var/delta = world.time - last_dead_time
 		var/new_timeofdeath = owner.timeofdeath + delta
 		owner.timeofdeath = new_timeofdeath
-		owner.station_timestamp_timeofdeath = round_timestamp(wtime=new_timeofdeath)
+		owner.station_timestamp_timeofdeath = station_time_timestamp(wtime=new_timeofdeath)
 		last_dead_time = null
 	if(owner.stat == DEAD)
 		last_dead_time = world.time
@@ -374,7 +293,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 
 /datum/status_effect/grouped/stasis/tick(seconds_between_ticks)
 	update_time_of_death()
-	if(IS_UNCONSCIOUS_OR_CRIT(owner)) //SKYRAT EDIT START - STASIS KEEPS SLEEP GOING
+	if(owner.stat >= UNCONSCIOUS) //SKYRAT EDIT START - STASIS KEEPS SLEEP GOING
 		owner.Sleeping(15 SECONDS) //SKYRAT EDIT END
 
 /datum/status_effect/grouped/stasis/on_remove()
@@ -389,7 +308,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/stasis
 	name = "Stasis"
 	desc = "Your biological functions have halted. You could live forever this way, but it's pretty boring."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "stasis"
 
 /datum/status_effect/his_wrath //does minor damage over time unless holding His Grace
@@ -436,7 +355,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 
 /datum/status_effect/crusher_mark
 	id = "crusher_mark"
-	duration = 30 SECONDS //if you leave for 30 seconds you lose the mark, deal with it
+	duration = 300 //if you leave for 30 seconds you lose the mark, deal with it
 	status_type = STATUS_EFFECT_REFRESH
 	alert_type = null
 	/// The bubble that is added to the mob as a visual
@@ -445,21 +364,10 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 	var/boosted = FALSE
 	/// How long before the mark is ready to be detonated. Used for both the visual overlay and to determine when it's ready
 	var/ready_delay = 0.8 SECONDS
-	/// Damage dealt when the mark is detonated
-	var/detonation_damage = 50
-	/// PKC that set this mark, for PKC-independent bursts
-	var/obj/item/kinetic_crusher/crusher
 
-/datum/status_effect/crusher_mark/on_creation(mob/living/new_owner, was_boosted, obj/item/kinetic_crusher/crusher)
+/datum/status_effect/crusher_mark/on_creation(mob/living/new_owner, was_boosted)
 	. = ..()
 	boosted = was_boosted
-	src.crusher = crusher
-	if (crusher)
-		RegisterSignal(crusher, COMSIG_QDELETING, PROC_REF(on_crusher_destroyed))
-
-/datum/status_effect/crusher_mark/proc/on_crusher_destroyed(datum/source)
-	SIGNAL_HANDLER
-	crusher = null
 
 /datum/status_effect/crusher_mark/on_apply()
 	if(owner.mob_size < MOB_SIZE_LARGE)
@@ -481,41 +389,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 	if(owner)
 		owner.underlays -= marked_underlay
 	QDEL_NULL(marked_underlay)
-	crusher = null
 	return ..()
-
-/datum/status_effect/crusher_mark/proc/detonate(obj/item/kinetic_crusher/used_crusher, mob/living/user, melee_hit = TRUE)
-	var/datum/status_effect/crusher_damage/crusher_damage_effect = owner.has_status_effect(/datum/status_effect/crusher_damage) || owner.apply_status_effect(/datum/status_effect/crusher_damage)
-	var/target_health = owner.health
-	var/combined_damage = detonation_damage
-	for(var/obj/item/crusher_trophy/crusher_trophy as anything in used_crusher?.trophies)
-		combined_damage += crusher_trophy.on_mark_detonation(owner, user, used_crusher)
-
-	// Trophy effects kill the target, abort
-	if(QDELETED(owner))
-		return
-
-	if(!QDELETED(crusher_damage_effect))
-		crusher_damage_effect.total_damage += target_health - owner.health // We did some damage, but let's not assume how much we did
-
-	new /obj/effect/temp_visual/kinetic_blast(get_turf(owner))
-	var/backstabbed = FALSE
-	var/def_check = owner.getarmor(type = BOMB)
-
-	// Backstab bonus, only if a crusher was used to detonate the mark
-	if(melee_hit && used_crusher && (boosted || (user && check_behind(user, owner) && !HAS_TRAIT(owner, TRAIT_BACKSTAB_IMMUNE))))
-		backstabbed = TRUE
-		combined_damage += used_crusher.backstab_bonus
-		playsound(user, used_crusher.backstab_sound, 100, TRUE)
-
-	if(!QDELETED(crusher_damage_effect))
-		crusher_damage_effect.total_damage += combined_damage
-
-	if (user)
-		SEND_SIGNAL(user, COMSIG_LIVING_CRUSHER_DETONATE, owner, used_crusher, backstabbed)
-	owner.apply_damage(combined_damage, BRUTE, blocked = def_check)
-	if (!QDELETED(owner))
-		owner.remove_status_effect(src)
 
 // Object used to apply a underlay to the mob that gets this status applied
 /obj/effect/abstract/crusher_mark
@@ -696,7 +570,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/trance
 	name = "Trance"
 	desc = "Everything feels so distant, and you can feel your thoughts forming loops inside your head..."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "high"
 
 /datum/status_effect/trance/tick(seconds_between_ticks)
@@ -751,7 +625,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 	alert_type = null
 
 /datum/status_effect/spasms/tick(seconds_between_ticks)
-	if(owner.incapacitated || IS_UNCONSCIOUS(owner) || HAS_TRAIT(owner, TRAIT_HANDS_BLOCKED) || HAS_TRAIT(owner, TRAIT_IMMOBILIZED))
+	if(owner.stat >= UNCONSCIOUS || owner.incapacitated || HAS_TRAIT(owner, TRAIT_HANDS_BLOCKED) || HAS_TRAIT(owner, TRAIT_IMMOBILIZED))
 		return
 	if(!prob(15))
 		return
@@ -823,7 +697,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/convulsing
 	name = "Shaky Hands"
 	desc = "You've been zapped with something and your hands can't stop shaking! You can't seem to hold on to anything."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "convulsing"
 
 /datum/status_effect/dna_melt
@@ -847,7 +721,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/dna_melt
 	name = "Genetic Breakdown"
 	desc = "I don't feel so good. Your body can't handle the mutations! You have one minute to remove your mutations, or you will be met with a horrible fate."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "dna_melt"
 
 /datum/status_effect/go_away
@@ -903,7 +777,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/go_away
 	name = "TO THE STARS AND BEYOND!"
 	desc = "I must go, my people need me!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "high"
 
 /datum/status_effect/fake_virus
@@ -917,7 +791,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /datum/status_effect/fake_virus/on_apply()
 	if(HAS_TRAIT(owner, TRAIT_VIRUSIMMUNE))
 		return FALSE
-	if(IS_UNCONSCIOUS_OR_CRIT(owner))
+	if(owner.stat != CONSCIOUS)
 		return FALSE
 	return TRUE
 
@@ -985,7 +859,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 
 /datum/status_effect/ants/on_creation(mob/living/new_owner, amount_left)
 	if(isnum(amount_left) && new_owner.stat < HARD_CRIT)
-		if(!IS_UNCONSCIOUS(new_owner)) // Unconscious people won't get messages
+		if(new_owner.stat < UNCONSCIOUS) // Unconscious people won't get messages
 			to_chat(new_owner, span_userdanger("You're covered in ants!"))
 		ants_remaining += amount_left
 		RegisterSignal(new_owner, COMSIG_COMPONENT_CLEAN_ACT, PROC_REF(ants_washed))
@@ -994,11 +868,11 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /datum/status_effect/ants/refresh(effect, amount_left)
 	var/mob/living/carbon/human/victim = owner
 	if(isnum(amount_left) && ants_remaining >= 1 && victim.stat < HARD_CRIT)
-		if(!IS_UNCONSCIOUS(victim)) // Unconscious people won't get messages
-			if(prob(99))
+		if(victim.stat < UNCONSCIOUS) // Unconscious people won't get messages
+			if(!prob(1)) // 99%
 				to_chat(victim, span_userdanger("You're covered in MORE ants!"))
-			else
-				INVOKE_ASYNC(victim, TYPE_PROC_REF(/atom/movable, say), "AAHH! THIS SITUATION HAS ONLY BEEN MADE WORSE WITH THE ADDITION OF YET MORE ANTS!!", forced = /datum/status_effect/ants)
+			else // 1%
+				victim.say("AAHH! THIS SITUATION HAS ONLY BEEN MADE WORSE WITH THE ADDITION OF YET MORE ANTS!!", forced = /datum/status_effect/ants)
 		ants_remaining += amount_left
 	. = ..()
 
@@ -1022,7 +896,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /datum/status_effect/ants/tick(seconds_between_ticks)
 	var/mob/living/carbon/human/victim = owner
 	victim.apply_damage(max(0.1, round((ants_remaining * damage_per_ant), 0.1)) * seconds_between_ticks, BRUTE, spread_damage = TRUE) //Scales with # of ants (lowers with time). Roughly 10 brute over 50 seconds.
-	if(!IS_UNCONSCIOUS_OR_CRIT(victim)) //Makes sure people don't scratch at themselves while they're in a critical condition
+	if(victim.stat <= SOFT_CRIT) //Makes sure people don't scratch at themselves while they're in a critical condition
 		if(prob(15))
 			switch(rand(1,2))
 				if(1)
@@ -1051,7 +925,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/ants
 	name = "Ants!"
 	desc = span_warning("JESUS FUCKING CHRIST! CLICK TO GET THOSE THINGS OFF!")
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "antalert"
 	clickable_glow = TRUE
 
@@ -1132,7 +1006,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/discoordinated
 	name = "Discoordinated"
 	desc = "You can't seem to properly use anything..."
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "convulsing"
 
 /datum/status_effect/discoordinated/on_apply()
@@ -1171,7 +1045,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/careful_driving
 	name = "Careful Driving"
 	desc = "That was close! You almost ran that one over!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "paralysis"
 
 /datum/movespeed_modifier/careful_driving
@@ -1198,7 +1072,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/midas_blight
 	name = "Midas Blight"
 	desc = "Your blood is being turned to gold, slowing your movements!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "midas_blight"
 
 /datum/status_effect/midas_blight/tick(seconds_between_ticks)
@@ -1248,7 +1122,7 @@ GLOBAL_LIST_EMPTY(unconscious_appearances)
 /atom/movable/screen/alert/status_effect/designated_target
 	name = "Designated Target"
 	desc = "You've been lit up by some kind of bright energy! Wash it off to get rid of it, or you'll be a lot easier to hit!"
-	use_user_hud_icon = USER_HUD_STYLE_INHERIT
+	use_user_hud_icon = TRUE
 	overlay_state = "designated_target"
 
 /datum/status_effect/designated_target

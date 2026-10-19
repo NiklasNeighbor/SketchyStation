@@ -1,6 +1,5 @@
 /obj/projectile/bullet/incendiary
 	damage = 20
-	icon_state = "infernoshot"
 	/// How many firestacks to apply to the target
 	var/fire_stacks = 4
 	/// If TRUE, leaves a trail of hotspots as it flies, very very chaotic

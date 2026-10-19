@@ -34,7 +34,7 @@
 		/obj/item/food/pastrybase = 1
 	)
 	result = /obj/item/food/mince_pie
-	dish_category = DISH_PASTRY
+	category = CAT_PASTRY
 
 /datum/crafting_recipe/food/mimce_pie
 	removed_foodtypes = JUNKFOOD | DAIRY
@@ -46,4 +46,4 @@
 		/obj/item/food/pastrybase = 1
 	)
 	result = /obj/item/food/mimce_pie
-	dish_category = DISH_PASTRY
+	category = CAT_PASTRY

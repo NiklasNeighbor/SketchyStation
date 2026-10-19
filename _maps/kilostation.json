@@ -11,7 +11,8 @@
 	},
 	"traits": [
 		{
-			"Linkage": "Cross"
+			"Linkage": "Cross",
+			"Bombcap Multiplier": 0.7
 		}
 	],
 	"job_changes": {
@@ -20,9 +21,6 @@
 		},
 		"Captain": {
 			"special_charter": "asteroid"
-		},
-		"Chaplain": {
-			"has_monastery": 1
 		}
 	}
 }

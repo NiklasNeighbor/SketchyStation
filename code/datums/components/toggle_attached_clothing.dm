@@ -31,8 +31,6 @@
 	var/datum/callback/on_deployed
 	/// Optional callback triggered before we hide our equipment, before as we may delete it afterwards
 	var/datum/callback/on_removed
-	/// If TRUE, automatically deploys the hood
-	var/auto_deploy_on_outfit_equip = TRUE
 
 /datum/component/toggle_attached_clothing/Initialize(
 	deployable_type,
@@ -41,7 +39,6 @@
 	destroy_on_removal = FALSE,
 	parent_icon_state_suffix = "",
 	down_overlay_state_suffix = "",
-	auto_deploy_on_outfit_equip = TRUE,
 	datum/callback/pre_creation_check,
 	datum/callback/on_created,
 	datum/callback/on_deployed,
@@ -57,7 +54,6 @@
 	src.destroy_on_removal = destroy_on_removal
 	src.parent_icon_state_suffix = parent_icon_state_suffix
 	src.down_overlay_state_suffix = down_overlay_state_suffix
-	src.auto_deploy_on_outfit_equip = auto_deploy_on_outfit_equip
 	src.pre_creation_check = pre_creation_check
 	src.on_created = on_created
 	src.on_deployed = on_deployed
@@ -110,7 +106,7 @@
 		return COMPONENT_ITEM_ACTION_SLOT_INVALID
 
 /// Apply an overlay while the item is not deployed
-/datum/component/toggle_attached_clothing/proc/on_checked_overlays(obj/item/source, list/overlays, mutable_appearance/standing, isinhands, icon_file, bodyshape)
+/datum/component/toggle_attached_clothing/proc/on_checked_overlays(obj/item/source, list/overlays, mutable_appearance/standing, isinhands, icon_file)
 	SIGNAL_HANDLER
 	if (isinhands || currently_deployed)
 		return
@@ -156,8 +152,6 @@
 /// Display deployed if worn in an outfit
 /datum/component/toggle_attached_clothing/proc/on_parent_equipped_outfit(obj/item/clothing/source, mob/equipper, visuals_only, slot)
 	SIGNAL_HANDLER
-	if (!auto_deploy_on_outfit_equip)
-		return
 	create_deployable()
 	toggle_deployable()
 

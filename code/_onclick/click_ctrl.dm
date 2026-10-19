@@ -34,11 +34,11 @@
 	SHOULD_NOT_OVERRIDE(TRUE)
 
 	. = ..()
-	if(. || !ismovable(target) || world.time < next_move || !can_perform_action(target, NOT_INSIDE_TARGET | SILENT_ADJACENCY | ALLOW_RESTING | FORBID_TELEKINESIS_REACH))
+	if(. || world.time < next_move || !can_perform_action(target, NOT_INSIDE_TARGET | SILENT_ADJACENCY | ALLOW_RESTING | FORBID_TELEKINESIS_REACH))
 		return
 
 	. = TRUE
-	if(grab(target) != GRAB_SKIP)
+	if(grab(target))
 		changeNext_move(CLICK_CD_MELEE)
 		return
 	pulled(target)

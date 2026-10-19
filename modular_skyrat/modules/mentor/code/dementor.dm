@@ -1,4 +1,6 @@
-GAME_VERB_PROC(/client, cmd_mentor_dementor, "Dementor", "Mentor")
+/client/proc/cmd_mentor_dementor()
+	set category = "Mentor"
+	set name = "dementor"
 	if(!is_mentor())
 		return
 	remove_mentor_verbs()
@@ -7,13 +9,15 @@ GAME_VERB_PROC(/client, cmd_mentor_dementor, "Dementor", "Mentor")
 	GLOB.mentors -= src
 	to_chat(src, span_interface("You are no longer a mentor."))
 	log_mentor("MENTOR: [src] dementored.")
-	ASSIGN_GAME_VERB(src, /client, cmd_mentor_rementor)
+	add_verb(src,/client/proc/cmd_mentor_rementor)
 
-GAME_VERB_PROC(/client, cmd_mentor_rementor, "Rementor", "Mentor")
+/client/proc/cmd_mentor_rementor()
+	set category = "Mentor"
+	set name = "rementor"
 	if(!is_mentor())
 		return
 	add_mentor_verbs()
 	GLOB.mentors[src] = TRUE
 	to_chat(src, span_interface("You are now a mentor."))
 	log_mentor("MENTOR: [src] rementored.")
-	UNASSIGN_GAME_VERB(src, /client, cmd_mentor_rementor)
+	remove_verb(src,/client/proc/cmd_mentor_rementor)

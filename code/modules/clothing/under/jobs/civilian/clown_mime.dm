@@ -14,7 +14,6 @@
 	dying_key = DYE_REGISTRY_JUMPSKIRT
 	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 	supports_variations_flags = CLOTHING_DIGITIGRADE_VARIATION_NO_NEW_ICON
-	bodyshapes_with_variations = NONE
 
 /obj/item/clothing/under/rank/civilian/mime/sexy
 	name = "sexy mime outfit"
@@ -33,7 +32,6 @@
 	female_sprite_flags = FEMALE_UNIFORM_TOP_ONLY
 	can_adjust = FALSE
 	supports_variations_flags = NONE
-	bodyshapes_with_variations = NONE
 
 /obj/item/clothing/under/rank/civilian/clown/Initialize(mapload)
 	. = ..()
@@ -90,13 +88,7 @@
 /obj/item/clothing/under/rank/civilian/clown/jesteralt
 	name = "jester suit"
 	desc = "A jolly dress, well suited to entertain your master, nuncle."
-	icon = 'icons/map_icons/clothing/under/_under.dmi'
-	icon_state = "/obj/item/clothing/under/rank/civilian/clown/jesteralt"
-	post_init_icon_state = "jester_alt"
-	greyscale_config = /datum/greyscale_config/jester_suit_alt
-	greyscale_config_worn = /datum/greyscale_config/jester_suit_alt/worn
-	greyscale_colors = "#E10000#E1E100"
-	flags_1 = IS_PLAYER_COLORABLE_1
+	icon_state = "jester2"
 
 /obj/item/clothing/under/rank/civilian/clown/sexy
 	name = "sexy-clown suit"

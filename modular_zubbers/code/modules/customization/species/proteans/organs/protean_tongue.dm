@@ -1,5 +1,5 @@
 /obj/item/organ/tongue/cybernetic/protean
-	name = "\improper Protean audio fabricator"
+	name = "protean audio fabricator"
 	desc = "Millions of nanites vibrate in harmony to create the sound you hear."
 	organ_flags = ORGAN_ROBOTIC
 

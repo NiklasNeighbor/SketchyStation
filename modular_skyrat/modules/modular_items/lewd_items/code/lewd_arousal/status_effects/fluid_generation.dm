@@ -28,8 +28,7 @@
 		return FALSE
 
 	var/obj/item/organ/genital/vagina/vagina = owner.get_organ_slot(ORGAN_SLOT_VAGINA)
-	if(!istype(vagina))
-		owner.remove_status_effect(/datum/status_effect/body_fluid_regen/vagina)
+	if(!vagina)
 		return FALSE
 
 	if(affected_human.arousal > AROUSAL_LOW)
@@ -51,9 +50,6 @@
 		return FALSE
 
 	var/obj/item/organ/genital/testicles/testes = owner.get_organ_slot(ORGAN_SLOT_TESTICLES)
-	if(!istype(testes))
-		owner.remove_status_effect(/datum/status_effect/body_fluid_regen/testes)
-		return FALSE
 
 	var/regen = (50 / AROUSAL_MULTIPLIER) * (testes.reagents.maximum_volume / TESTES_MULTIPLIER) * BASE_MULTIPLIER // this is really quite stupid, the bare number is replacing the arousal value previously there
 	testes.reagents.add_reagent(testes.internal_fluid_datum, regen)
@@ -71,8 +67,7 @@
 		return FALSE
 
 	var/obj/item/organ/genital/breasts/breasts = owner.get_organ_slot(ORGAN_SLOT_BREASTS)
-	if(!istype(breasts) || !breasts.lactates)
-		owner.remove_status_effect(/datum/status_effect/body_fluid_regen/breasts)
+	if(!breasts || !breasts.lactates)
 		return FALSE
 
 	var/regen = ((owner.nutrition / (NUTRITION_LEVEL_WELL_FED / NUTRITION_MULTIPLIER)) / NUTRITION_MULTIPLIER) * (breasts.reagents.maximum_volume / BREASTS_MULTIPLIER) * BASE_MULTIPLIER

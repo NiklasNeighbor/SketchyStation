@@ -44,8 +44,6 @@
 		/datum/pet_command/attack,
 		/datum/pet_command/fetch,
 	)
-	/// Things we want to find to heal
-	var/static/list/heal_targets = list(/mob/living/basic/mining/mook/worker)
 
 /mob/living/basic/mining/mook/Initialize(mapload)
 	. = ..()
@@ -66,8 +64,6 @@
 		grant_healer_abilities()
 
 	AddComponent(/datum/component/obeys_commands, pet_commands)
-	ai_controller?.set_blackboard_key(BB_MOOK_HEAL_TARGETS, typecacheof(heal_targets))
-
 
 /// Returns a list of actions and blackboard keys to pass into `grant_actions_by_list`.
 /mob/living/basic/mining/mook/proc/get_innate_abilities()
@@ -88,7 +84,6 @@
 /mob/living/basic/mining/mook/Entered(atom/movable/mover)
 	if(istype(mover, /obj/item/stack/ore))
 		held_ore = mover
-		ai_controller?.set_blackboard_key(BB_SIMPLE_CARRY_ITEM, mover)
 		update_appearance(UPDATE_OVERLAYS)
 
 	return ..()
@@ -102,26 +97,26 @@
 
 /mob/living/basic/mining/mook/early_melee_attack(atom/target, list/modifiers, ignore_cooldown)
 	. = ..()
-	if(.)
-		return
+	if(!.)
+		return FALSE
 	return attack_sequence(target)
 
 /mob/living/basic/mining/mook/proc/attack_sequence(atom/target)
 	if(istype(target, /obj/item/stack/ore) && isnull(held_ore))
 		var/obj/item/ore_target = target
 		ore_target.forceMove(src)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(istype(target, /obj/structure/ore_container/material_stand))
 		if(held_ore)
 			held_ore.forceMove(target)
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 	if(istype(target, /obj/structure/bonfire))
 		var/obj/structure/bonfire/fire_target = target
 		if(!fire_target.burning)
 			fire_target.start_burning()
-		return BASIC_MOB_END_ATTACK_CHAIN_COOLDOWN
+		return FALSE
 
 /mob/living/basic/mining/mook/proc/change_combatant_state(state)
 	attack_state = state
@@ -192,7 +187,7 @@
 	if(istype(intruder, /mob/living/basic/mining/mook))
 		return
 	for(var/mob/living/basic/mining/mook/villager in oview(src, 9))
-		villager.ai_controller?.set_blackboard_key_assoc_lazylist(BB_BASIC_MOB_RETALIATE_LIST, intruder, world.time)
+		villager.ai_controller?.insert_blackboard_key_lazylist(BB_BASIC_MOB_RETALIATE_LIST, intruder)
 
 
 /mob/living/basic/mining/mook/worker
@@ -281,12 +276,10 @@
 	var/static/mutable_appearance/chief_active = mutable_appearance('icons/mob/simple/jungle/mook.dmi', "mook_chief_leap")
 	///overlay in our warmup state
 	var/static/mutable_appearance/chief_warmup = mutable_appearance('icons/mob/simple/jungle/mook.dmi', "mook_chief_warmup")
-	var/static/list/bonfire_targets = list(/obj/structure/bonfire)
 
 /mob/living/basic/mining/mook/worker/tribal_chief/Initialize(mapload)
 	. = ..()
 	update_appearance()
-	ai_controller?.set_blackboard_key(BB_BONFIRE_TARGETS, typecacheof(bonfire_targets))
 
 /mob/living/basic/mining/mook/worker/tribal_chief/update_overlays()
 	. = ..()

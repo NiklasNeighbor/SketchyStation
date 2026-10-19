@@ -13,8 +13,6 @@
 	var/datum/port/output/true
 	var/datum/port/output/false
 
-	/// The type of port for the result output
-	var/result_port_type = PORT_TYPE_BOOLEAN
 	/// The result from the output
 	var/datum/port/output/result
 
@@ -24,7 +22,7 @@
 
 	true = add_output_port("True", PORT_TYPE_SIGNAL)
 	false = add_output_port("False", PORT_TYPE_SIGNAL)
-	result = add_output_port("Result", result_port_type)
+	result = add_output_port("Result", PORT_TYPE_NUMBER)
 
 /**
  * Used by derivatives to load their own ports in for custom use.

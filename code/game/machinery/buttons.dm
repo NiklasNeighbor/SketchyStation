@@ -176,7 +176,9 @@
 
 /obj/machinery/button/screwdriver_act(mob/living/user, obj/item/tool)
 	if(panel_open || allowed(user))
-		return default_deconstruction_screwdriver(user, tool)
+		default_deconstruction_screwdriver(user, "[base_icon_state][skin]-open", "[base_icon_state][skin]", tool)
+		update_appearance()
+		return ITEM_INTERACT_SUCCESS
 
 	balloon_alert(user, "access denied")
 	flick_overlay_view("[base_icon_state]-overlay-error", 1 SECONDS)
@@ -400,13 +402,13 @@ MAPPING_DIRECTIONAL_HELPERS(/obj/machinery/button/door, 24)
 
 /obj/machinery/button/door/setup_device(mapload)
 	if(mapload)
-		device = normaldoorcontrol ? new /obj/item/assembly/control/airlock(src) : new /obj/item/assembly/control/blast_door(src)
+		device = normaldoorcontrol ? new /obj/item/assembly/control/airlock(src) : new /obj/item/assembly/control(src)
 
 	if(istype(device, /obj/item/assembly/control/airlock))
 		var/obj/item/assembly/control/airlock/airlock_device = device
 		airlock_device.specialfunctions = specialfunctions
-	else if(istype(device, /obj/item/assembly/control/blast_door))
-		var/obj/item/assembly/control/blast_door/control_device = device
+	else if(istype(device, /obj/item/assembly/control))
+		var/obj/item/assembly/control/control_device = device
 		control_device.sync_doors = sync_doors
 	return ..()
 

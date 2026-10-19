@@ -7,8 +7,8 @@
 	if (!..(preferences))
 		return FALSE
 
-	return /datum/quirk/heterochromatic::name in preferences.all_quirks
+	return "Heterochromatic" in preferences.all_quirks
 
-/datum/preference/color/heterochromatic/apply_to_human(mob/living/carbon/human/target, value, datum/preferences/preferences)
+/datum/preference/color/heterochromatic/apply_to_human(mob/living/carbon/human/target, value)
 	var/datum/quirk/heterochromatic/hetero_quirk = locate() in target.quirks
 	hetero_quirk?.apply_heterochromatic_eyes(value)

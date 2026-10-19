@@ -1,13 +1,6 @@
 /// Middleware to handle quirks
 /datum/preference_middleware/quirks
-	/// Used to track whether or not we need to update changes in ui_data
-	var/tainted = TRUE
-	/// Remember what the last species we chose was, to avoid having to validate quirks again
-	var/previous_species_value
-	/// The current selected quirks, saved so we can cheaply resend them in ui_data only when necessary, without having to use expensive update_static_data() calls
-	var/list/cached_selected_quirks
-	/// The current species compatibility, saved so we can cheaply resend them in ui_data only when necessary, without having to use expensive update_static_data() calls
-	var/list/cached_species_compatibility
+	var/tainted = FALSE
 
 	action_delegations = list(
 		"give_quirk" = PROC_REF(give_quirk),
@@ -26,7 +19,7 @@
 	if(!LAZYLEN(incompatible_quirks))
 		return
 	var/list/message = list("The following quirks are incompatible with your selected species and will be removed: [incompatible_quirks.Join(", ")].")
-	if(!SSquirks.points_enabled)
+	if(CONFIG_GET(flag/disable_quirk_points))
 		message += "Would you like to continue?"
 	else
 		message += "If you do not have enough points to cover the removed quirks, your quirks will be reset. Would you like to continue?"
@@ -35,11 +28,9 @@
 		return TRUE
 
 /datum/preference_middleware/quirks/post_set_preference(mob/user, preference, value)
-	if(preference != "species" || value == previous_species_value)
+	if(preference != "species")
 		return
-
 	tainted = TRUE
-	previous_species_value = value
 	preferences.validate_quirks()
 
 /datum/preference_middleware/quirks/proc/get_species_compatibility()
@@ -56,20 +47,19 @@
 
 	var/list/data = list()
 
-	data["default_quirk_balance"] = SSquirks.default_quirk_points
+	data["selected_quirks"] = get_selected_quirks()
+	data["default_quirk_balance"] = CONFIG_GET(number/default_quirk_points)
+	data["species_disallowed_quirks"] = get_species_compatibility()
 
 	return data
 
 /datum/preference_middleware/quirks/get_ui_data(mob/user)
 	var/list/data = list()
 
-	if (tainted || isnull(cached_selected_quirks)) // if one of these is null, both are null
+	if (tainted)
 		tainted = FALSE
-		cached_selected_quirks = get_selected_quirks()
-		cached_species_compatibility = get_species_compatibility()
-
-	data["selected_quirks"] = cached_selected_quirks
-	data["species_disallowed_quirks"] = cached_species_compatibility
+		data["selected_quirks"] = get_selected_quirks()
+		data["species_disallowed_quirks"] = get_species_compatibility()
 
 	return data
 
@@ -78,7 +68,7 @@
 
 	var/list/quirks = SSquirks.get_quirks()
 
-	var/max_positive_quirks = SSquirks.max_positive_quirks
+	var/max_positive_quirks = CONFIG_GET(number/max_positive_quirks)
 	var/positive_quirks_disabled = max_positive_quirks == 0
 	for (var/quirk_name in quirks)
 		var/datum/quirk/quirk = quirks[quirk_name]
@@ -101,12 +91,11 @@
 		"max_positive_quirks" = max_positive_quirks,
 		"quirk_info" = quirk_info,
 		"quirk_blacklist" = GLOB.quirk_string_blacklist,
-		"points_enabled" = SSquirks.points_enabled,
+		"points_enabled" = !CONFIG_GET(flag/disable_quirk_points),
 	)
 
 /datum/preference_middleware/quirks/on_new_character(mob/user)
 	tainted = TRUE
-	previous_species_value = null
 
 /datum/preference_middleware/quirks/proc/give_quirk(list/params, mob/user)
 	var/quirk_name = params["quirk"]
@@ -117,13 +106,12 @@
 		// If the client is sending an invalid give_quirk, that means that
 		// something went wrong with the client prediction, so we should
 		// catch it back up to speed.
-		tainted = TRUE
 		preferences.update_static_data(user, always_instant = TRUE)
 		return TRUE
 
 	preferences.all_quirks = new_quirks
-	tainted = TRUE
 	preferences.character_preview_view?.update_body()
+	preferences.update_static_data(user, always_instant = TRUE)
 
 	return TRUE
 
@@ -138,13 +126,12 @@
 		// If the client is sending an invalid remove_quirk, that means that
 		// something went wrong with the client prediction, so we should
 		// catch it back up to speed.
-		tainted = TRUE
 		preferences.update_static_data(user, always_instant = TRUE)
 		return TRUE
 
 	preferences.all_quirks = new_quirks
-	tainted = TRUE
 	preferences.character_preview_view?.update_body()
+	preferences.update_static_data(user, always_instant = TRUE)
 
 	return TRUE
 

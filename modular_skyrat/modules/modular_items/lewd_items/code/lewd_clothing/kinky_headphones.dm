@@ -91,8 +91,6 @@
 	desc = "Plays some nice relaxing music"
 
 /datum/action/item_action/toggle_kinky_headphones/Trigger(trigger_flags)
-	if(!..())
-		return FALSE
 	var/obj/item/clothing/ears/kinky_headphones/headphones = target
 	if(istype(headphones))
 		headphones.toggle(owner)

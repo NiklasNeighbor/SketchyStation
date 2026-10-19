@@ -2,10 +2,9 @@
 /datum/disease/gastritium
 	name = "Gastritium"
 	desc = "If left untreated, may manifest in severe Tritium heartburn."
-	form = "Bacteria"
+	form = "Infection"
 	agent = "Atmobacter Polyri"
-	cure_text = /datum/reagent/consumable/milk::name
-	spread_text = "None"
+	cure_text = "Milk"
 	cures = list(/datum/reagent/consumable/milk)
 	viable_mobtypes = list(/mob/living/carbon/human)
 	spread_flags = DISEASE_SPREAD_NON_CONTAGIOUS
@@ -25,17 +24,17 @@
 			if(SPT_PROB(1, seconds_per_tick))
 				affected_mob.emote("burp")
 		if(3)
-			if(SPT_PROB(1, seconds_per_tick) && !IS_UNCONSCIOUS_OR_CRIT(affected_mob))
+			if(SPT_PROB(1, seconds_per_tick) && affected_mob.stat == CONSCIOUS)
 				to_chat(affected_mob, span_warning("Your stomach makes turbine noises..."))
 			else if(SPT_PROB(1, seconds_per_tick))
 				affected_mob.emote("burp")
 		if(4)
-			if(SPT_PROB(1, seconds_per_tick) && !IS_UNCONSCIOUS_OR_CRIT(affected_mob))
+			if(SPT_PROB(1, seconds_per_tick) && affected_mob.stat == CONSCIOUS)
 				to_chat(affected_mob, span_warning("You're starting to feel like a burn chamber..."))
 			else if(SPT_PROB(1, seconds_per_tick))
 				tritium_burp()
 		if(5)
-			if(SPT_PROB(1, seconds_per_tick) && !IS_UNCONSCIOUS_OR_CRIT(affected_mob))
+			if(SPT_PROB(1, seconds_per_tick) && affected_mob.stat == CONSCIOUS)
 				to_chat(affected_mob, span_warning("You feel like you're about to delam..."))
 			else if(SPT_PROB(1, seconds_per_tick))
 				tritium_burp(hot_chance = TRUE)
@@ -44,11 +43,12 @@
 
 /datum/disease/gastritium/proc/tritium_burp(hot_chance = FALSE)
 	var/datum/gas_mixture/burp = new
-	burp.set_gas(/datum/gas/tritium, MOLES_GAS_VISIBLE)
+	ADD_GAS(/datum/gas/tritium, burp.gases)
+	burp.gases[/datum/gas/tritium][MOLES] = MOLES_GAS_VISIBLE
 	burp.temperature = affected_mob.bodytemperature
 	if(hot_chance && prob(tritium_burp_hot_chance))
-		burp.set_temperature(TRITIUM_MINIMUM_BURN_TEMPERATURE)
-		if(!IS_UNCONSCIOUS_OR_CRIT(affected_mob))
+		burp.temperature = TRITIUM_MINIMUM_BURN_TEMPERATURE
+		if(affected_mob.stat == CONSCIOUS)
 			to_chat(affected_mob, span_warning("Your throat feels hot!"))
 	affected_mob.visible_message("burps out green gas.", visible_message_flags = EMOTE_MESSAGE)
 	affected_mob.loc.assume_air(burp)

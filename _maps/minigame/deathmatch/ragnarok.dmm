@@ -891,7 +891,7 @@
 /area/deathmatch)
 "My" = (
 /obj/structure/table/wood,
-/obj/item/food/grown/melonlike/holymelon,
+/obj/item/food/grown/holymelon,
 /turf/open/floor/wood/tile,
 /area/deathmatch)
 "MM" = (

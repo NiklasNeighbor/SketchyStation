@@ -4,7 +4,6 @@
 	slot_flags = null
 	projectile_type = /obj/projectile/bullet/dart/syringe
 	firing_effect_type = null
-	custom_materials = null
 
 /obj/item/ammo_casing/syringegun/ready_proj(atom/target, mob/living/user, quiet, zone_override = "")
 	if(!loaded_projectile)

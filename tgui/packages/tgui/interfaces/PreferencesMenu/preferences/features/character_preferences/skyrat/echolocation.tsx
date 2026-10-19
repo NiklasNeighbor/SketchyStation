@@ -1,17 +1,24 @@
-// THIS IS A SKYRAT UI FILE
+// THIS IS A Skyrat  SECTOR UI FILE
 import {
   CheckboxInput,
   type Feature,
+  type FeatureChoiced,
   FeatureColorInput,
   type FeatureToggle,
 } from '../../base';
+import { FeatureDropdownInput } from '../../dropdowns';
 
 export const echolocation_outline: Feature<string> = {
   name: 'Echo outline color',
   component: FeatureColorInput,
 };
 
+export const echolocation_key: FeatureChoiced = {
+  name: 'Echolocation group',
+  component: FeatureDropdownInput,
+};
+
 export const echolocation_use_echo: FeatureToggle = {
-  name: 'Display echo overlay',
+  name: 'Display own overlay',
   component: CheckboxInput,
 };

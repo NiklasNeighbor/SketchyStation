@@ -2,6 +2,7 @@
 	title = ROLE_PERSISTENCE
 	policy_index = ROLE_PERSISTENCE
 	akula_outfit = /datum/outfit/akula
+	antagonist_restricted = TRUE
 
 // Persistence mining rig Ghost Spawners
 
@@ -187,7 +188,7 @@
 		/obj/item/retractor/advanced,
 		/obj/item/cautery/advanced,
 		/obj/item/scalpel/advanced,
-		/obj/item/stack/medical/wrap/gauze,
+		/obj/item/stack/medical/gauze,
 		/obj/item/borg/cyborghug/medical,
 		/obj/item/borg/lollipop,
 		/obj/item/borg/apparatus/beaker,
@@ -281,7 +282,7 @@
 	id_trim = /datum/id_trim/syndicom/bubberstation/persistence/brigofficer
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
 	suit = /obj/item/clothing/suit/armor/bulletproof/old
-	back = /obj/item/storage/backpack/security
+	back = /obj/item/storage/backpack/security/redsec
 	backpack_contents = list(
 		/obj/item/flashlight/seclite = 1,
 		/obj/item/storage/box/survival = 1,
@@ -300,7 +301,7 @@
 	id_trim = /datum/id_trim/syndicom/bubberstation/persistence/cargo
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
 	suit = /obj/item/clothing/suit/armor/bulletproof/old
-	back = /obj/item/storage/backpack/satchel/sec
+	back = /obj/item/storage/backpack/satchel/explorer
 	backpack_contents = list(
 		/obj/item/storage/box/survival = 1,
 		/obj/item/crowbar = 1,
@@ -354,7 +355,7 @@
 	gloves = /obj/item/clothing/gloves/tackler/combat/insulated
 	suit = /obj/item/clothing/suit/armor/vest/warden/syndicate
 	glasses = /obj/item/clothing/glasses/hud/security/sunglasses/redsec
-	back = /obj/item/storage/backpack/satchel/sec
+	back = /obj/item/storage/backpack/satchel/sec/redsec
 	backpack_contents = list(
 		/obj/item/storage/box/survival = 1,
 		/obj/item/crowbar = 1,
