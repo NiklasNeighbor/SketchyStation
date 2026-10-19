@@ -33,6 +33,7 @@
 	tool_behaviors = list(TOOL_SCREWDRIVER)
 	time = 30 SECONDS
 	category = CAT_WEAPON_RANGED
+	crafting_flags = parent_type::crafting_flags | CRAFT_COLLECT_REQUIREMENTS
 
 /datum/crafting_recipe/mosin_pro/New()
 	. = ..()
@@ -45,3 +46,10 @@
 	if(LAZYLEN(the_piece.magazine.stored_ammo))
 		return FALSE
 	return ..()
+
+/obj/item/crafting_conversion_kit/voskhod_refit
+	name = "\improper Voskhod depowered armor MOD refit kit"
+	desc = "A metallic case of various tubes, sensors and spare materials required to reuse Voskhod's components in the making of a next-generation MODed version."
+	force = 10
+	icon = 'modular_zubbers/icons/misc/refitkit.dmi'
+	icon_state = "refit_kit"

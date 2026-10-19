@@ -22,15 +22,19 @@
 
 	scientist.set_species(/datum/species/abductor)
 	agent.set_species(/datum/species/abductor)
+	// BUBBER EDIT START: fix their colors, oops
+	scientist.dna.features[FEATURE_MUTANT_COLOR] = "#E3E3E3"
+	agent.dna.features[FEATURE_MUTANT_COLOR] = "#E3E3E3"
+	// BUBBER EDIT END
 
-	var/icon/scientist_icon = render_preview_outfit(/datum/outfit/abductor/scientist, scientist)
-	scientist_icon.Shift(WEST, 8)
+	var/datum/universal_icon/scientist_icon = render_preview_outfit(/datum/outfit/abductor/scientist, scientist)
+	scientist_icon.shift(WEST, 8)
 
-	var/icon/agent_icon = render_preview_outfit(/datum/outfit/abductor/agent, agent)
-	agent_icon.Shift(EAST, 8)
+	var/datum/universal_icon/agent_icon = render_preview_outfit(/datum/outfit/abductor/agent, agent)
+	agent_icon.shift(EAST, 8)
 
-	var/icon/final_icon = scientist_icon
-	final_icon.Blend(agent_icon, ICON_OVERLAY)
+	var/datum/universal_icon/final_icon = scientist_icon
+	final_icon.blend_icon(agent_icon, ICON_OVERLAY)
 
 	qdel(scientist)
 	qdel(agent)
@@ -91,6 +95,14 @@
 	//Equip
 	var/mob/living/carbon/human/new_abductor = owner.current
 	new_abductor.set_species(/datum/species/abductor)
+	// BUBBER EDIT START - Apply body part updates after setting mutant colors.
+	var/list/body_colors = new_abductor.client?.prefs.read_preference(/datum/preference/tri_color/mutant_colors) 
+	if(length(body_colors)) 
+		new_abductor.dna.features[FEATURE_MUTANT_COLOR] = body_colors[1] 
+		for(var/obj/item/bodypart/part as anything in new_abductor.get_bodyparts()) 
+			part.add_color_override(body_colors[1], LIMB_COLOR_AYYLMAO + 1) 
+	new_abductor.update_body_parts(update_limb_data = TRUE) 
+	// BUBBER EDIT END
 	var/obj/item/organ/tongue/abductor/abductor_tongue = new_abductor.get_organ_slot(ORGAN_SLOT_TONGUE)
 	abductor_tongue.mothership = "[team.name]"
 
@@ -98,8 +110,8 @@
 	new_abductor.equipOutfit(outfit)
 
 	// If we have a team skincolor, apply it here. Applied by admins or 2% chance of natural occurance
-	if(!isnull(team.team_skincolor))
-		for(var/obj/item/bodypart/part as anything in new_abductor.bodyparts)
+	if(!isnull(team.team_skincolor) && new_abductor.dna.features[FEATURE_MUTANT_COLOR] == COLOR_WHITE) //Bubber edit: Apply team skin color if the abductor has the default white color
+		for(var/obj/item/bodypart/part as anything in new_abductor.get_bodyparts())
 			part.should_draw_greyscale = TRUE
 			part.add_color_override(team.team_skincolor, LIMB_COLOR_AYYLMAO)
 

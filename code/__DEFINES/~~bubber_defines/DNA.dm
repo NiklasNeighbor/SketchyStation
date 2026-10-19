@@ -49,6 +49,7 @@
 /// Organ slot external
 #define ORGAN_SLOT_EXTERNAL_CAP "cap"
 #define ORGAN_SLOT_EXTERNAL_FLUFF "fluff"
+#define ORGAN_SLOT_EXTERNAL_HALO "halo"
 #define ORGAN_SLOT_EXTERNAL_HEAD_ACCESSORY "head_accessory"
 #define ORGAN_SLOT_EXTERNAL_MOTH_MARKINGS "moth_markings"
 #define ORGAN_SLOT_EXTERNAL_NECK_ACCESSORY "neck_accessory"
@@ -64,10 +65,6 @@
 #define ACC_RANDOM		"random"
 
 #define MAXIMUM_MARKINGS_PER_LIMB 3
-
-#define BODY_SIZE_NORMAL 1.00
-#define BODY_SIZE_MAX 1.5
-#define BODY_SIZE_MIN 0.8
 
 //In inches
 #define PENIS_MIN_GIRTH PENIS_MIN_LENGTH
@@ -85,6 +82,12 @@
 #define SHEATH_SLIT	"Slit"
 #define SHEATH_MODES list(SHEATH_NONE, SHEATH_NORMAL, SHEATH_SLIT)
 
+#define BUTT_MIN_SIZE 0
+#define BUTT_MAX_SIZE 8
+
+#define BELLY_MIN_SIZE 0
+#define BELLY_MAX_SIZE 9 // 10 is in the code, but too much.
+
 #define MANDATORY_FEATURE_LIST list(\
 	"mcolor" = "#FFFFBB",\
 	"mcolor2" = "#FFFFBB",\
@@ -99,7 +102,6 @@
 	"penis_taur_mode" = TRUE,\
 	"penis_sheath" = SHEATH_NONE,\
 	"balls_size" = 1,\
-	"body_size" = BODY_SIZE_NORMAL,\
 	"custom_species" = "",\
 	"penis_uses_skintones" = TRUE,\
 	"penis_uses_skincolor" = TRUE,\
@@ -135,7 +137,6 @@
 #define SPECIES_XENO "xeno"
 #define SPECIES_GHOUL "ghoul"
 #define SPECIES_TESHARI "teshari"
-#define SPECIES_HEMOPHAGE "hemophage"
 #define SPECIES_FELINE_PRIMITIVE "primitive_felinid"
 #define SPECIES_PROTEAN "protean"
 #define SPECIES_GAS "serpentid"
@@ -169,3 +170,8 @@
 
 #define MUTATION_SOURCE_SPECIES "species"
 #define MUTATION_SOURCE_QUIRK "quirk"
+
+///INTERNAL ORGANS
+
+///// Brain implants that add functionality to the user, such as a health relay
+#define ORGAN_SLOT_BRAIN_AID "brain_aid"
