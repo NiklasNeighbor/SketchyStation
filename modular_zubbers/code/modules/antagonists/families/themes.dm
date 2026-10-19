@@ -158,9 +158,9 @@
 	planned, but the government claims that the contractors quote, took the money and ran, end quote. Majima Construction was unavailable for comment."
 	involved_gangs = list(/datum/antagonist/gang/yakuza, /datum/antagonist/gang/irs)
 	bonus_first_gangster_items = list(
-		/datum/antagonist/gang/yakuza = /obj/item/storage/secure/briefcase/syndie,
+		/datum/antagonist/gang/yakuza = /obj/item/storage/briefcase/secure/syndie,
 		/datum/antagonist/gang/irs = null,
-		/datum/antagonist/gang/security = /obj/item/storage/secure/briefcase/syndie,
+		/datum/antagonist/gang/security = /obj/item/storage/briefcase/secure/syndie,
 		) // the cash for the gangs
 	starting_gangsters = 5
 	announcement_audio = 'sound/ambience/antag/families_radio_broadcasts/construction_company_audit.ogg'
@@ -193,7 +193,7 @@
 	stations come out, The reports reveal a massive brutality problem and complete lack of accountability due to the Redshirt's Union and Nanotrasen Internal Affairs covering up \
 	abuse as it occurs. Reports include brutality, excessive violence, absurd brig times, and general quote overenthusiasm endquote towards policing the station's employees. \
 	Activist group Prisoner Liberation Front leaked the reports to the press, citing the lack of responsiveness from the Spinward Stellar Coalition on the problem."
-	involved_gangs = list(/datum/antagonist/gang/riders_of_the_radstorm, /datum/antagonist/gang/prisoner_liberation_front, /datum/antagonist/gang/maintenace_snakes)
+	involved_gangs = list(/datum/antagonist/gang/riders_of_the_radstorm, /datum/antagonist/gang/prisoner_liberation_front, /datum/antagonist/gang/maintenance_snakes)
 	announcement_audio = 'sound/ambience/antag/families_radio_broadcasts/who_watches_the_watchmen.ogg'
 	gang_objectives = list(
 
@@ -208,7 +208,7 @@
 		and kill those who they find violating it! We can't stand for this, and we will put an end to it. \
 		Do what you can to document authority figure brutality on the station, and if people end up incarcerated or restrained by the law, break them out!",
 
-		/datum/antagonist/gang/maintenace_snakes = "MAINTENANCE SNAKES RULE!!! \
+		/datum/antagonist/gang/maintenance_snakes = "MAINTENANCE SNAKES RULE!!! \
 		We're the Maintenance Snakes, and WE RULE!!! \
 		We're looking to set up on this station and establish ourselves as the just, but fair law in town. Those redshirt boys just aren't able to run the station like we are. \
 		Get the security team out of the way, and then take over as the new authority on the station! Make sure the crew knows that the Maintenance Snakes RULE and that \

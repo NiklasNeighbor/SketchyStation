@@ -28,7 +28,7 @@
 	/// Type of team to create when creating the gang in the first place. Used for renames.
 	var/gang_team_type = /datum/team/gang
 	/// What sound should play when we become a gangster?
-	var/antag_sound = 'sound/ambience/antag/thatshowfamiliesworks.ogg'
+	var/antag_sound = 'sound/music/antag/thatshowfamiliesworks.ogg'
 
 	/// A reference to the handler datum that manages the families gamemode. In case of no handler (admin-spawned during round), this will be null; this is fine.
 	var/datum/gang_handler/handler
