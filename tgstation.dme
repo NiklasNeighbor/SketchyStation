@@ -9664,7 +9664,6 @@
 #include "modular_zubbers\code\modules\antagonists\families\security_families.dm"
 #include "modular_zubbers\code\modules\antagonists\families\tagging.dm"
 #include "modular_zubbers\code\modules\antagonists\families\themes.dm"
-#include "modular_zubbers\code\modules\antagonists\heretic\heretic.dm"
 #include "modular_zubbers\code\modules\antagonists\heretic\antimagic_collar.dm"
 #include "modular_zubbers\code\modules\antagonists\heretic\heretic_antag.dm"
 #include "modular_zubbers\code\modules\antagonists\heretic\influences.dm"
