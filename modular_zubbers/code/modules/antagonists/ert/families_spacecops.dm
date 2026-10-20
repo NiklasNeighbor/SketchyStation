@@ -11,7 +11,7 @@
 		var/atom/movable/screen/wanted/giving_wanted_lvl = new /atom/movable/screen/wanted()
 		H.wanted_lvl = giving_wanted_lvl
 		giving_wanted_lvl.hud = H
-		H.infodisplay += giving_wanted_lvl
+		//H.infodisplay += giving_wanted_lvl //Broke during upstream. since it is not being used rn I'll just comment it out
 		H.mymob.client.screen += giving_wanted_lvl
 
 
@@ -19,7 +19,7 @@
 	var/mob/living/M = mob_override || owner.current
 	if(M.hud_used)
 		var/datum/hud/H = M.hud_used
-		H.infodisplay -= H.wanted_lvl
+		//H.infodisplay -= H.wanted_lvl
 		QDEL_NULL(H.wanted_lvl)
 	..()
 

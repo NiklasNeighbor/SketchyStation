@@ -255,7 +255,7 @@
 	if (my_gang_datum.my_gang.members.len >= smallest.members.len + MAX_GANG_OUTNUMBERING)
 		to_chat(owner, span_warning("You already have enough members in your gang. This might change if your enemies decide to recruit more members themselves."))
 		return FALSE
-	if(human_owner.stat != CONSCIOUS || human_owner.incapacitated != NONE)
+	if(human_owner.stat != STABLE || human_owner.incapacitated != NONE)
 		return FALSE
 	var/obj/item/hand_item/slapper/secret_handshake/secret_handshake_item = new(owner)
 	if(owner.put_in_hands(secret_handshake_item))

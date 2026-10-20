@@ -88,6 +88,9 @@ GLOBAL_LIST_INIT(available_erp_ui_styles, list(
 	/// The color to use for the screentips.
 	/// This is updated by the preference for cheaper reads than would be
 	/// had with a proc call, especially on one of the hottest procs in the game (MouseEntered).
+
+	var/atom/movable/screen/wanted/wanted_lvl //BUBBER ADDITION
+
 	var/screentip_color = null
 	var/datum/action_group/palette/palette_actions = null
 	var/datum/action_group/listed/listed_actions = null
