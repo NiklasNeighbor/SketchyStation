@@ -2,13 +2,17 @@
 
 /datum/antagonist/gang
 	name = "\improper Family Member"
+	pref_flag = ROLE_FAMILIES
 	roundend_category = "gangsters"
 	ui_name = "AntagInfoGangmember"
 	antag_hud_name = "hud_gangster"
 	antagpanel_category = "Family"
 	show_in_antagpanel = FALSE // i don't *think* this base class is buggy but it's too worthless to test
 	suicide_cry = "FOR THE FAMILY!!"
+	hijack_speed = 0.5
 	preview_outfit = /datum/outfit/gangster
+
+
 	/// The overarching family that the owner of this datum is a part of. Family teams are generic and imprinted upon by the per-person antagonist datums.
 	var/datum/team/gang/my_gang
 	/// The name of the family corresponding to this family member datum.
