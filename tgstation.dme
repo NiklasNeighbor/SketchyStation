@@ -9440,6 +9440,7 @@
 #include "modular_zubbers\code\game\area\areas\moonstation.dm"
 #include "modular_zubbers\code\game\area\areas\station.dm"
 #include "modular_zubbers\code\game\brain_damage\severe.dm"
+#include "modular_zubbers\code\game\gamemodes\dynamic\dynamic_rulesets_roundstart.dm"
 #include "modular_zubbers\code\game\gamemodes\fleshmind\_fleshmind_defines.dm"
 #include "modular_zubbers\code\game\gamemodes\fleshmind\_fleshmind_helpers.dm"
 #include "modular_zubbers\code\game\gamemodes\fleshmind\ert.dm"
