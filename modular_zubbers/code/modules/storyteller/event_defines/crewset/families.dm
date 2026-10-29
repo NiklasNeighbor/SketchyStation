@@ -22,9 +22,6 @@
 /datum/round_event/antagonist/families/candidate_setup(datum/round_event_control/antagonist/cast_control)
 	var/list/restricted_roles = cast_control.restricted_roles
 	var/list/possible_candidates = cast_control.get_candidates()
-	if(possible_candidates.len < MINIMUM_VIABLE_FAMILY_CANDIDATES)
-		message_admins("FAMILIES: Could not start Families round; insufficient candidates")
-		return
 	handler = new /datum/gang_handler(possible_candidates, restricted_roles)
 	handler.gang_balance_cap = clamp((get_active_player_count() - 3), 2, 5) // gang_balance_cap by indice_pop: (2,2,2,2,2,3,4,5,5,5)
 	handler.use_dynamic_timing = TRUE
