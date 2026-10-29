@@ -112,7 +112,7 @@ const GangObjectivePrintout = () => {
         {gang_objective || 'No objective set! This is a problem!'}
       </Stack.Item>
       <Stack.Item bold fontSize="14px" textColor="red">
-        {'Objective: Tag more areas than the other Families.'}
+        {'Additional Objective: Tag more areas than the other Families.'}
       </Stack.Item>
     </Stack>
   );
