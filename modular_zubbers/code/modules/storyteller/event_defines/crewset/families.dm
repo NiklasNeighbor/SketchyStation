@@ -2,7 +2,7 @@
 
 /datum/round_event_control/antagonist/families
 	name = "Families"
-	description = "Create a number of themed faction and send them at eachother's throats"
+	description = "Create a number of themed factions and send them at eachother's throats"
 	antag_flag = ROLE_FAMILIES
 	roundstart = TRUE
 	antag_datum = /datum/antagonist/gang
